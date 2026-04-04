@@ -30,6 +30,7 @@
   --danger: #ffb0a0;
   --danger-bg: rgba(108, 28, 26, 0.4);
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  --control-height: 52px;
 }
 
 * {
@@ -205,6 +206,21 @@ h3 {
   position: sticky;
   top: 20px;
   padding: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.browser-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.cards-toolbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--control-height);
+  margin-bottom: 18px;
 }
 
 .mob-card-header,
@@ -227,6 +243,7 @@ h3 {
   align-items: center;
   gap: 12px;
   width: 100%;
+  min-height: var(--control-height);
   border: 1px solid var(--line);
   border-radius: 16px;
   background: rgba(8, 16, 26, 0.82);
@@ -258,40 +275,31 @@ h3 {
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
-  margin-top: 14px;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .filter-button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: calc(var(--control-height) - 2px);
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 11px 14px;
   background: rgba(153, 190, 214, 0.08);
   color: var(--muted);
   font-size: 0.92rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  flex: none;
 }
 
-.filter-button strong {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.8rem;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: rgba(8, 16, 26, 0.56);
-  color: var(--ink);
-  font-family: var(--font-ui);
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+.filter-button span {
+  min-width: 0;
 }
 
 .filter-button:hover {
@@ -340,8 +348,7 @@ h3 {
 .mob-list {
   display: grid;
   gap: 8px;
-  margin-top: 16px;
-  max-height: calc(100vh - 270px);
+  max-height: calc(100vh - 20px - var(--browser-controls-height, 0px) - 32px);
   overflow: auto;
   padding-right: 4px;
 }

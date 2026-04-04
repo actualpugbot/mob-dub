@@ -1,4 +1,5 @@
-import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { getPreferredRecordingMimeType } from "./audio";
 import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
@@ -7,44 +8,13 @@ import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEve
 const DATASET_URL = "/data/mob-sounds.json";
 const MODEL_DATASET_URL = "/data/mob-models.json";
 const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["giant", "illusioner"]);
-const VERSION_FILTER_PREFIX = "version:";
-const VERSION_FILTER_ORDER = [
-  "1.21.11",
-  "1.21.9",
-  "1.21.6",
-  "1.21.4",
-  "1.21",
-  "1.20.5",
-  "1.20",
-  "1.19",
-  "1.17",
-  "1.16.2",
-  "1.16",
-  "1.15",
-  "1.14",
-  "1.13",
-  "1.12",
-  "1.11",
-  "1.10",
-  "1.9",
-  "1.8",
-  "1.6.1",
-  "1.4.2",
-  "1.2.1",
-  "1.0",
-  "Beta",
-  "Alpha",
-  "Indev",
-  "Classic",
-] as const;
-const VERSION_FILTER_SORT_INDEX = new Map<string, number>(VERSION_FILTER_ORDER.map((version, index) => [version, index]));
+const BROWSER_LIST_GAP = 16;
 
 export default function App() {
   const [dataset, setDataset] = useState<MobSoundsDataset | null>(null);
   const [mobModels, setMobModels] = useState<Record<string, MobModelDefinition>>({});
   const [search, setSearch] = useState("");
   const [activeMobFilter, setActiveMobFilter] = useState("all");
-  const [showAllVersionFilters, setShowAllVersionFilters] = useState(false);
   const [selectedMobIds, setSelectedMobIds] = useState<string[]>([]);
   const [customizations, setCustomizations] = useState<Record<string, CustomVariantSound>>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -61,9 +31,11 @@ export default function App() {
   const customizationsRef = useRef<Record<string, CustomVariantSound>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
+  const browserControlsRef = useRef<HTMLDivElement | null>(null);
   const exportReadyTimeoutRef = useRef<number | null>(null);
   const wasExportReadyRef = useRef(false);
   const [isExportButtonFlashing, setIsExportButtonFlashing] = useState(false);
+  const [browserControlsHeight, setBrowserControlsHeight] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -115,6 +87,35 @@ export default function App() {
     customizationsRef.current = customizations;
   }, [customizations]);
 
+  useLayoutEffect(() => {
+    const controlsElement = browserControlsRef.current;
+
+    if (!controlsElement) {
+      return;
+    }
+
+    const updateBrowserControlsHeight = () => {
+      const nextOffset = Math.ceil(controlsElement.getBoundingClientRect().height + BROWSER_LIST_GAP);
+      setBrowserControlsHeight((current) => (current === nextOffset ? current : nextOffset));
+    };
+
+    updateBrowserControlsHeight();
+
+    if (typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      updateBrowserControlsHeight();
+    });
+
+    observer.observe(controlsElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     return () => {
       if (exportReadyTimeoutRef.current !== null) {
@@ -139,20 +140,6 @@ export default function App() {
 
   const mobs = dataset?.mobs ?? [];
   const mobById = useMemo(() => new Map(mobs.map((mob) => [mob.id, mob])), [mobs]);
-  const versionFilters = useMemo(() => {
-    const counts = new Map<string, number>();
-
-    for (const mob of mobs) {
-      counts.set(mob.introducedVersion, (counts.get(mob.introducedVersion) ?? 0) + 1);
-    }
-
-    return Array.from(counts.entries())
-      .map(([version, count]) => ({ count, version }))
-      .sort((left, right) => compareVersionFilters(left.version, right.version));
-  }, [mobs]);
-  const recentMobCount = useMemo(() => mobs.filter((mob) => mob.isRecent).length, [mobs]);
-  const unreleasedMobCount = useMemo(() => mobs.filter((mob) => mob.releaseStatus === "unreleased").length, [mobs]);
-  const isMoreFiltersActive = activeMobFilter === "unreleased" || activeMobFilter.startsWith(VERSION_FILTER_PREFIX);
   const filteredMobs = useMemo(() => {
     const normalizedQuery = deferredSearch.trim().toLowerCase();
     return mobs.filter((mob) => {
@@ -160,11 +147,11 @@ export default function App() {
         return false;
       }
 
-      if (activeMobFilter === "unreleased" && mob.releaseStatus !== "unreleased") {
+      if (activeMobFilter === "classic" && mob.introducedVersion !== "Classic") {
         return false;
       }
 
-      if (activeMobFilter.startsWith(VERSION_FILTER_PREFIX) && mob.introducedVersion !== activeMobFilter.slice(VERSION_FILTER_PREFIX.length)) {
+      if (activeMobFilter === "unreleased" && mob.releaseStatus !== "unreleased") {
         return false;
       }
 
@@ -429,63 +416,13 @@ export default function App() {
         <h1>Mob Dub</h1>
       </header>
 
-      <main className="workspace">
+      <main className="workspace" style={{ "--browser-controls-height": `${browserControlsHeight}px` } as CSSProperties}>
         <aside className="browser-panel">
-          <label className="search-field">
-            <span aria-hidden="true" className="search-field-icon" />
-            <input aria-label="Search mobs" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for mob" />
-          </label>
-          <div aria-label="Mob filters" className="filter-bar">
-            <button
-              className={`filter-button${activeMobFilter === "all" ? " is-active" : ""}`}
-              onClick={() => setActiveMobFilter("all")}
-              type="button"
-            >
-              <span>All</span>
-              <strong>{mobs.length}</strong>
-            </button>
-            <button
-              className={`filter-button${activeMobFilter === "recent" ? " is-active" : ""}`}
-              onClick={() => setActiveMobFilter("recent")}
-              type="button"
-            >
-              <span>Recent</span>
-              <strong>{recentMobCount}</strong>
-            </button>
-            <button
-              aria-expanded={showAllVersionFilters}
-              className={`filter-button${showAllVersionFilters || isMoreFiltersActive ? " is-active" : ""}`}
-              onClick={() => setShowAllVersionFilters((current) => !current)}
-              type="button"
-            >
-              <span>{showAllVersionFilters ? "Less" : "More"}</span>
-            </button>
-            {showAllVersionFilters ? (
-              <>
-                <button
-                  className={`filter-button${activeMobFilter === "unreleased" ? " is-active" : ""}`}
-                  onClick={() => setActiveMobFilter("unreleased")}
-                  type="button"
-                >
-                  <span>Unreleased</span>
-                  <strong>{unreleasedMobCount}</strong>
-                </button>
-                {versionFilters.map(({ count, version }) => {
-                  const filterId = `${VERSION_FILTER_PREFIX}${version}`;
-                  return (
-                    <button
-                      key={version}
-                      className={`filter-button${activeMobFilter === filterId ? " is-active" : ""}`}
-                      onClick={() => setActiveMobFilter(filterId)}
-                      type="button"
-                    >
-                      <span>{version}</span>
-                      <strong>{count}</strong>
-                    </button>
-                  );
-                })}
-              </>
-            ) : null}
+          <div className="browser-controls" ref={browserControlsRef}>
+            <label className="search-field">
+              <span aria-hidden="true" className="search-field-icon" />
+              <input aria-label="Search mobs" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for mob" />
+            </label>
           </div>
           <div className="mob-list">
             {filteredMobs.length === 0 ? (
@@ -511,6 +448,38 @@ export default function App() {
         </aside>
 
         <section className="cards-panel">
+          <div aria-label="Mob filters" className="cards-toolbar">
+            <div className="filter-bar">
+              <button
+                className={`filter-button${activeMobFilter === "all" ? " is-active" : ""}`}
+                onClick={() => setActiveMobFilter("all")}
+                type="button"
+              >
+                <span>All</span>
+              </button>
+              <button
+                className={`filter-button${activeMobFilter === "classic" ? " is-active" : ""}`}
+                onClick={() => setActiveMobFilter("classic")}
+                type="button"
+              >
+                <span>Classic</span>
+              </button>
+              <button
+                className={`filter-button${activeMobFilter === "recent" ? " is-active" : ""}`}
+                onClick={() => setActiveMobFilter("recent")}
+                type="button"
+              >
+                <span>Recent</span>
+              </button>
+              <button
+                className={`filter-button${activeMobFilter === "unreleased" ? " is-active" : ""}`}
+                onClick={() => setActiveMobFilter("unreleased")}
+                type="button"
+              >
+                <span>Unreleased</span>
+              </button>
+            </div>
+          </div>
           {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {selectedMobs.length === 0 ? (
@@ -632,17 +601,6 @@ function eventLabel(value: string) {
     .slice(2)
     .join(" ")
     .replace(/_/g, " ");
-}
-
-function compareVersionFilters(left: string, right: string) {
-  const leftIndex = VERSION_FILTER_SORT_INDEX.get(left) ?? Number.MAX_SAFE_INTEGER;
-  const rightIndex = VERSION_FILTER_SORT_INDEX.get(right) ?? Number.MAX_SAFE_INTEGER;
-
-  if (leftIndex !== rightIndex) {
-    return leftIndex - rightIndex;
-  }
-
-  return left.localeCompare(right, undefined, { numeric: true });
 }
 
 function mobStatusLabel(mob: MobDefinition) {
