@@ -10,6 +10,14 @@ const datasetsRoot = join(datahubRoot, "workspace", "datasets");
 const statePath = join(datahubRoot, "workspace", "state.json");
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
 const outputImagesDir = join(projectRoot, "public", "images", "mobs");
+const LOCAL_IMAGE_FILE_NAME_OVERRIDES = {
+  camel_husk: "camel_husk.gif",
+  cod: "cod.gif",
+  happy_ghast: "happy_ghast.gif",
+  nautilus: "nautilus.gif",
+  salmon: "salmon.gif",
+  zombie_nautilus: "zombie_nautilus.gif",
+};
 
 const requestedVersion = process.argv[2];
 
@@ -77,7 +85,9 @@ async function resolveLatestProcessedVersion() {
 }
 
 async function resolveLocalImageFileName(mobId) {
-  const candidates = [`${mobId}.png`, `${mobId}.gif`];
+  const candidates = [LOCAL_IMAGE_FILE_NAME_OVERRIDES[mobId], `${mobId}.png`, `${mobId}.gif`].filter(
+    (fileName, index, fileNames) => Boolean(fileName) && fileNames.indexOf(fileName) === index,
+  );
 
   for (const fileName of candidates) {
     try {
