@@ -1,17 +1,20 @@
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   color-scheme: dark;
   color: #eef7fb;
   background:
     radial-gradient(circle at top left, rgba(87, 224, 181, 0.18), rgba(87, 224, 181, 0) 34%),
     radial-gradient(circle at 82% 12%, rgba(86, 130, 255, 0.18), rgba(86, 130, 255, 0) 24%),
     linear-gradient(180deg, #09111a 0%, #0b1522 48%, #050a11 100%);
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --font-ui: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-display: "Source Sans 3", "Segoe UI", sans-serif;
+  --tracking-body: -0.01em;
   --panel: rgba(10, 19, 31, 0.82);
   --panel-strong: rgba(14, 26, 39, 0.94);
   --surface: rgba(17, 31, 46, 0.7);
@@ -44,6 +47,7 @@ button,
 input,
 select {
   font: inherit;
+  letter-spacing: inherit;
 }
 
 button {
@@ -60,6 +64,14 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background: inherit;
+  font-size: clamp(0.98rem, 0.18vw + 0.94rem, 1.05rem);
+  letter-spacing: var(--tracking-body);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
 ::selection {
@@ -150,11 +162,16 @@ body {
 
 .hero h1 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.9rem, 6vw, 5rem);
-  line-height: 0.95;
+  max-width: 8ch;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.045em;
   color: #f7fbff;
-  text-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  text-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.32),
+    0 0 24px rgba(84, 224, 179, 0.06);
 }
 
 .mob-card,
@@ -254,6 +271,9 @@ body {
   padding: 8px 12px;
   background: rgba(153, 190, 214, 0.08);
   color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
@@ -266,7 +286,12 @@ body {
   border-radius: 999px;
   background: rgba(8, 16, 26, 0.56);
   color: var(--ink);
-  font-size: 0.8rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .filter-button:hover {
@@ -287,10 +312,14 @@ body {
   background: transparent;
   color: var(--ink);
   padding: 14px 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
 }
 
 .search-field input::placeholder {
   color: rgba(155, 179, 195, 0.76);
+  font-weight: 500;
 }
 
 .search-field:focus-within,
@@ -310,8 +339,8 @@ body {
 
 .mob-list {
   display: grid;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 8px;
+  margin-top: 16px;
   max-height: calc(100vh - 270px);
   overflow: auto;
   padding-right: 4px;
@@ -319,8 +348,8 @@ body {
 
 .mob-list-item {
   border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 8px;
+  border-radius: 16px;
+  padding: 6px;
   background: var(--surface);
   color: var(--ink);
   transition:
@@ -337,13 +366,13 @@ body {
 .mob-list-select {
   width: 100%;
   border: 0;
-  border-radius: 14px;
-  padding: 6px 8px;
+  border-radius: 12px;
+  padding: 4px 6px;
   background: transparent;
   color: inherit;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   text-align: left;
   min-width: 0;
@@ -369,6 +398,10 @@ body {
 
 .mob-list-select strong {
   display: block;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
 }
 
 .mob-list-meta {
@@ -384,6 +417,8 @@ body {
   border-radius: 18px;
   background: rgba(8, 16, 26, 0.48);
   color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.5;
   text-align: center;
 }
 
@@ -391,7 +426,7 @@ body {
 .mob-card-title {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -408,8 +443,8 @@ body {
 }
 
 .mob-preview--list {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 0;
 }
 
@@ -442,6 +477,8 @@ body {
   border-radius: 999px;
   padding: 6px 10px;
   font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .cards-panel {
@@ -456,6 +493,9 @@ body {
   padding: 12px 16px;
   background: rgba(10, 19, 31, 0.92);
   color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .ghost-button {
@@ -504,6 +544,9 @@ body {
   border-radius: 18px;
   display: grid;
   gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .error-banner {
@@ -515,6 +558,23 @@ body {
 .empty-state {
   padding: 44px;
   text-align: center;
+}
+
+.empty-state h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.empty-state p {
+  max-width: 48ch;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .cards-grid {
@@ -532,6 +592,11 @@ body {
 
 .mob-card h3 {
   margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 1vw + 1.28rem, 1.95rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
 }
 
 .event-stack {
@@ -548,6 +613,8 @@ body {
 
 .event-subtitle {
   margin: 10px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .variant-list {
@@ -575,6 +642,24 @@ body {
 .variant-copy strong,
 .event-header strong {
   text-transform: capitalize;
+}
+
+.variant-copy strong {
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.event-header strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.event-header small {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .variant-actions {
