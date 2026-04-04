@@ -10,14 +10,7 @@ const datasetsRoot = join(datahubRoot, "workspace", "datasets");
 const statePath = join(datahubRoot, "workspace", "state.json");
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
 const outputImagesDir = join(projectRoot, "public", "images", "mobs");
-const LOCAL_IMAGE_FILE_NAME_OVERRIDES = {
-  camel_husk: "camel_husk.gif",
-  cod: "cod.gif",
-  happy_ghast: "happy_ghast.gif",
-  nautilus: "nautilus.gif",
-  salmon: "salmon.gif",
-  zombie_nautilus: "zombie_nautilus.gif",
-};
+const OMITTED_MOB_IDS = new Set(["giant"]);
 
 const requestedVersion = process.argv[2];
 
@@ -29,7 +22,7 @@ async function main() {
 
   const sourcePath = join(datasetsRoot, version, "mob-sounds.json");
   const mobDataset = JSON.parse(await readFile(sourcePath, "utf8"));
-  const normalizedMobDataset = withInheritedMobSounds(mobDataset);
+  const normalizedMobDataset = withManualMobCorrections(withInheritedMobSounds(mobDataset));
 
   await mkdir(dirname(outputPath), { recursive: true });
   await mkdir(outputImagesDir, { recursive: true });
@@ -76,6 +69,11 @@ async function main() {
 function withInheritedMobSounds(mobDataset) {
   const inheritedMobSoundConfigs = [
     {
+      targetLocalId: "cave_spider",
+      sourceLocalId: "spider",
+      mode: "replace-if-empty",
+    },
+    {
       targetLocalId: "trader_llama",
       sourceLocalId: "llama",
       mode: "replace-if-empty",
@@ -84,7 +82,7 @@ function withInheritedMobSounds(mobDataset) {
       targetLocalId: "mooshroom",
       sourceLocalId: "cow",
       mode: "merge-missing-events",
-      eventIds: ["entity.cow.ambient", "entity.cow.death", "entity.cow.hurt", "entity.cow.step"],
+      eventIds: ["entity.cow.ambient", "entity.cow.death", "entity.cow.hurt", "entity.cow.milk", "entity.cow.step"],
     },
   ];
 
@@ -93,6 +91,19 @@ function withInheritedMobSounds(mobDataset) {
   for (const config of inheritedMobSoundConfigs) {
     nextMobs = applyInheritedMobSounds(nextMobs, config);
   }
+
+  if (nextMobs === mobDataset.mobs) {
+    return mobDataset;
+  }
+
+  return {
+    ...mobDataset,
+    mobs: nextMobs,
+  };
+}
+
+function withManualMobCorrections(mobDataset) {
+  const nextMobs = mobDataset.mobs.filter((mob) => !OMITTED_MOB_IDS.has(mob.localId));
 
   if (nextMobs === mobDataset.mobs) {
     return mobDataset;
@@ -168,7 +179,7 @@ async function resolveLatestProcessedVersion() {
 }
 
 async function resolveLocalImageFileName(mobId) {
-  const candidates = [LOCAL_IMAGE_FILE_NAME_OVERRIDES[mobId], `${mobId}.png`, `${mobId}.gif`].filter(
+  const candidates = [`${mobId}.png`, `${mobId}.gif`].filter(
     (fileName, index, fileNames) => Boolean(fileName) && fileNames.indexOf(fileName) === index,
   );
 

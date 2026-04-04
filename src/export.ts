@@ -9,6 +9,7 @@ interface BuildResourcePackOptions {
   customizations: Record<string, CustomVariantSound>;
   dataset: MobSoundsDataset;
   mobs: MobDefinition[];
+  mutedVariantIds: Record<string, boolean>;
   onProgress?: (message: string) => void;
 }
 
@@ -17,10 +18,12 @@ export async function buildResourcePackBlob({
   customizations,
   dataset,
   mobs,
+  mutedVariantIds,
   onProgress,
 }: BuildResourcePackOptions): Promise<Blob> {
   const packFormat = dataset.resourcePack?.packFormat ?? 84;
-  const description = `Mob Dub custom voices for ${countCustomizedMobs(mobs, customizations)} mob${countCustomizedMobs(mobs, customizations) === 1 ? "" : "s"}`;
+  const modifiedMobCount = countModifiedMobs(mobs, customizations, mutedVariantIds);
+  const description = `Mob Dub custom voices for ${modifiedMobCount} mob${modifiedMobCount === 1 ? "" : "s"}`;
   const zipEntries: Record<string, Uint8Array> = {
     "pack.mcmeta": strToU8(JSON.stringify({ pack: buildPackMetadata(packFormat, description, compatibilityMode) }, null, 2)),
   };
@@ -28,7 +31,7 @@ export async function buildResourcePackBlob({
 
   for (const mob of mobs) {
     for (const eventDefinition of mob.soundEvents) {
-      if (!eventDefinition.variants.some((variant) => customizations[variant.id])) {
+      if (!eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id])) {
         continue;
       }
 
@@ -41,6 +44,10 @@ export async function buildResourcePackBlob({
 
       for (let index = 0; index < eventDefinition.variants.length; index += 1) {
         const variant = eventDefinition.variants[index];
+        if (mutedVariantIds[variant.id]) {
+          continue;
+        }
+
         const customization = customizations[variant.id];
         const exportedName = customization
           ? await writeCustomVariant(zipEntries, mob, eventDefinition, variant, index, customization, onProgress)
@@ -116,8 +123,14 @@ function toSoundEntry(name: string, variant: MobSoundVariant) {
   };
 }
 
-function countCustomizedMobs(mobs: MobDefinition[], customizations: Record<string, CustomVariantSound>) {
-  return mobs.filter((mob) => mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id]))).length;
+function countModifiedMobs(
+  mobs: MobDefinition[],
+  customizations: Record<string, CustomVariantSound>,
+  mutedVariantIds: Record<string, boolean>,
+) {
+  return mobs.filter((mob) =>
+    mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id])),
+  ).length;
 }
 
 function slugify(value: string) {

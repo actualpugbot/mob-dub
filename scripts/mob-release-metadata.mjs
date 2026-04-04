@@ -1,6 +1,5 @@
 const MOB_VERSION_GROUPS = [
   { version: "Classic", ids: ["cat", "chicken", "creeper", "ghast", "pig", "skeleton", "villager", "witch", "zombie", "spider", "sheep"] },
-  { version: "Indev", ids: ["giant"] },
   { version: "Alpha", ids: ["cow", "slime"] },
   { version: "Beta", ids: ["squid", "wolf", "cave_spider", "enderman", "silverfish"] },
   { version: "1.0", ids: ["blaze", "magma_cube", "mooshroom", "snow_golem", "ender_dragon"] },
@@ -29,7 +28,7 @@ const MOB_VERSION_GROUPS = [
 ];
 
 const RECENT_VERSION_SET = new Set(["1.20", "1.20.5", "1.21", "1.21.4", "1.21.6", "1.21.9", "1.21.11"]);
-const UNRELEASED_MOB_IDS = new Set(["giant", "illusioner"]);
+const UNRELEASED_MOB_IDS = new Set(["illusioner"]);
 
 export const MOB_RELEASE_METADATA_BY_LOCAL_ID = buildMobReleaseMetadata();
 

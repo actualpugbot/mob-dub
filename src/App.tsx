@@ -3,11 +3,13 @@ import type { CSSProperties } from "react";
 import { getPreferredRecordingMimeType } from "./audio";
 import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
+import { formatPitchSummary, getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
 import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEvent, MobSoundVariant, MobSoundsDataset } from "./types";
 
 const DATASET_URL = "/data/mob-sounds.json";
 const MODEL_DATASET_URL = "/data/mob-models.json";
-const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["giant", "illusioner"]);
+const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["illusioner", "pufferfish"]);
+const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
 const BROWSER_LIST_GAP = 16;
 const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   allay: ["ambient with item"],
@@ -21,6 +23,7 @@ const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   camel: ["ambient"],
   camel_husk: ["ambient"],
   cat: ["ambient", "stray ambient"],
+  cave_spider: ["ambient"],
   chicken: ["ambient"],
   cod: ["flop"],
   cow: ["ambient"],
@@ -48,6 +51,7 @@ const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   iron_golem: ["hurt"],
   llama: ["ambient"],
   magma_cube: ["squish"],
+  mooshroom: ["ambient", "milk"],
   mule: ["ambient"],
   nautilus: ["ambient"],
   ocelot: ["ambient"],
@@ -95,6 +99,9 @@ const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   zombified_piglin: ["ambient"],
 };
 
+type PreviewSource = "custom" | "original";
+type StoredCustomizationSeed = Omit<CustomVariantSound, "url">;
+
 export default function App() {
   const [dataset, setDataset] = useState<MobSoundsDataset | null>(null);
   const [mobModels, setMobModels] = useState<Record<string, MobModelDefinition>>({});
@@ -102,15 +109,17 @@ export default function App() {
   const [activeMobFilter, setActiveMobFilter] = useState("all");
   const [selectedMobIds, setSelectedMobIds] = useState<string[]>([]);
   const [customizations, setCustomizations] = useState<Record<string, CustomVariantSound>>({});
+  const [mutedVariantIds, setMutedVariantIds] = useState<Record<string, boolean>>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("Loading mob sound data...");
-  const [recordingVariantId, setRecordingVariantId] = useState<string | null>(null);
+  const [recordingGroupId, setRecordingGroupId] = useState<string | null>(null);
+  const [playingPreview, setPlayingPreview] = useState<{ groupId: string; source: PreviewSource } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [expandedMobIds, setExpandedMobIds] = useState<Record<string, boolean>>({});
 
   const deferredSearch = useDeferredValue(search);
   const recorderRef = useRef<MediaRecorder | null>(null);
-  const recordingTargetRef = useRef<{ eventId: string; fileName: string; variantId: string } | null>(null);
+  const recordingTargetRef = useRef<{ fileName: string; variantIds: string[] } | null>(null);
   const recorderChunksRef = useRef<BlobPart[]>([]);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -208,9 +217,7 @@ export default function App() {
         window.clearTimeout(exportReadyTimeoutRef.current);
       }
 
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
+      stopPreview();
 
       if (recorderRef.current && recorderRef.current.state !== "inactive") {
         recorderRef.current.stop();
@@ -233,7 +240,7 @@ export default function App() {
         return false;
       }
 
-      if (activeMobFilter === "classic" && mob.introducedVersion !== "Classic") {
+      if (activeMobFilter === "classic" && (mob.introducedVersion !== "Classic" || CLASSIC_FILTER_EXCLUDED_MOB_IDS.has(mob.localId))) {
         return false;
       }
 
@@ -253,10 +260,10 @@ export default function App() {
 
   const selectedMobs = selectedMobIds.map((id) => mobById.get(id)).filter(Boolean) as MobDefinition[];
   const customizedVariantCount = Object.keys(customizations).length;
-  const customizedMobCount = selectedMobs.filter((mob) =>
-    mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id])),
+  const modifiedMobCount = selectedMobs.filter((mob) =>
+    mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id])),
   ).length;
-  const canCreateResourcePack = Boolean(dataset) && selectedMobs.length > 0 && customizedMobCount > 0;
+  const canCreateResourcePack = Boolean(dataset) && selectedMobs.length > 0 && modifiedMobCount > 0;
   const isExportButtonDisabled = !canCreateResourcePack || isExporting;
 
   useEffect(() => {
@@ -298,6 +305,7 @@ export default function App() {
   }
 
   function handleRemoveMob(mob: MobDefinition) {
+    stopPreview();
     setSelectedMobIds((current) => current.filter((id) => id !== mob.id));
     setExpandedMobIds((current) => {
       if (!current[mob.id]) {
@@ -308,7 +316,20 @@ export default function App() {
       delete next[mob.id];
       return next;
     });
-    clearMobCustomizations(mob);
+    clearMobEdits(mob);
+  }
+
+  function stopPreview() {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.onended = null;
+      audio.onpause = null;
+      audio.pause();
+      audio.currentTime = 0;
+      audioRef.current = null;
+    }
+
+    setPlayingPreview(null);
   }
 
   function toggleMobEventExpansion(mobId: string) {
@@ -318,25 +339,54 @@ export default function App() {
     }));
   }
 
-  async function playPreview(url: string) {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+  async function togglePreview(groupId: string, source: PreviewSource, url?: string) {
+    if (!url) {
+      setErrorMessage("This sound does not have a preview audio file.");
+      return;
     }
+
+    setErrorMessage(null);
+
+    if (playingPreview?.groupId === groupId && playingPreview.source === source) {
+      stopPreview();
+      return;
+    }
+
+    stopPreview();
 
     const audio = new Audio(url);
     audioRef.current = audio;
+    audio.onended = () => {
+      if (audioRef.current === audio) {
+        audioRef.current = null;
+        setPlayingPreview(null);
+      }
+    };
+    audio.onpause = () => {
+      if (audioRef.current === audio && !audio.ended) {
+        audioRef.current = null;
+        setPlayingPreview(null);
+      }
+    };
+
+    setPlayingPreview({ groupId, source });
+
     try {
       await audio.play();
     } catch (error) {
+      if (audioRef.current === audio) {
+        audioRef.current = null;
+      }
+
+      setPlayingPreview(null);
       setErrorMessage(error instanceof Error ? error.message : "The preview audio could not be played.");
     }
   }
 
-  async function toggleRecording(variant: MobSoundVariant, eventDefinition: MobSoundEvent, mob: MobDefinition) {
+  async function toggleRecording(groupId: string, variants: MobSoundVariant[], mob: MobDefinition, label: string) {
     setErrorMessage(null);
 
-    if (recordingVariantId === variant.id) {
+    if (recordingGroupId === groupId) {
       recorderRef.current?.stop();
       return;
     }
@@ -363,9 +413,8 @@ export default function App() {
 
       recorderChunksRef.current = [];
       recordingTargetRef.current = {
-        eventId: eventDefinition.id,
-        fileName: `${mob.localId}_${variant.id.replace(/[^a-z0-9]+/gi, "_")}.ogg`,
-        variantId: variant.id,
+        fileName: `${mob.localId}_${label.replace(/[^a-z0-9]+/gi, "_")}.ogg`,
+        variantIds: variants.map((variant) => variant.id),
       };
 
       recorder.ondataavailable = (event) => {
@@ -374,12 +423,12 @@ export default function App() {
         }
       };
       recorder.onerror = () => {
-        setRecordingVariantId(null);
+        setRecordingGroupId(null);
         setErrorMessage("Microphone recording failed.");
       };
       recorder.onstop = () => {
         const target = recordingTargetRef.current;
-        setRecordingVariantId(null);
+        setRecordingGroupId(null);
         if (!target || recorderChunksRef.current.length === 0) {
           return;
         }
@@ -387,82 +436,134 @@ export default function App() {
         const blob = new Blob(recorderChunksRef.current, {
           type: recorder.mimeType || mimeType || "audio/webm",
         });
-        storeCustomization(target.variantId, {
+        storeCustomizationGroup(target.variantIds, {
           blob,
           fileName: target.fileName,
           kind: "recording",
           mimeType: blob.type || recorder.mimeType || "audio/webm",
-          url: URL.createObjectURL(blob),
         });
       };
 
       recorderRef.current = recorder;
       recorder.start();
-      setRecordingVariantId(variant.id);
+      setRecordingGroupId(groupId);
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "Microphone access was denied.");
     }
   }
 
-  function handlePickFile(variantId: string) {
-    fileInputRefs.current[variantId]?.click();
+  function handlePickFile(groupId: string) {
+    fileInputRefs.current[groupId]?.click();
   }
 
-  function handleFileSelected(variant: MobSoundVariant, file: File | undefined) {
+  function handleFileSelected(variants: MobSoundVariant[], file: File | undefined) {
     if (!file) {
       return;
     }
 
     const blob = file.slice(0, file.size, file.type || "application/octet-stream");
-    storeCustomization(variant.id, {
-      blob,
-      fileName: file.name,
-      kind: "upload",
-      mimeType: file.type || "application/octet-stream",
-      url: URL.createObjectURL(blob),
-    });
+    storeCustomizationGroup(
+      variants.map((variant) => variant.id),
+      {
+        blob,
+        fileName: file.name,
+        kind: "upload",
+        mimeType: file.type || "application/octet-stream",
+      },
+    );
   }
 
-  function storeCustomization(variantId: string, next: CustomVariantSound) {
+  function storeCustomizationGroup(variantIds: string[], next: StoredCustomizationSeed) {
     setCustomizations((current) => {
-      const previous = current[variantId];
-      if (previous) {
-        URL.revokeObjectURL(previous.url);
+      const updated = { ...current };
+      for (const variantId of variantIds) {
+        const previous = updated[variantId];
+        if (previous) {
+          URL.revokeObjectURL(previous.url);
+        }
+
+        updated[variantId] = {
+          ...next,
+          url: URL.createObjectURL(next.blob),
+        };
       }
 
-      return {
-        ...current,
-        [variantId]: next,
-      };
+      return updated;
     });
   }
 
-  function clearCustomization(variantId: string) {
-    setCustomizations((current) => {
-      const existing = current[variantId];
-      if (!existing) {
-        return current;
-      }
-
-      URL.revokeObjectURL(existing.url);
-      const next = { ...current };
-      delete next[variantId];
-      return next;
-    });
-  }
-
-  function clearMobCustomizations(mob: MobDefinition) {
-    const variantIds = mob.soundEvents.flatMap((eventDefinition) => eventDefinition.variants.map((variant) => variant.id));
+  function clearCustomizationGroup(variantIds: string[]) {
     setCustomizations((current) => {
       const next = { ...current };
       for (const variantId of variantIds) {
-        if (next[variantId]) {
-          URL.revokeObjectURL(next[variantId].url);
+        const existing = next[variantId];
+        if (!existing) {
+          continue;
+        }
+
+        URL.revokeObjectURL(existing.url);
+        delete next[variantId];
+      }
+
+      return next;
+    });
+  }
+
+  function clearMuteGroup(variantIds: string[]) {
+    setMutedVariantIds((current) => {
+      if (!variantIds.some((variantId) => current[variantId])) {
+        return current;
+      }
+
+      const next = { ...current };
+      for (const variantId of variantIds) {
+        delete next[variantId];
+      }
+
+      return next;
+    });
+  }
+
+  function resetGroupedSound(variants: MobSoundVariant[]) {
+    const variantIds = variants.map((variant) => variant.id);
+    clearCustomizationGroup(variantIds);
+    clearMuteGroup(variantIds);
+  }
+
+  function clearMobEdits(mob: MobDefinition) {
+    const variantIds = mob.soundEvents.flatMap((eventDefinition) => eventDefinition.variants.map((variant) => variant.id));
+    clearCustomizationGroup(variantIds);
+    clearMuteGroup(variantIds);
+  }
+
+  function toggleMuteForGroup(variants: MobSoundVariant[]) {
+    const variantIds = variants.map((variant) => variant.id);
+
+    setMutedVariantIds((current) => {
+      const shouldMute = !variantIds.some((variantId) => current[variantId]);
+      const next = { ...current };
+      for (const variantId of variantIds) {
+        if (shouldMute) {
+          next[variantId] = true;
+        } else {
           delete next[variantId];
         }
       }
+
       return next;
     });
+  }
+
+  function applyCustomizationToEvent(eventDefinition: MobSoundEvent, customization: CustomVariantSound) {
+    storeCustomizationGroup(
+      eventDefinition.variants.map((variant) => variant.id),
+      {
+        blob: customization.blob,
+        fileName: customization.fileName,
+        kind: customization.kind,
+        mimeType: customization.mimeType,
+      },
+    );
   }
 
   async function handleExport() {
@@ -480,10 +581,11 @@ export default function App() {
         customizations,
         dataset,
         mobs: selectedMobs,
+        mutedVariantIds,
         onProgress: (message) => setStatusMessage(message),
       });
 
-      const fileName = `mob-dub-${dataset.version}-${customizedMobCount || "custom"}-mobs.zip`;
+      const fileName = `mob-dub-${dataset.version}-${modifiedMobCount || "custom"}-mobs.zip`;
       const anchor = document.createElement("a");
       anchor.href = URL.createObjectURL(blob);
       anchor.download = fileName;
@@ -586,8 +688,18 @@ export default function App() {
 
           {selectedMobs.length === 0 ? (
             <div className="empty-state">
-              <h3>Pick a mob from the left.</h3>
-              <p>Each selection opens a card here with every sound event, every vanilla variant, and controls for recording or uploading replacements.</p>
+              <div aria-hidden="true" className="empty-state-arrow">
+                <span className="empty-state-arrow-line" />
+                <span className="empty-state-arrow-head" />
+              </div>
+              <div className="empty-state-copy">
+                <h3>Build a pack in three quick steps.</h3>
+                <ol className="empty-state-steps">
+                  <li>Pick a mob on the left.</li>
+                  <li>Record or upload a sound.</li>
+                  <li>Click Create Resource Pack.</li>
+                </ol>
+              </div>
             </div>
           ) : (
             <div className="cards-grid">
@@ -603,7 +715,7 @@ export default function App() {
                     ? orderedSoundEvents.filter((eventDefinition) => !visibleLabelSet.has(eventLabel(eventDefinition.id)))
                     : [];
                   const hasCustomizedHiddenEvents = hiddenEvents.some((eventDefinition) =>
-                    eventDefinition.variants.some((variant) => customizations[variant.id]),
+                    eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id]),
                   );
                   const isExpanded = expandedMobIds[mob.id] || hasCustomizedHiddenEvents;
                   const visibleEvents = isExpanded ? orderedSoundEvents : defaultEvents;
@@ -629,64 +741,126 @@ export default function App() {
                       </header>
 
                       <div className="event-stack">
-                        {visibleEvents.map((eventDefinition) => (
-                      <section className="event-card" key={eventDefinition.id}>
-                        <header className="event-header">
-                          <div className="event-title">
-                            <strong>{eventLabel(eventDefinition.id)}</strong>
-                            <small>{eventDefinition.id}</small>
-                          </div>
-                        </header>
-                        {eventDefinition.subtitle ? <p className="event-subtitle">Subtitle: {eventDefinition.subtitle}</p> : null}
-                        <div className="variant-list">
-                          {eventDefinition.variants.map((variant) => {
-                            const customization = customizations[variant.id];
-                            const isRecording = recordingVariantId === variant.id;
-                            return (
-                              <div className="variant-row" key={variant.id}>
-                                <div className="variant-copy">
-                                  <strong>{variant.soundPath.split("/").pop()}</strong>
-                                  {customization ? (
-                                    <span className="custom-chip">
-                                      {customization.kind === "recording" ? "Mic Take" : "Uploaded File"}: {customization.fileName}
-                                    </span>
-                                  ) : null}
+                        {visibleEvents.map((eventDefinition) => {
+                          const groupedVariants = groupVariantsBySoundPath(eventDefinition);
+
+                          return (
+                            <section className="event-card" key={eventDefinition.id}>
+                              <header className="event-header">
+                                <div className="event-title">
+                                  <strong>{eventLabel(eventDefinition.id)}</strong>
+                                  <small>{eventDefinition.id}</small>
                                 </div>
-                                <div className="variant-actions">
-                                  <button onClick={() => playPreview(variant.url)} type="button">
-                                    Play Original
-                                  </button>
-                                  <button disabled={!customization} onClick={() => customization && playPreview(customization.url)} type="button">
-                                    Play Custom
-                                  </button>
-                                  <button className={isRecording ? "recording" : ""} onClick={() => toggleRecording(variant, eventDefinition, mob)} type="button">
-                                    {isRecording ? "Stop" : "Record"}
-                                  </button>
-                                  <button onClick={() => handlePickFile(variant.id)} type="button">
-                                    Upload
-                                  </button>
-                                  <button disabled={!customization} onClick={() => clearCustomization(variant.id)} type="button">
-                                    Reset
-                                  </button>
-                                  <input
-                                    accept="audio/*"
-                                    hidden
-                                    onChange={(event) => {
-                                      handleFileSelected(variant, event.target.files?.[0]);
-                                      event.currentTarget.value = "";
-                                    }}
-                                    ref={(element) => {
-                                      fileInputRefs.current[variant.id] = element;
-                                    }}
-                                    type="file"
-                                  />
-                                </div>
+                              </header>
+                              {eventDefinition.subtitle ? <p className="event-subtitle">Subtitle: {eventDefinition.subtitle}</p> : null}
+                              <div className="variant-list">
+                                {groupedVariants.map((group) => {
+                                  const customization = getRepresentativeCustomization(group.variants, customizations);
+                                  const isMuted = isGroupedSoundMuted(group.variants, mutedVariantIds);
+                                  const pitchSummary = formatPitchSummary(group.pitchValues);
+                                  const sampleVariant = group.variants[0];
+                                  const isRecording = recordingGroupId === group.id;
+                                  const isPlayingOriginal = playingPreview?.groupId === group.id && playingPreview.source === "original";
+                                  const isPlayingCustom = playingPreview?.groupId === group.id && playingPreview.source === "custom";
+                                  const playbackStateLabel = isPlayingOriginal
+                                    ? "Playing original"
+                                    : isPlayingCustom
+                                      ? "Playing custom"
+                                      : null;
+
+                                  return (
+                                    <div
+                                      className={`variant-row${isMuted ? " is-muted" : ""}${isPlayingOriginal || isPlayingCustom ? " is-playing" : ""}`}
+                                      key={group.id}
+                                    >
+                                      <div className="variant-copy">
+                                        <button
+                                          className={`sound-label-button${isPlayingOriginal ? " is-playing" : ""}`}
+                                          disabled={!sampleVariant.url}
+                                          onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
+                                          type="button"
+                                        >
+                                          <WaveformBars isActive={isPlayingOriginal || isPlayingCustom} />
+                                          <span className="sound-label-text">
+                                            <strong>{group.label}</strong>
+                                            {pitchSummary ? <span>{pitchSummary}</span> : null}
+                                          </span>
+                                        </button>
+                                        <div className="variant-meta">
+                                          {playbackStateLabel ? <span className="playback-chip">{playbackStateLabel}</span> : null}
+                                          {customization ? (
+                                            <span className="custom-chip">
+                                              {customization.kind === "recording" ? "Mic Take" : "Uploaded File"}: {customization.fileName}
+                                            </span>
+                                          ) : null}
+                                          {customization ? <span className="compare-chip">Compare original vs custom</span> : null}
+                                          {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
+                                        </div>
+                                      </div>
+                                      <div className="variant-actions">
+                                        <button
+                                          className={isPlayingOriginal ? "is-active" : ""}
+                                          disabled={!sampleVariant.url}
+                                          onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
+                                          type="button"
+                                        >
+                                          Play Original
+                                        </button>
+                                        <button
+                                          className={isPlayingCustom ? "is-active" : ""}
+                                          disabled={!customization}
+                                          onClick={() => customization && togglePreview(group.id, "custom", customization.url)}
+                                          type="button"
+                                        >
+                                          Play Custom
+                                        </button>
+                                        <button
+                                          className={isRecording ? "recording" : ""}
+                                          onClick={() => toggleRecording(group.id, group.variants, mob, group.label)}
+                                          type="button"
+                                        >
+                                          {isRecording ? "Stop" : "Record"}
+                                        </button>
+                                        <button onClick={() => handlePickFile(group.id)} type="button">
+                                          Upload
+                                        </button>
+                                        <button
+                                          disabled={!customization}
+                                          onClick={() => customization && applyCustomizationToEvent(eventDefinition, customization)}
+                                          type="button"
+                                        >
+                                          Override Event
+                                        </button>
+                                        <button className={isMuted ? "is-active" : ""} onClick={() => toggleMuteForGroup(group.variants)} type="button">
+                                          {isMuted ? "Unmute" : "Mute"}
+                                        </button>
+                                        <button
+                                          disabled={!customization && !isMuted}
+                                          onClick={() => resetGroupedSound(group.variants)}
+                                          type="button"
+                                        >
+                                          Reset
+                                        </button>
+                                        <input
+                                          accept="audio/*"
+                                          hidden
+                                          onChange={(event) => {
+                                            handleFileSelected(group.variants, event.target.files?.[0]);
+                                            event.currentTarget.value = "";
+                                          }}
+                                          ref={(element) => {
+                                            fileInputRefs.current[group.id] = element;
+                                          }}
+                                          type="file"
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
-                            );
-                          })}
-                        </div>
-                      </section>
-                        ))}
+                            </section>
+                          );
+                        })}
                       </div>
 
                       {hiddenEvents.length > 0 ? (
@@ -704,6 +878,7 @@ export default function App() {
           )}
         </section>
       </main>
+      <p className="sr-only">Modified sounds: {customizedVariantCount}</p>
     </div>
   );
 }
@@ -722,6 +897,18 @@ function MobArtwork({
   }
 
   return <MobModelPreview mob={mob} model={model} size={size} />;
+}
+
+function WaveformBars({ isActive }: { isActive: boolean }) {
+  return (
+    <span aria-hidden="true" className={`waveform-bars${isActive ? " is-active" : ""}`}>
+      <span />
+      <span />
+      <span />
+      <span />
+      <span />
+    </span>
+  );
 }
 
 function eventLabel(value: string) {
@@ -760,16 +947,4 @@ function orderSoundEvents(mob: MobDefinition) {
   const [yesEvent] = orderedEvents.splice(yesEventIndex, 1);
   orderedEvents.splice(firstWorkEventIndex, 0, yesEvent);
   return orderedEvents;
-}
-
-function mobStatusLabel(mob: MobDefinition) {
-  if (mob.releaseStatus === "unreleased") {
-    return "Unreleased";
-  }
-
-  if (mob.isRecent) {
-    return "Recent";
-  }
-
-  return "Released";
 }
