@@ -9,6 +9,91 @@ const DATASET_URL = "/data/mob-sounds.json";
 const MODEL_DATASET_URL = "/data/mob-models.json";
 const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["giant", "illusioner"]);
 const BROWSER_LIST_GAP = 16;
+const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
+  allay: ["ambient with item"],
+  armadillo: ["ambient"],
+  axolotl: ["idle air"],
+  bat: ["ambient"],
+  bee: ["loop"],
+  blaze: ["ambient"],
+  bogged: ["ambient"],
+  breeze: ["idle air", "idle ground"],
+  camel: ["ambient"],
+  camel_husk: ["ambient"],
+  cat: ["ambient", "stray ambient"],
+  chicken: ["ambient"],
+  cod: ["flop"],
+  cow: ["ambient"],
+  creaking: ["ambient"],
+  creeper: ["primed"],
+  dolphin: ["ambient water"],
+  donkey: ["ambient"],
+  drowned: ["ambient"],
+  elder_guardian: ["ambient"],
+  ender_dragon: ["ambient"],
+  enderman: ["ambient"],
+  endermite: ["ambient"],
+  evoker: ["ambient"],
+  fox: ["ambient"],
+  frog: ["ambient"],
+  ghast: ["ambient", "warn"],
+  glow_squid: ["ambient"],
+  goat: ["ambient", "screaming ambient"],
+  guardian: ["ambient"],
+  happy_ghast: ["ambient"],
+  hoglin: ["ambient"],
+  horse: ["ambient"],
+  husk: ["ambient"],
+  illusioner: ["ambient"],
+  iron_golem: ["hurt"],
+  llama: ["ambient"],
+  magma_cube: ["squish"],
+  mule: ["ambient"],
+  nautilus: ["ambient"],
+  ocelot: ["ambient"],
+  panda: ["ambient"],
+  parched: ["ambient"],
+  parrot: ["ambient"],
+  phantom: ["ambient"],
+  pig: ["ambient"],
+  piglin: ["ambient"],
+  piglin_brute: ["ambient"],
+  pillager: ["ambient"],
+  polar_bear: ["ambient"],
+  pufferfish: ["blow up"],
+  ravager: ["ambient"],
+  salmon: ["flop"],
+  sheep: ["ambient"],
+  shulker: ["ambient"],
+  silverfish: ["ambient"],
+  skeleton: ["ambient"],
+  skeleton_horse: ["ambient"],
+  slime: ["squish"],
+  sniffer: ["idle"],
+  snow_golem: ["hurt"],
+  spider: ["ambient"],
+  squid: ["ambient"],
+  stray: ["ambient"],
+  strider: ["ambient"],
+  tadpole: ["flop"],
+  tropical_fish: ["flop"],
+  turtle: ["ambient land"],
+  vex: ["charge"],
+  villager: ["ambient"],
+  vindicator: ["ambient"],
+  wandering_trader: ["ambient"],
+  warden: ["ambient"],
+  witch: ["ambient"],
+  wither: ["ambient"],
+  wither_skeleton: ["ambient"],
+  wolf: ["ambient"],
+  zoglin: ["ambient"],
+  zombie: ["ambient"],
+  zombie_horse: ["ambient"],
+  zombie_nautilus: ["ambient"],
+  zombie_villager: ["ambient"],
+  zombified_piglin: ["ambient"],
+};
 
 export default function App() {
   const [dataset, setDataset] = useState<MobSoundsDataset | null>(null);
@@ -21,6 +106,7 @@ export default function App() {
   const [statusMessage, setStatusMessage] = useState("Loading mob sound data...");
   const [recordingVariantId, setRecordingVariantId] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [expandedMobIds, setExpandedMobIds] = useState<Record<string, boolean>>({});
 
   const deferredSearch = useDeferredValue(search);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -213,7 +299,23 @@ export default function App() {
 
   function handleRemoveMob(mob: MobDefinition) {
     setSelectedMobIds((current) => current.filter((id) => id !== mob.id));
+    setExpandedMobIds((current) => {
+      if (!current[mob.id]) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next[mob.id];
+      return next;
+    });
     clearMobCustomizations(mob);
+  }
+
+  function toggleMobEventExpansion(mobId: string) {
+    setExpandedMobIds((current) => ({
+      ...current,
+      [mobId]: !current[mobId],
+    }));
   }
 
   async function playPreview(url: string) {
@@ -490,27 +592,44 @@ export default function App() {
           ) : (
             <div className="cards-grid">
               {selectedMobs.map((mob) => (
-                <article
-                  key={mob.id}
-                  className="mob-card"
-                  ref={(element) => {
-                    cardRefs.current[mob.id] = element;
-                  }}
-                >
-                  <header className="mob-card-header">
-                    <div className="mob-card-title">
-                      <MobArtwork mob={mob} model={mobModels[mob.localId]} size="card" />
-                      <div>
-                        <h3>{mob.displayName}</h3>
-                      </div>
-                    </div>
-                    <button className="ghost-button" onClick={() => handleRemoveMob(mob)} type="button">
-                      Remove
-                    </button>
-                  </header>
+                (() => {
+                  const orderedSoundEvents = orderSoundEvents(mob);
+                  const defaultVisibleLabels = DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB[mob.localId];
+                  const visibleLabelSet = defaultVisibleLabels ? new Set(defaultVisibleLabels) : null;
+                  const defaultEvents = visibleLabelSet
+                    ? orderedSoundEvents.filter((eventDefinition) => visibleLabelSet.has(eventLabel(eventDefinition.id)))
+                    : orderedSoundEvents;
+                  const hiddenEvents = visibleLabelSet
+                    ? orderedSoundEvents.filter((eventDefinition) => !visibleLabelSet.has(eventLabel(eventDefinition.id)))
+                    : [];
+                  const hasCustomizedHiddenEvents = hiddenEvents.some((eventDefinition) =>
+                    eventDefinition.variants.some((variant) => customizations[variant.id]),
+                  );
+                  const isExpanded = expandedMobIds[mob.id] || hasCustomizedHiddenEvents;
+                  const visibleEvents = isExpanded ? orderedSoundEvents : defaultEvents;
 
-                  <div className="event-stack">
-                    {mob.soundEvents.map((eventDefinition) => (
+                  return (
+                    <article
+                      key={mob.id}
+                      className="mob-card"
+                      ref={(element) => {
+                        cardRefs.current[mob.id] = element;
+                      }}
+                    >
+                      <header className="mob-card-header">
+                        <div className="mob-card-title">
+                          <MobArtwork mob={mob} model={mobModels[mob.localId]} size="card" />
+                          <div>
+                            <h3>{mob.displayName}</h3>
+                          </div>
+                        </div>
+                        <button className="ghost-button" onClick={() => handleRemoveMob(mob)} type="button">
+                          Remove
+                        </button>
+                      </header>
+
+                      <div className="event-stack">
+                        {visibleEvents.map((eventDefinition) => (
                       <section className="event-card" key={eventDefinition.id}>
                         <header className="event-header">
                           <div className="event-title">
@@ -567,9 +686,19 @@ export default function App() {
                           })}
                         </div>
                       </section>
-                    ))}
-                  </div>
-                </article>
+                        ))}
+                      </div>
+
+                      {hiddenEvents.length > 0 ? (
+                        <div className="event-toggle-row">
+                          <button className="event-toggle-button" onClick={() => toggleMobEventExpansion(mob.id)} type="button">
+                            {isExpanded ? "show less" : `more... (${hiddenEvents.length} more)`}
+                          </button>
+                        </div>
+                      ) : null}
+                    </article>
+                  );
+                })()
               ))}
             </div>
           )}
@@ -600,7 +729,37 @@ function eventLabel(value: string) {
     .split(".")
     .slice(2)
     .join(" ")
-    .replace(/_/g, " ");
+    .replace(/_/g, " ")
+    .toLowerCase();
+}
+
+function orderSoundEvents(mob: MobDefinition) {
+  if (mob.localId !== "villager") {
+    return mob.soundEvents;
+  }
+
+  const yesEventIndex = mob.soundEvents.findIndex((eventDefinition) => eventDefinition.id === "entity.villager.yes");
+  if (yesEventIndex === -1) {
+    return mob.soundEvents;
+  }
+
+  const workEventIndexes = mob.soundEvents
+    .map((eventDefinition, index) => ({ eventDefinition, index }))
+    .filter(({ eventDefinition }) => eventDefinition.id.startsWith("entity.villager.work_"))
+    .map(({ index }) => index);
+  if (workEventIndexes.length === 0) {
+    return mob.soundEvents;
+  }
+
+  const firstWorkEventIndex = Math.min(...workEventIndexes);
+  if (yesEventIndex < firstWorkEventIndex) {
+    return mob.soundEvents;
+  }
+
+  const orderedEvents = [...mob.soundEvents];
+  const [yesEvent] = orderedEvents.splice(yesEventIndex, 1);
+  orderedEvents.splice(firstWorkEventIndex, 0, yesEvent);
+  return orderedEvents;
 }
 
 function mobStatusLabel(mob: MobDefinition) {

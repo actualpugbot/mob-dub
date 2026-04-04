@@ -29,11 +29,12 @@ async function main() {
 
   const sourcePath = join(datasetsRoot, version, "mob-sounds.json");
   const mobDataset = JSON.parse(await readFile(sourcePath, "utf8"));
+  const normalizedMobDataset = withInheritedMobSounds(mobDataset);
 
   await mkdir(dirname(outputPath), { recursive: true });
   await mkdir(outputImagesDir, { recursive: true });
 
-  const missingReleaseMetadata = mobDataset.mobs
+  const missingReleaseMetadata = normalizedMobDataset.mobs
     .map((mob) => mob.localId)
     .filter((mobId) => !MOB_RELEASE_METADATA_BY_LOCAL_ID[mobId]);
 
@@ -42,7 +43,7 @@ async function main() {
   }
 
   const enrichedMobs = await Promise.all(
-    mobDataset.mobs.map(async (mob) => {
+    normalizedMobDataset.mobs.map(async (mob) => {
       const targetFileName = await resolveLocalImageFileName(mob.localId);
       const targetImagePath = join(outputImagesDir, targetFileName);
       await assertLocalImageExists(targetImagePath, targetFileName, mob.localId);
@@ -60,7 +61,7 @@ async function main() {
     outputPath,
     JSON.stringify(
       {
-        ...mobDataset,
+        ...normalizedMobDataset,
         mobs: enrichedMobs,
       },
       null,
@@ -70,6 +71,88 @@ async function main() {
 
   console.log(`Synced ${version} mob sound data from ${sourcePath} to ${outputPath}`);
   console.log(`Validated ${enrichedMobs.length} vendored mob images in ${outputImagesDir}`);
+}
+
+function withInheritedMobSounds(mobDataset) {
+  const inheritedMobSoundConfigs = [
+    {
+      targetLocalId: "trader_llama",
+      sourceLocalId: "llama",
+      mode: "replace-if-empty",
+    },
+    {
+      targetLocalId: "mooshroom",
+      sourceLocalId: "cow",
+      mode: "merge-missing-events",
+      eventIds: ["entity.cow.ambient", "entity.cow.death", "entity.cow.hurt", "entity.cow.step"],
+    },
+  ];
+
+  let nextMobs = mobDataset.mobs;
+
+  for (const config of inheritedMobSoundConfigs) {
+    nextMobs = applyInheritedMobSounds(nextMobs, config);
+  }
+
+  if (nextMobs === mobDataset.mobs) {
+    return mobDataset;
+  }
+
+  return {
+    ...mobDataset,
+    mobs: nextMobs,
+  };
+}
+
+function applyInheritedMobSounds(mobs, config) {
+  const targetMob = mobs.find((mob) => mob.localId === config.targetLocalId);
+  const sourceMob = mobs.find((mob) => mob.localId === config.sourceLocalId);
+
+  if (!targetMob || !sourceMob || sourceMob.soundEvents.length === 0) {
+    return mobs;
+  }
+
+  if (config.mode === "replace-if-empty") {
+    if (targetMob.soundEvents.length > 0) {
+      return mobs;
+    }
+
+    return mobs.map((mob) => {
+      if (mob.localId !== config.targetLocalId) {
+        return mob;
+      }
+
+      return withUpdatedSoundEventCounts(mob, structuredClone(sourceMob.soundEvents));
+    });
+  }
+
+  const inheritedEventIds = new Set(config.eventIds ?? []);
+  const existingEventIds = new Set(targetMob.soundEvents.map((eventDefinition) => eventDefinition.id));
+  const missingInheritedEvents = sourceMob.soundEvents
+    .filter((eventDefinition) => inheritedEventIds.has(eventDefinition.id))
+    .filter((eventDefinition) => !existingEventIds.has(eventDefinition.id));
+
+  if (missingInheritedEvents.length === 0) {
+    return mobs;
+  }
+
+  const mergedSoundEvents = [...structuredClone(missingInheritedEvents), ...targetMob.soundEvents];
+  return mobs.map((mob) => {
+    if (mob.localId !== config.targetLocalId) {
+      return mob;
+    }
+
+    return withUpdatedSoundEventCounts(mob, mergedSoundEvents);
+  });
+}
+
+function withUpdatedSoundEventCounts(mob, soundEvents) {
+  return {
+    ...mob,
+    soundEventCount: soundEvents.length,
+    soundEvents,
+    soundVariantCount: soundEvents.reduce((total, eventDefinition) => total + eventDefinition.variants.length, 0),
+  };
 }
 
 async function resolveLatestProcessedVersion() {

@@ -611,6 +611,32 @@ h3 {
   gap: 14px;
 }
 
+.event-toggle-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.event-toggle-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.event-toggle-button:hover {
+  color: #82f2cd;
+}
+
+.event-toggle-button:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .event-card {
   background: rgba(14, 26, 39, 0.62);
   border: 1px solid var(--line);
