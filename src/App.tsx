@@ -1,19 +1,52 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { getPreferredRecordingMimeType } from "./audio";
-import { BROAD_COMPATIBILITY_MIN_FORMAT, buildResourcePackBlob } from "./export";
+import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
-import type { CompatibilityMode, CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEvent, MobSoundVariant, MobSoundsDataset } from "./types";
+import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEvent, MobSoundVariant, MobSoundsDataset } from "./types";
 
 const DATASET_URL = "/data/mob-sounds.json";
 const MODEL_DATASET_URL = "/data/mob-models.json";
+const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["giant", "illusioner"]);
+const VERSION_FILTER_PREFIX = "version:";
+const VERSION_FILTER_ORDER = [
+  "1.21.11",
+  "1.21.9",
+  "1.21.6",
+  "1.21.4",
+  "1.21",
+  "1.20.5",
+  "1.20",
+  "1.19",
+  "1.17",
+  "1.16.2",
+  "1.16",
+  "1.15",
+  "1.14",
+  "1.13",
+  "1.12",
+  "1.11",
+  "1.10",
+  "1.9",
+  "1.8",
+  "1.6.1",
+  "1.4.2",
+  "1.2.1",
+  "1.0",
+  "Beta",
+  "Alpha",
+  "Indev",
+  "Classic",
+] as const;
+const VERSION_FILTER_SORT_INDEX = new Map<string, number>(VERSION_FILTER_ORDER.map((version, index) => [version, index]));
 
 export default function App() {
   const [dataset, setDataset] = useState<MobSoundsDataset | null>(null);
   const [mobModels, setMobModels] = useState<Record<string, MobModelDefinition>>({});
   const [search, setSearch] = useState("");
+  const [activeMobFilter, setActiveMobFilter] = useState("all");
+  const [showAllVersionFilters, setShowAllVersionFilters] = useState(false);
   const [selectedMobIds, setSelectedMobIds] = useState<string[]>([]);
   const [customizations, setCustomizations] = useState<Record<string, CustomVariantSound>>({});
-  const [compatibilityMode, setCompatibilityMode] = useState<CompatibilityMode>("broad");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("Loading mob sound data...");
   const [recordingVariantId, setRecordingVariantId] = useState<string | null>(null);
@@ -28,6 +61,9 @@ export default function App() {
   const customizationsRef = useRef<Record<string, CustomVariantSound>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
+  const exportReadyTimeoutRef = useRef<number | null>(null);
+  const wasExportReadyRef = useRef(false);
+  const [isExportButtonFlashing, setIsExportButtonFlashing] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -81,6 +117,10 @@ export default function App() {
 
   useEffect(() => {
     return () => {
+      if (exportReadyTimeoutRef.current !== null) {
+        window.clearTimeout(exportReadyTimeoutRef.current);
+      }
+
       if (audioRef.current) {
         audioRef.current.pause();
       }
@@ -99,23 +139,78 @@ export default function App() {
 
   const mobs = dataset?.mobs ?? [];
   const mobById = useMemo(() => new Map(mobs.map((mob) => [mob.id, mob])), [mobs]);
-  const filteredMobs = useMemo(() => {
-    const normalizedQuery = deferredSearch.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return mobs;
+  const versionFilters = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const mob of mobs) {
+      counts.set(mob.introducedVersion, (counts.get(mob.introducedVersion) ?? 0) + 1);
     }
 
-    return mobs.filter((mob) =>
-      [mob.displayName, mob.localId, mob.category, mob.soundId].some((value) => value.toLowerCase().includes(normalizedQuery)),
-    );
-  }, [deferredSearch, mobs]);
+    return Array.from(counts.entries())
+      .map(([version, count]) => ({ count, version }))
+      .sort((left, right) => compareVersionFilters(left.version, right.version));
+  }, [mobs]);
+  const recentMobCount = useMemo(() => mobs.filter((mob) => mob.isRecent).length, [mobs]);
+  const unreleasedMobCount = useMemo(() => mobs.filter((mob) => mob.releaseStatus === "unreleased").length, [mobs]);
+  const isMoreFiltersActive = activeMobFilter === "unreleased" || activeMobFilter.startsWith(VERSION_FILTER_PREFIX);
+  const filteredMobs = useMemo(() => {
+    const normalizedQuery = deferredSearch.trim().toLowerCase();
+    return mobs.filter((mob) => {
+      if (activeMobFilter === "recent" && !mob.isRecent) {
+        return false;
+      }
+
+      if (activeMobFilter === "unreleased" && mob.releaseStatus !== "unreleased") {
+        return false;
+      }
+
+      if (activeMobFilter.startsWith(VERSION_FILTER_PREFIX) && mob.introducedVersion !== activeMobFilter.slice(VERSION_FILTER_PREFIX.length)) {
+        return false;
+      }
+
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      return [mob.displayName, mob.localId, mob.category, mob.soundId, mob.introducedVersion].some((value) =>
+        value.toLowerCase().includes(normalizedQuery),
+      );
+    });
+  }, [activeMobFilter, deferredSearch, mobs]);
 
   const selectedMobs = selectedMobIds.map((id) => mobById.get(id)).filter(Boolean) as MobDefinition[];
   const customizedVariantCount = Object.keys(customizations).length;
   const customizedMobCount = selectedMobs.filter((mob) =>
     mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id])),
   ).length;
-  const exportPackFormat = dataset?.resourcePack?.packFormat ?? 84;
+  const canCreateResourcePack = Boolean(dataset) && selectedMobs.length > 0 && customizedMobCount > 0;
+  const isExportButtonDisabled = !canCreateResourcePack || isExporting;
+
+  useEffect(() => {
+    if (canCreateResourcePack && !wasExportReadyRef.current) {
+      setIsExportButtonFlashing(true);
+
+      if (exportReadyTimeoutRef.current !== null) {
+        window.clearTimeout(exportReadyTimeoutRef.current);
+      }
+
+      exportReadyTimeoutRef.current = window.setTimeout(() => {
+        setIsExportButtonFlashing(false);
+        exportReadyTimeoutRef.current = null;
+      }, 1400);
+    }
+
+    if (!canCreateResourcePack) {
+      setIsExportButtonFlashing(false);
+
+      if (exportReadyTimeoutRef.current !== null) {
+        window.clearTimeout(exportReadyTimeoutRef.current);
+        exportReadyTimeoutRef.current = null;
+      }
+    }
+
+    wasExportReadyRef.current = canCreateResourcePack;
+  }, [canCreateResourcePack]);
 
   function handleSelectMob(mob: MobDefinition) {
     setErrorMessage(null);
@@ -282,7 +377,7 @@ export default function App() {
   }
 
   async function handleExport() {
-    if (!dataset || customizedVariantCount === 0) {
+    if (!canCreateResourcePack || !dataset) {
       return;
     }
 
@@ -292,7 +387,7 @@ export default function App() {
 
     try {
       const blob = await buildResourcePackBlob({
-        compatibilityMode,
+        compatibilityMode: "broad",
         customizations,
         dataset,
         mobs: selectedMobs,
@@ -317,81 +412,105 @@ export default function App() {
   return (
     <div className="shell">
       <div className="backdrop" aria-hidden="true" />
+      <div className="shell-actions">
+        <button
+          className={`export-button${isExportButtonFlashing ? " is-ready-flash" : ""}`}
+          disabled={isExportButtonDisabled}
+          onClick={handleExport}
+          type="button"
+        >
+          {isExporting ? "Building Pack..." : "Create Resource Pack"}
+        </button>
+      </div>
+      <p aria-live="polite" className="sr-only" role="status">
+        {statusMessage}
+      </p>
       <header className="hero">
-        <p className="eyebrow">Minecraft Resource-Pack Voice Lab</p>
         <h1>Mob Dub</h1>
-        <p className="hero-copy">
-          Pick any mob, audition every vanilla sound variant, then swap individual clips with your own microphone takes or uploaded audio
-          before exporting a ready-to-drop resource pack.
-        </p>
       </header>
 
       <main className="workspace">
         <aside className="browser-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="panel-kicker">Browser</p>
-              <h2>Every Mob</h2>
-            </div>
-          </div>
           <label className="search-field">
-            <span>Search mobs</span>
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Try allay, warden, villager..." />
+            <span aria-hidden="true" className="search-field-icon" />
+            <input aria-label="Search mobs" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for mob" />
           </label>
-          <div className="mob-list">
-            {filteredMobs.map((mob) => {
-              const isSelected = selectedMobIds.includes(mob.id);
-              return (
+          <div aria-label="Mob filters" className="filter-bar">
+            <button
+              className={`filter-button${activeMobFilter === "all" ? " is-active" : ""}`}
+              onClick={() => setActiveMobFilter("all")}
+              type="button"
+            >
+              <span>All</span>
+              <strong>{mobs.length}</strong>
+            </button>
+            <button
+              className={`filter-button${activeMobFilter === "recent" ? " is-active" : ""}`}
+              onClick={() => setActiveMobFilter("recent")}
+              type="button"
+            >
+              <span>Recent</span>
+              <strong>{recentMobCount}</strong>
+            </button>
+            <button
+              aria-expanded={showAllVersionFilters}
+              className={`filter-button${showAllVersionFilters || isMoreFiltersActive ? " is-active" : ""}`}
+              onClick={() => setShowAllVersionFilters((current) => !current)}
+              type="button"
+            >
+              <span>{showAllVersionFilters ? "Less" : "More"}</span>
+            </button>
+            {showAllVersionFilters ? (
+              <>
                 <button
-                  key={mob.id}
-                  className={`mob-list-item${isSelected ? " is-selected" : ""}`}
-                  onClick={() => handleSelectMob(mob)}
+                  className={`filter-button${activeMobFilter === "unreleased" ? " is-active" : ""}`}
+                  onClick={() => setActiveMobFilter("unreleased")}
                   type="button"
                 >
-                  <span className="mob-list-copy">
-                    <MobModelPreview mob={mob} model={mobModels[mob.localId]} size="list" />
-                    <span>
-                      <strong>{mob.displayName}</strong>
-                    </span>
-                  </span>
+                  <span>Unreleased</span>
+                  <strong>{unreleasedMobCount}</strong>
                 </button>
-              );
-            })}
+                {versionFilters.map(({ count, version }) => {
+                  const filterId = `${VERSION_FILTER_PREFIX}${version}`;
+                  return (
+                    <button
+                      key={version}
+                      className={`filter-button${activeMobFilter === filterId ? " is-active" : ""}`}
+                      onClick={() => setActiveMobFilter(filterId)}
+                      type="button"
+                    >
+                      <span>{version}</span>
+                      <strong>{count}</strong>
+                    </button>
+                  );
+                })}
+              </>
+            ) : null}
+          </div>
+          <div className="mob-list">
+            {filteredMobs.length === 0 ? (
+              <div className="mob-list-empty">No mobs match this search and filter combo yet.</div>
+            ) : (
+              filteredMobs.map((mob) => {
+                const isSelected = selectedMobIds.includes(mob.id);
+                return (
+                  <div className={`mob-list-item${isSelected ? " is-selected" : ""}`} key={mob.id}>
+                    <button className="mob-list-select" onClick={() => handleSelectMob(mob)} type="button">
+                      <span className="mob-list-copy">
+                        <MobArtwork mob={mob} model={mobModels[mob.localId]} size="list" />
+                        <span>
+                          <strong>{mob.displayName}</strong>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                );
+              })
+            )}
           </div>
         </aside>
 
         <section className="cards-panel">
-          <div className="cards-toolbar">
-            <div>
-              <p className="panel-kicker">Selection</p>
-              <h2>Dub Cards</h2>
-            </div>
-
-            <div className="export-panel">
-              <label className="compatibility-field">
-                <span>Export mode</span>
-                <select value={compatibilityMode} onChange={(event) => setCompatibilityMode(event.target.value as CompatibilityMode)}>
-                  <option value="broad">Broad compatibility (34-{exportPackFormat})</option>
-                  <option value="current">Current release only ({exportPackFormat})</option>
-                </select>
-              </label>
-              <button className="export-button" disabled={!dataset || customizedVariantCount === 0 || isExporting} onClick={handleExport} type="button">
-                {isExporting ? "Building Pack..." : `Export Pack (${customizedVariantCount})`}
-              </button>
-            </div>
-          </div>
-
-          <div className="status-strip">
-            <span>{statusMessage}</span>
-            {compatibilityMode === "broad" ? (
-              <span>
-                Uses `min_format` / `max_format` plus `supported_formats` for a broad voice-pack range starting at format {BROAD_COMPATIBILITY_MIN_FORMAT}.
-              </span>
-            ) : (
-              <span>Writes a strict single-version pack target using format {exportPackFormat}.</span>
-            )}
-          </div>
-
           {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {selectedMobs.length === 0 ? (
@@ -411,9 +530,8 @@ export default function App() {
                 >
                   <header className="mob-card-header">
                     <div className="mob-card-title">
-                      <MobModelPreview mob={mob} model={mobModels[mob.localId]} size="card" />
+                      <MobArtwork mob={mob} model={mobModels[mob.localId]} size="card" />
                       <div>
-                        <p className="panel-kicker">{mob.category}</p>
                         <h3>{mob.displayName}</h3>
                       </div>
                     </div>
@@ -421,13 +539,6 @@ export default function App() {
                       Remove
                     </button>
                   </header>
-
-                  <div className="mob-metrics">
-                    <Metric label="Entity ID" value={mob.localId} />
-                    <Metric label="Sound Root" value={mob.soundId} />
-                    <Metric label="Events" value={String(mob.soundEventCount)} />
-                    <Metric label="Variants" value={String(mob.soundVariantCount)} />
-                  </div>
 
                   <div className="event-stack">
                     {mob.soundEvents.map((eventDefinition) => (
@@ -499,13 +610,20 @@ export default function App() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
+function MobArtwork({
+  mob,
+  model,
+  size,
+}: {
+  mob: MobDefinition;
+  model?: MobModelDefinition;
+  size: "card" | "list";
+}) {
+  if (mob.imagePath && !FORCE_MODEL_PREVIEW_MOB_IDS.has(mob.localId)) {
+    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={mob.imagePath} />;
+  }
+
+  return <MobModelPreview mob={mob} model={model} size={size} />;
 }
 
 function eventLabel(value: string) {
@@ -514,4 +632,27 @@ function eventLabel(value: string) {
     .slice(2)
     .join(" ")
     .replace(/_/g, " ");
+}
+
+function compareVersionFilters(left: string, right: string) {
+  const leftIndex = VERSION_FILTER_SORT_INDEX.get(left) ?? Number.MAX_SAFE_INTEGER;
+  const rightIndex = VERSION_FILTER_SORT_INDEX.get(right) ?? Number.MAX_SAFE_INTEGER;
+
+  if (leftIndex !== rightIndex) {
+    return leftIndex - rightIndex;
+  }
+
+  return left.localeCompare(right, undefined, { numeric: true });
+}
+
+function mobStatusLabel(mob: MobDefinition) {
+  if (mob.releaseStatus === "unreleased") {
+    return "Unreleased";
+  }
+
+  if (mob.isRecent) {
+    return "Recent";
+  }
+
+  return "Released";
 }

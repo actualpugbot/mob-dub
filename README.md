@@ -25,7 +25,16 @@ The app syncs its mob sound data from:
 ```
 
 By default `npm run sync:data` copies the most recently processed version from `mc-datahub/workspace/state.json` into `public/data/mob-sounds.json`.
-It also copies one representative vanilla entity texture per mob into `public/images/mobs` so the app can show thumbnails beside each mob title.
+Mob thumbnails are vendored locally in `public/images/mobs` so the app does not depend on `mc-datahub` textures at build time.
+`npm run sync:data` now validates that each mob in the dataset already has a matching local image in `public/images/mobs`, using either the default `<mob-id>.png` file or a configured override such as a GIF.
+
+The current image source lives in:
+
+```text
+../mob-voice-over/public/assets/mobs
+```
+
+Copy the PNG mob thumbnails from there into `public/images/mobs` whenever the local image set needs to be refreshed or expanded.
 
 To sync a specific version:
 

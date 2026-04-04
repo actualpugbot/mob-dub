@@ -29,8 +29,11 @@ export interface MobDefinition {
   displayName: string;
   id: string;
   imagePath?: string;
+  introducedVersion: string;
+  isRecent: boolean;
   localId: string;
   mobCategory: string;
+  releaseStatus: "released" | "unreleased";
   soundEventCount: number;
   soundEvents: MobSoundEvent[];
   soundId: string;
