@@ -803,7 +803,9 @@ h3 {
 
 .variant-row {
   display: grid;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px 18px;
   border: 1px solid var(--line);
   background: var(--surface-strong);
   border-radius: 16px;
@@ -828,7 +830,12 @@ h3 {
 
 .variant-copy {
   display: grid;
-  gap: 9px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 28%);
+  grid-template-areas:
+    "heading waveform"
+    "details waveform";
+  align-items: start;
+  gap: 10px 18px;
   min-width: 0;
 }
 
@@ -844,8 +851,8 @@ h3 {
 }
 
 .variant-heading-row {
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  grid-area: heading;
+  display: flex;
   align-items: center;
   gap: 12px;
   min-width: 0;
@@ -858,17 +865,46 @@ h3 {
   white-space: nowrap;
 }
 
+.variant-waveform-stack {
+  grid-area: waveform;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.variant-waveform-row {
+  display: grid;
+  grid-template-columns: 72px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.variant-waveform-source {
+  color: rgba(152, 181, 201, 0.92);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.variant-waveform-row.is-playing .variant-waveform-source {
+  color: #c8fff0;
+}
+
 .variant-waveform {
+  --waveform-progress: 0%;
   position: relative;
   width: 100%;
   min-width: 0;
-  min-height: 38px;
-  padding: 7px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(118, 153, 182, 0.2);
+  height: 28px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(118, 153, 182, 0.16);
   background:
-    linear-gradient(180deg, rgba(8, 18, 29, 0.9), rgba(13, 24, 38, 0.82)),
-    radial-gradient(circle at 20% 50%, rgba(86, 130, 255, 0.12), transparent 55%);
+    linear-gradient(180deg, rgba(8, 18, 29, 0.82), rgba(13, 24, 38, 0.72)),
+    radial-gradient(circle at 20% 50%, rgba(86, 130, 255, 0.1), transparent 55%);
   overflow: hidden;
 }
 
@@ -894,6 +930,12 @@ h3 {
   background: linear-gradient(180deg, rgba(127, 155, 179, 0.7), rgba(96, 120, 143, 0.56));
 }
 
+.waveform-layers {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
 .waveform-bars {
   position: relative;
   z-index: 1;
@@ -901,8 +943,29 @@ h3 {
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   align-items: center;
-  gap: 2px;
+  gap: 0;
   height: 100%;
+}
+
+.waveform-cursor {
+  position: absolute;
+  z-index: 2;
+  top: 2px;
+  bottom: 2px;
+  left: var(--waveform-progress);
+  width: 1px;
+  border-radius: 999px;
+  background: rgba(209, 255, 245, 0.94);
+  box-shadow:
+    0 0 0 1px rgba(84, 224, 179, 0.16),
+    0 0 14px rgba(84, 224, 179, 0.26);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 160ms ease;
+}
+
+.variant-waveform.is-playing .waveform-cursor {
+  opacity: 1;
 }
 
 .waveform-bar {
@@ -916,11 +979,25 @@ h3 {
   transform-origin: center;
 }
 
+.waveform-bar.is-played {
+  background: linear-gradient(180deg, #c4fff1, rgba(84, 224, 179, 0.92));
+}
+
+.waveform-bar.is-current {
+  background: linear-gradient(180deg, #f2fffb, rgba(137, 255, 218, 0.98));
+  box-shadow: 0 0 14px rgba(84, 224, 179, 0.28);
+}
+
+.variant-waveform.is-fallback .waveform-bar.is-played {
+  background: linear-gradient(180deg, rgba(182, 236, 224, 0.84), rgba(114, 196, 171, 0.72));
+}
+
 .variant-waveform.is-loading .waveform-bar {
   animation: waveform-loading-pulse 1.1s ease-in-out infinite;
 }
 
 .variant-detail-row {
+  grid-area: details;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -948,40 +1025,28 @@ h3 {
 }
 
 .variant-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 12px;
-  justify-content: space-between;
-  padding-top: 2px;
-  border-top: 1px solid rgba(153, 190, 214, 0.1);
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 10px;
+  min-width: min(420px, 42vw);
 }
 
 .variant-action-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
 }
 
-.variant-action-row--preview {
-  gap: 6px;
-  padding: 4px;
-  border: 1px solid rgba(153, 190, 214, 0.14);
-  border-radius: 999px;
-  background: rgba(8, 16, 26, 0.46);
-}
-
 .variant-action-row--edit {
-  margin-left: auto;
+  max-width: 420px;
 }
 
-.variant-pill-button,
+.variant-waveform-button,
 .variant-primary-button,
-.variant-secondary-button,
-.variant-menu-toggle,
-.variant-menu-panel button {
+.variant-secondary-button {
   border: 1px solid var(--line);
   color: var(--ink);
   font-size: 0.82rem;
@@ -989,22 +1054,22 @@ h3 {
   letter-spacing: -0.02em;
 }
 
-.variant-pill-button {
-  min-height: 34px;
-  padding: 0 14px;
+.variant-waveform-button {
+  min-height: 30px;
+  min-width: 52px;
+  padding: 0 12px;
   border-radius: 999px;
-  background: transparent;
+  background: rgba(153, 190, 214, 0.08);
 }
 
-.variant-pill-button.is-active {
+.variant-waveform-button.is-active {
   border-color: rgba(84, 224, 179, 0.36);
   background: rgba(84, 224, 179, 0.16);
   color: #c8fff0;
 }
 
 .variant-primary-button,
-.variant-secondary-button,
-.variant-menu-toggle {
+.variant-secondary-button {
   min-height: 38px;
   padding: 0 13px;
   border-radius: 12px;
@@ -1022,56 +1087,18 @@ h3 {
   color: #061018;
 }
 
-.variant-secondary-button,
-.variant-menu-toggle {
+.variant-secondary-button {
   color: #dbe7f0;
 }
 
-.variant-menu {
-  position: relative;
-}
-
-.variant-menu-toggle {
-  min-width: 72px;
-}
-
-.variant-menu-toggle.is-active {
+.variant-secondary-button.is-active {
   border-color: rgba(84, 224, 179, 0.3);
   background: rgba(84, 224, 179, 0.14);
 }
 
-.variant-menu-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 2;
-  min-width: 196px;
-  display: grid;
-  gap: 4px;
-  padding: 8px;
-  border: 1px solid rgba(153, 190, 214, 0.18);
-  border-radius: 16px;
-  background:
-    linear-gradient(180deg, rgba(13, 22, 34, 0.98), rgba(10, 19, 31, 0.98)),
-    var(--panel-strong);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
-}
-
-.variant-menu-panel button {
-  min-height: 38px;
-  width: 100%;
-  justify-content: flex-start;
-  padding: 0 12px;
-  border-radius: 10px;
-  background: transparent;
-  text-align: left;
-}
-
-.variant-pill-button:hover:not(:disabled),
+.variant-waveform-button:hover:not(:disabled),
 .variant-primary-button:hover:not(:disabled),
-.variant-secondary-button:hover:not(:disabled),
-.variant-menu-toggle:hover:not(:disabled),
-.variant-menu-panel button:hover:not(:disabled) {
+.variant-secondary-button:hover:not(:disabled) {
   border-color: var(--line-strong);
   background: rgba(153, 190, 214, 0.14);
 }
@@ -1082,11 +1109,6 @@ h3 {
 
 .variant-primary-button.recording:hover:not(:disabled) {
   background: linear-gradient(135deg, #7bf0cb, #28a6a3);
-}
-
-.variant-menu-panel button.is-active {
-  border-color: rgba(84, 224, 179, 0.3);
-  background: rgba(84, 224, 179, 0.12);
 }
 
 .custom-chip {
@@ -1102,8 +1124,6 @@ h3 {
   min-width: 0;
 }
 
-.playback-chip,
-.compare-chip,
 .muted-chip {
   display: inline-flex;
   align-items: center;
@@ -1114,16 +1134,6 @@ h3 {
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-}
-
-.playback-chip {
-  background: rgba(84, 224, 179, 0.16);
-  color: #a9f7df;
-}
-
-.compare-chip {
-  background: rgba(86, 130, 255, 0.14);
-  color: #a9c2ff;
 }
 
 .muted-chip {
@@ -1192,20 +1202,36 @@ h3 {
   }
 
   .variant-row {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
-  .variant-heading-row {
+  .variant-copy {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "heading"
+      "waveform"
+      "details";
     gap: 10px;
   }
 
+  .variant-heading-row {
+    gap: 10px;
+  }
+
+  .variant-waveform-row {
+    grid-template-columns: 60px auto minmax(0, 1fr);
+    gap: 8px;
+  }
+
   .variant-waveform {
-    min-height: 34px;
+    height: 24px;
   }
 
   .variant-actions {
+    min-width: 0;
     justify-content: flex-start;
+    justify-items: stretch;
   }
 
   .variant-action-row {
@@ -1213,16 +1239,11 @@ h3 {
   }
 
   .variant-action-row--edit {
-    margin-left: 0;
+    max-width: none;
   }
 
   .variant-detail-row {
     justify-content: flex-start;
-  }
-
-  .variant-menu-panel {
-    left: 0;
-    right: auto;
   }
 
   .confirm-modal {

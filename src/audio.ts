@@ -136,7 +136,7 @@ function getAnalysisAudioContext(): AudioContext | null {
 }
 
 function buildWaveformBars(audioBuffer: AudioBuffer, barCount: number): number[] {
-  const safeBarCount = Math.max(16, Math.min(barCount, 48));
+  const safeBarCount = Math.max(16, Math.min(barCount, 64));
   const monoSamples = mixAudioBufferToMono(audioBuffer);
   if (!monoSamples.length) {
     return [];

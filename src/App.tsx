@@ -1,5 +1,5 @@
 import { startTransition, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
@@ -23,7 +23,7 @@ const STATIC_MODEL_PREVIEW_MOB_IDS = new Set([
 const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
 const BROWSER_LIST_GAP = 16;
 const ESTIMATED_BROWSER_CONTROLS_HEIGHT = 68;
-const VARIANT_WAVEFORM_BAR_COUNT = 28;
+const VARIANT_WAVEFORM_BAR_COUNT = 64;
 const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   allay: ["ambient with item"],
   armadillo: ["ambient"],
@@ -113,6 +113,7 @@ const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
 };
 
 type PreviewSource = "custom" | "original";
+type PlayingPreview = { groupId: string; source: PreviewSource; url: string };
 type StoredCustomizationSeed = Omit<CustomVariantSound, "url">;
 
 export default function App() {
@@ -126,11 +127,11 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("Loading mob sound data...");
   const [recordingGroupId, setRecordingGroupId] = useState<string | null>(null);
-  const [playingPreview, setPlayingPreview] = useState<{ groupId: string; source: PreviewSource } | null>(null);
+  const [playingPreview, setPlayingPreview] = useState<PlayingPreview | null>(null);
+  const [previewProgress, setPreviewProgress] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [expandedMobIds, setExpandedMobIds] = useState<Record<string, boolean>>({});
   const [mobPendingRemoval, setMobPendingRemoval] = useState<MobDefinition | null>(null);
-  const [openActionMenuGroupId, setOpenActionMenuGroupId] = useState<string | null>(null);
 
   const deferredSearch = useDeferredValue(search);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -138,6 +139,7 @@ export default function App() {
   const recorderChunksRef = useRef<BlobPart[]>([]);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const previewAnimationFrameRef = useRef<number | null>(null);
   const customizationsRef = useRef<Record<string, CustomVariantSound>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -225,35 +227,6 @@ export default function App() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [mobPendingRemoval]);
-
-  useEffect(() => {
-    if (!openActionMenuGroupId) {
-      return;
-    }
-
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target;
-      if (target instanceof Element && target.closest(".variant-menu")) {
-        return;
-      }
-
-      setOpenActionMenuGroupId(null);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpenActionMenuGroupId(null);
-      }
-    };
-
-    window.addEventListener("pointerdown", handlePointerDown);
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [openActionMenuGroupId]);
 
   useLayoutEffect(() => {
     const controlsElement = browserControlsRef.current;
@@ -427,16 +400,59 @@ export default function App() {
   }
 
   function stopPreview() {
+    if (previewAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(previewAnimationFrameRef.current);
+      previewAnimationFrameRef.current = null;
+    }
+
     const audio = audioRef.current;
     if (audio) {
       audio.onended = null;
+      audio.onloadedmetadata = null;
       audio.onpause = null;
+      audio.ontimeupdate = null;
       audio.pause();
       audio.currentTime = 0;
       audioRef.current = null;
     }
 
     setPlayingPreview(null);
+    setPreviewProgress(0);
+  }
+
+  function syncPreviewProgress(audio: HTMLAudioElement) {
+    const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+    const nextProgress = duration > 0 ? Math.max(0, Math.min(1, audio.currentTime / duration)) : 0;
+    setPreviewProgress((current) => (Math.abs(current - nextProgress) < 0.001 ? current : nextProgress));
+  }
+
+  function startPreviewProgressLoop(audio: HTMLAudioElement) {
+    if (!(Number.isFinite(audio.duration) && audio.duration > 0)) {
+      previewAnimationFrameRef.current = null;
+      return;
+    }
+
+    if (previewAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(previewAnimationFrameRef.current);
+    }
+
+    const tick = () => {
+      if (audioRef.current !== audio) {
+        previewAnimationFrameRef.current = null;
+        return;
+      }
+
+      syncPreviewProgress(audio);
+
+      if (audio.ended) {
+        previewAnimationFrameRef.current = null;
+        return;
+      }
+
+      previewAnimationFrameRef.current = window.requestAnimationFrame(tick);
+    };
+
+    previewAnimationFrameRef.current = window.requestAnimationFrame(tick);
   }
 
   function toggleMobEventExpansion(mobId: string) {
@@ -453,8 +469,9 @@ export default function App() {
     }
 
     setErrorMessage(null);
+    setPreviewProgress(0);
 
-    if (playingPreview?.groupId === groupId && playingPreview.source === source) {
+    if (playingPreview?.groupId === groupId && playingPreview.source === source && playingPreview.url === url) {
       stopPreview();
       return;
     }
@@ -463,29 +480,54 @@ export default function App() {
 
     const audio = new Audio(url);
     audioRef.current = audio;
+    audio.onloadedmetadata = () => {
+      syncPreviewProgress(audio);
+      startPreviewProgressLoop(audio);
+    };
     audio.onended = () => {
       if (audioRef.current === audio) {
         audioRef.current = null;
+        if (previewAnimationFrameRef.current !== null) {
+          window.cancelAnimationFrame(previewAnimationFrameRef.current);
+          previewAnimationFrameRef.current = null;
+        }
         setPlayingPreview(null);
+        setPreviewProgress(0);
       }
+    };
+    audio.ontimeupdate = () => {
+      syncPreviewProgress(audio);
     };
     audio.onpause = () => {
       if (audioRef.current === audio && !audio.ended) {
         audioRef.current = null;
+        if (previewAnimationFrameRef.current !== null) {
+          window.cancelAnimationFrame(previewAnimationFrameRef.current);
+          previewAnimationFrameRef.current = null;
+        }
         setPlayingPreview(null);
+        setPreviewProgress(0);
       }
     };
 
-    setPlayingPreview({ groupId, source });
+    setPlayingPreview({ groupId, source, url });
 
     try {
       await audio.play();
+      syncPreviewProgress(audio);
+      startPreviewProgressLoop(audio);
     } catch (error) {
       if (audioRef.current === audio) {
         audioRef.current = null;
       }
 
+      if (previewAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(previewAnimationFrameRef.current);
+        previewAnimationFrameRef.current = null;
+      }
+
       setPlayingPreview(null);
+      setPreviewProgress(0);
       setErrorMessage(error instanceof Error ? error.message : "The preview audio could not be played.");
     }
   }
@@ -860,11 +902,6 @@ export default function App() {
                                   const isRecording = recordingGroupId === group.id;
                                   const isPlayingOriginal = playingPreview?.groupId === group.id && playingPreview.source === "original";
                                   const isPlayingCustom = playingPreview?.groupId === group.id && playingPreview.source === "custom";
-                                  const playbackStateLabel = isPlayingOriginal
-                                    ? "Playing original"
-                                    : isPlayingCustom
-                                      ? "Playing custom"
-                                      : null;
 
                                   return (
                                     <div
@@ -875,16 +912,42 @@ export default function App() {
                                         <div className="variant-copy">
                                           <div className="variant-heading-row">
                                             <strong>{group.label}</strong>
-                                            <VariantWaveform
-                                              isPlaying={isPlayingOriginal || isPlayingCustom}
-                                              label={group.label}
-                                              url={sampleVariant.url}
-                                            />
+                                          </div>
+                                          <div className="variant-waveform-stack">
+                                            <VariantPreviewRow
+                                              disabled={!sampleVariant.url}
+                                              isPlaying={isPlayingOriginal}
+                                              onToggle={() => togglePreview(group.id, "original", sampleVariant.url)}
+                                              previewLabel="Original"
+                                              variantLabel={group.label}
+                                            >
+                                              <VariantWaveform
+                                                isPlaying={isPlayingOriginal}
+                                                label={`${group.label} original`}
+                                                progress={isPlayingOriginal ? previewProgress : 0}
+                                                url={sampleVariant.url}
+                                              />
+                                            </VariantPreviewRow>
+                                            {customization ? (
+                                              <VariantPreviewRow
+                                                disabled={!customization.url}
+                                                isPlaying={isPlayingCustom}
+                                                onToggle={() => togglePreview(group.id, "custom", customization.url)}
+                                                previewLabel="Custom"
+                                                variantLabel={group.label}
+                                              >
+                                                <VariantWaveform
+                                                  isPlaying={isPlayingCustom}
+                                                  label={`${group.label} custom`}
+                                                  progress={isPlayingCustom ? previewProgress : 0}
+                                                  url={customization.url}
+                                                />
+                                              </VariantPreviewRow>
+                                            ) : null}
                                           </div>
                                           <div className="variant-detail-row">
                                             {pitchSummary ? <span className="variant-pitch-summary">{pitchSummary}</span> : null}
                                             <div className="variant-meta">
-                                              {playbackStateLabel ? <span className="playback-chip">{playbackStateLabel}</span> : null}
                                               {customization ? (
                                                 <span className="custom-chip">
                                                   {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
@@ -896,28 +959,6 @@ export default function App() {
                                         </div>
                                       </div>
                                       <div className="variant-actions">
-                                        <div
-                                          aria-label={`${group.label} preview controls`}
-                                          className="variant-action-row variant-action-row--preview"
-                                          role="group"
-                                        >
-                                          <button
-                                            className={`variant-pill-button${isPlayingOriginal ? " is-active" : ""}`}
-                                            disabled={!sampleVariant.url}
-                                            onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
-                                            type="button"
-                                          >
-                                            Original
-                                          </button>
-                                          <button
-                                            className={`variant-pill-button${isPlayingCustom ? " is-active" : ""}`}
-                                            disabled={!customization}
-                                            onClick={() => customization && togglePreview(group.id, "custom", customization.url)}
-                                            type="button"
-                                          >
-                                            Custom
-                                          </button>
-                                        </div>
                                         <div
                                           aria-label={`${group.label} editing controls`}
                                           className="variant-action-row variant-action-row--edit"
@@ -933,59 +974,35 @@ export default function App() {
                                           <button className="variant-secondary-button" onClick={() => handlePickFile(group.id)} type="button">
                                             Upload
                                           </button>
-                                          <div className={`variant-menu${openActionMenuGroupId === group.id ? " is-open" : ""}`}>
-                                            <button
-                                              aria-expanded={openActionMenuGroupId === group.id}
-                                              className={`variant-menu-toggle${isMuted ? " is-active" : ""}`}
-                                              onClick={() =>
-                                                setOpenActionMenuGroupId((current) => (current === group.id ? null : group.id))
+                                          <button
+                                            className="variant-secondary-button"
+                                            disabled={!customization}
+                                            onClick={() => {
+                                              if (!customization) {
+                                                return;
                                               }
-                                              type="button"
-                                            >
-                                              More
-                                            </button>
-                                            {openActionMenuGroupId === group.id ? (
-                                              <div className="variant-menu-panel" role="menu">
-                                                <button
-                                                  disabled={!customization}
-                                                  onClick={() => {
-                                                    if (!customization) {
-                                                      return;
-                                                    }
 
-                                                    applyCustomizationToEvent(eventDefinition, customization);
-                                                    setOpenActionMenuGroupId(null);
-                                                  }}
-                                                  role="menuitem"
-                                                  type="button"
-                                                >
-                                                  Apply To Event
-                                                </button>
-                                                <button
-                                                  className={isMuted ? "is-active" : ""}
-                                                  onClick={() => {
-                                                    toggleMuteForGroup(group.variants);
-                                                    setOpenActionMenuGroupId(null);
-                                                  }}
-                                                  role="menuitem"
-                                                  type="button"
-                                                >
-                                                  {isMuted ? "Unmute In Pack" : "Mute In Pack"}
-                                                </button>
-                                                <button
-                                                  disabled={!customization && !isMuted}
-                                                  onClick={() => {
-                                                    resetGroupedSound(group.variants);
-                                                    setOpenActionMenuGroupId(null);
-                                                  }}
-                                                  role="menuitem"
-                                                  type="button"
-                                                >
-                                                  Reset Changes
-                                                </button>
-                                              </div>
-                                            ) : null}
-                                          </div>
+                                              applyCustomizationToEvent(eventDefinition, customization);
+                                            }}
+                                            type="button"
+                                          >
+                                            Apply To Event
+                                          </button>
+                                          <button
+                                            className={`variant-secondary-button${isMuted ? " is-active" : ""}`}
+                                            onClick={() => toggleMuteForGroup(group.variants)}
+                                            type="button"
+                                          >
+                                            {isMuted ? "Unmute In Pack" : "Mute In Pack"}
+                                          </button>
+                                          <button
+                                            className="variant-secondary-button"
+                                            disabled={!customization && !isMuted}
+                                            onClick={() => resetGroupedSound(group.variants)}
+                                            type="button"
+                                          >
+                                            Reset Changes
+                                          </button>
                                         </div>
                                         <input
                                           accept="audio/*"
@@ -1056,7 +1073,49 @@ export default function App() {
   );
 }
 
-function VariantWaveform({ isPlaying, label, url }: { isPlaying: boolean; label: string; url?: string }) {
+function VariantPreviewRow({
+  children,
+  disabled,
+  isPlaying,
+  onToggle,
+  previewLabel,
+  variantLabel,
+}: {
+  children: ReactNode;
+  disabled: boolean;
+  isPlaying: boolean;
+  onToggle: () => void;
+  previewLabel: string;
+  variantLabel: string;
+}) {
+  return (
+    <div className={`variant-waveform-row${isPlaying ? " is-playing" : ""}`}>
+      <span className="variant-waveform-source">{previewLabel}</span>
+      <button
+        aria-label={`${isPlaying ? "Stop" : "Play"} ${previewLabel.toLowerCase()} preview for ${variantLabel}`}
+        className={`variant-waveform-button${isPlaying ? " is-active" : ""}`}
+        disabled={disabled}
+        onClick={onToggle}
+        type="button"
+      >
+        {isPlaying ? "Stop" : "Play"}
+      </button>
+      {children}
+    </div>
+  );
+}
+
+function VariantWaveform({
+  isPlaying,
+  label,
+  progress,
+  url,
+}: {
+  isPlaying: boolean;
+  label: string;
+  progress: number;
+  url?: string;
+}) {
   const cachedBars = url ? getCachedWaveformBars(url) : null;
   const [bars, setBars] = useState<number[]>(cachedBars ?? []);
   const [status, setStatus] = useState<"loading" | "ready" | "fallback">(
@@ -1105,6 +1164,9 @@ function VariantWaveform({ isPlaying, label, url }: { isPlaying: boolean; label:
   }, [url]);
 
   const displayBars = bars.length > 0 ? bars : placeholderWaveformBars(label);
+  const clampedProgress = Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : 0;
+  const playedBarCount = Math.floor(clampedProgress * displayBars.length);
+  const currentBarIndex = isPlaying && clampedProgress < 1 ? Math.min(displayBars.length - 1, playedBarCount) : -1;
 
   return (
     <div
@@ -1112,12 +1174,20 @@ function VariantWaveform({ isPlaying, label, url }: { isPlaying: boolean; label:
       className={`variant-waveform${status === "loading" ? " is-loading" : ""}${status === "fallback" ? " is-fallback" : ""}${
         isPlaying ? " is-playing" : ""
       }`}
+      style={{ "--waveform-progress": `${clampedProgress * 100}%` } as CSSProperties}
       role="img"
     >
-      <div className="waveform-bars">
-        {displayBars.map((height, index) => (
-          <span className="waveform-bar" key={`${label}-${index}`} style={{ "--bar-h": `${height}%` } as CSSProperties} />
-        ))}
+      <div className="waveform-layers">
+        <div aria-hidden="true" className="waveform-bars">
+          {displayBars.map((height, index) => (
+            <span
+              className={`waveform-bar${index < playedBarCount ? " is-played" : ""}${index === currentBarIndex ? " is-current" : ""}`}
+              key={`${label}-bar-${index}`}
+              style={{ "--bar-h": `${height}%` } as CSSProperties}
+            />
+          ))}
+        </div>
+        <span aria-hidden="true" className="waveform-cursor" />
       </div>
     </div>
   );

@@ -179,12 +179,12 @@ describe("App", () => {
     const say1Row = say1Label.closest(".variant-row") as HTMLElement | null;
     expect(say1Row).not.toBeNull();
 
-    await user.click(within(say1Row!).getByRole("button", { name: "Original" }));
+    await user.click(within(say1Row!).getByRole("button", { name: /play original preview for say1/i }));
 
     expect(AudioMock.instances).toHaveLength(1);
     expect(AudioMock.instances[0]?.url).toBe("https://example.com/cow-say1.ogg");
     expect(AudioMock.instances[0]?.play).toHaveBeenCalled();
-    expect(screen.getByText("Playing original")).toBeTruthy();
+    expect(within(say1Row!).getByRole("button", { name: /stop original preview for say1/i })).toBeTruthy();
     expect(screen.queryByText("entity.cow.ambient")).toBeNull();
 
     const fileInput = say1Row?.querySelector("input[type='file']") as HTMLInputElement | null;
@@ -197,17 +197,16 @@ describe("App", () => {
     });
 
     expect(await within(say1Row!).findByText(/custom-cow\.ogg/i)).toBeTruthy();
+    expect(say1Row?.querySelectorAll(".variant-waveform-row")).toHaveLength(2);
 
-    await user.click(within(say1Row!).getByRole("button", { name: "More" }));
-    await user.click(within(say1Row!).getByRole("menuitem", { name: "Apply To Event" }));
+    await user.click(within(say1Row!).getByRole("button", { name: "Apply To Event" }));
 
     const say2Label = screen.getByText(/say2/i);
     const say2Row = say2Label.closest(".variant-row") as HTMLElement | null;
     expect(say2Row).not.toBeNull();
-    expect(within(say2Row!).getByRole("button", { name: "Custom" }).hasAttribute("disabled")).toBe(false);
+    expect(within(say2Row!).getByRole("button", { name: /play custom preview for say2/i }).hasAttribute("disabled")).toBe(false);
 
-    await user.click(within(say2Row!).getByRole("button", { name: "More" }));
-    await user.click(within(say2Row!).getByRole("menuitem", { name: "Mute In Pack" }));
+    await user.click(within(say2Row!).getByRole("button", { name: "Mute In Pack" }));
     expect(await within(say2Row!).findByText("Muted in pack")).toBeTruthy();
 
     expect(screen.queryByText("entity.cow.ambient")).toBeNull();
