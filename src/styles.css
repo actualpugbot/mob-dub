@@ -30,7 +30,7 @@
   --danger: #ffb0a0;
   --danger-bg: rgba(108, 28, 26, 0.4);
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
-  --control-height: 52px;
+  --control-height: 63px;
 }
 
 * {
@@ -298,15 +298,18 @@ h3 {
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  min-height: calc(var(--control-height) - 2px);
+  min-height: var(--control-height);
+  height: var(--control-height);
   border: 1px solid rgba(153, 190, 214, 0.22);
   border-radius: 16px;
-  padding: 11px 16px 11px 14px;
+  padding: 0 16px 0 14px;
   background: rgba(9, 17, 27, 0.72);
   color: rgba(216, 227, 235, 0.92);
   font-size: 0.92rem;
   font-weight: 700;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   white-space: nowrap;
   flex: none;
@@ -341,9 +344,12 @@ h3 {
 }
 
 .filter-button span {
+  display: inline-flex;
+  align-items: center;
   min-width: 0;
   position: relative;
   z-index: 1;
+  line-height: 1.1;
 }
 
 .filter-button:hover {
