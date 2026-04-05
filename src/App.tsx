@@ -22,10 +22,7 @@ const STATIC_MODEL_PREVIEW_MOB_IDS = new Set([
 ]);
 const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
 const BROWSER_LIST_GAP = 16;
-const MOB_LIST_POP_IN_STAGGER_MS = 36;
-const MOB_LIST_POP_IN_BASE_MS = 180;
-const MOB_LIST_POP_IN_MAX_DURATION_MS = 1700;
-const MOB_LIST_POP_IN_MAX_STAGGERED_ITEMS = 24;
+const ESTIMATED_BROWSER_CONTROLS_HEIGHT = 68;
 const VARIANT_WAVEFORM_BAR_COUNT = 28;
 const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   allay: ["ambient with item"],
@@ -123,7 +120,6 @@ export default function App() {
   const [mobModels, setMobModels] = useState<Record<string, MobModelDefinition>>({});
   const [search, setSearch] = useState("");
   const [activeMobFilter, setActiveMobFilter] = useState("classic");
-  const [hasMobListIntroPlayed, setHasMobListIntroPlayed] = useState(false);
   const [selectedMobIds, setSelectedMobIds] = useState<string[]>([]);
   const [customizations, setCustomizations] = useState<Record<string, CustomVariantSound>>({});
   const [mutedVariantIds, setMutedVariantIds] = useState<Record<string, boolean>>({});
@@ -149,37 +145,26 @@ export default function App() {
   const exportReadyTimeoutRef = useRef<number | null>(null);
   const wasExportReadyRef = useRef(false);
   const [isExportButtonFlashing, setIsExportButtonFlashing] = useState(false);
-  const [browserControlsHeight, setBrowserControlsHeight] = useState(0);
+  const [browserControlsHeight, setBrowserControlsHeight] = useState(ESTIMATED_BROWSER_CONTROLS_HEIGHT);
 
   useEffect(() => {
     let active = true;
     const abortController = new AbortController();
 
-    Promise.all([
-      fetch(DATASET_URL, { signal: abortController.signal }).then(async (response) => {
+    fetch(DATASET_URL, { signal: abortController.signal })
+      .then(async (response) => {
         if (!response.ok) {
           throw new Error(`Could not load ${DATASET_URL} (${response.status}). Run npm run sync:data first.`);
         }
 
         return (await response.json()) as MobSoundsDataset;
-      }),
-      fetch(MODEL_DATASET_URL, { signal: abortController.signal })
-        .then(async (response) => {
-          if (!response.ok) {
-            throw new Error(`Could not load ${MODEL_DATASET_URL} (${response.status}).`);
-          }
-
-          return (await response.json()) as { mobs?: Record<string, MobModelDefinition> };
-        })
-        .catch(() => ({ mobs: {} })),
-    ])
-      .then(([loadedDataset, loadedModels]) => {
+      })
+      .then((loadedDataset) => {
         if (!active) {
           return;
         }
 
         setDataset(loadedDataset);
-        setMobModels(loadedModels.mobs ?? {});
         setStatusMessage(`Loaded ${loadedDataset.mobs.length} mobs from mc-datahub ${loadedDataset.version}.`);
       })
       .catch((error: Error) => {
@@ -189,6 +174,29 @@ export default function App() {
 
         setErrorMessage(error.message);
         setStatusMessage("Could not load Mob Dub data.");
+      });
+
+    fetch(MODEL_DATASET_URL, { signal: abortController.signal })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Could not load ${MODEL_DATASET_URL} (${response.status}).`);
+        }
+
+        return (await response.json()) as { mobs?: Record<string, MobModelDefinition> };
+      })
+      .then((loadedModels) => {
+        if (!active) {
+          return;
+        }
+
+        setMobModels(loadedModels.mobs ?? {});
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+
+        setMobModels({});
       });
 
     return () => {
@@ -335,27 +343,6 @@ export default function App() {
       );
     });
   }, [activeMobFilter, deferredSearch, mobs]);
-  const isMobListIntroActive = Boolean(dataset) && !hasMobListIntroPlayed;
-
-  useEffect(() => {
-    if (!isMobListIntroActive) {
-      return;
-    }
-
-    const staggeredItemCount = Math.min(filteredMobs.length, MOB_LIST_POP_IN_MAX_STAGGERED_ITEMS);
-    const introDuration = Math.min(
-      MOB_LIST_POP_IN_MAX_DURATION_MS,
-      MOB_LIST_POP_IN_BASE_MS + staggeredItemCount * MOB_LIST_POP_IN_STAGGER_MS,
-    );
-    const timeoutId = window.setTimeout(() => {
-      setHasMobListIntroPlayed(true);
-    }, introDuration);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [filteredMobs.length, isMobListIntroActive]);
-
   const selectedMobs = selectedMobIds.map((id) => mobById.get(id)).filter(Boolean) as MobDefinition[];
   const customizedVariantCount = Object.keys(customizations).length;
   const modifiedMobCount = selectedMobs.filter((mob) =>
@@ -752,18 +739,10 @@ export default function App() {
             {filteredMobs.length === 0 ? (
               <div className="mob-list-empty">No mobs match this search and filter combo yet.</div>
             ) : (
-              filteredMobs.map((mob, index) => {
+              filteredMobs.map((mob) => {
                 const isSelected = selectedMobIds.includes(mob.id);
                 return (
-                  <div
-                    className={`mob-list-item${isSelected ? " is-selected" : ""}${isMobListIntroActive ? " is-intro" : ""}`}
-                    key={mob.id}
-                    style={
-                      isMobListIntroActive
-                        ? ({ "--mob-pop-delay": `${MOB_LIST_POP_IN_BASE_MS + index * MOB_LIST_POP_IN_STAGGER_MS}ms` } as CSSProperties)
-                        : undefined
-                    }
-                  >
+                  <div className={`mob-list-item${isSelected ? " is-selected" : ""}`} key={mob.id}>
                     <button className="mob-list-select" onClick={() => handleSelectMob(mob)} type="button">
                       <span className="mob-list-copy">
                         <MobArtwork mob={mob} model={mobModels[mob.localId]} size="list" />
@@ -892,8 +871,8 @@ export default function App() {
                                       className={`variant-row${isMuted ? " is-muted" : ""}${isPlayingOriginal || isPlayingCustom ? " is-playing" : ""}`}
                                       key={group.id}
                                     >
-                                      <div className="variant-copy">
-                                        <div className="sound-label-text">
+                                      <div className="variant-summary">
+                                        <div className="variant-copy">
                                           <div className="variant-heading-row">
                                             <strong>{group.label}</strong>
                                             <VariantWaveform
@@ -902,16 +881,18 @@ export default function App() {
                                               url={sampleVariant.url}
                                             />
                                           </div>
-                                          {pitchSummary ? <span>{pitchSummary}</span> : null}
-                                        </div>
-                                        <div className="variant-meta">
-                                          {playbackStateLabel ? <span className="playback-chip">{playbackStateLabel}</span> : null}
-                                          {customization ? (
-                                            <span className="custom-chip">
-                                              {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
-                                            </span>
-                                          ) : null}
-                                          {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
+                                          <div className="variant-detail-row">
+                                            {pitchSummary ? <span className="variant-pitch-summary">{pitchSummary}</span> : null}
+                                            <div className="variant-meta">
+                                              {playbackStateLabel ? <span className="playback-chip">{playbackStateLabel}</span> : null}
+                                              {customization ? (
+                                                <span className="custom-chip">
+                                                  {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
+                                                </span>
+                                              ) : null}
+                                              {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                       <div className="variant-actions">
