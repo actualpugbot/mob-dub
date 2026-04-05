@@ -807,6 +807,14 @@ export default function App() {
               onClick={() => setActiveMobFilter("all")}
               type="button"
             >
+              <span aria-hidden="true" className="filter-button-icon" role="presentation">
+                <svg fill="none" viewBox="0 0 20 20">
+                  <rect height="5" rx="1.4" width="5" x="2.5" y="2.5" />
+                  <rect height="5" rx="1.4" width="5" x="12.5" y="2.5" />
+                  <rect height="5" rx="1.4" width="5" x="2.5" y="12.5" />
+                  <rect height="5" rx="1.4" width="5" x="12.5" y="12.5" />
+                </svg>
+              </span>
               <span>All</span>
             </button>
             <button
@@ -814,6 +822,12 @@ export default function App() {
               onClick={() => setActiveMobFilter("classic")}
               type="button"
             >
+              <span aria-hidden="true" className="filter-button-icon" role="presentation">
+                <svg fill="none" viewBox="0 0 20 20">
+                  <path d="M10 2.5 16.5 6v8L10 17.5 3.5 14V6L10 2.5Z" />
+                  <path d="M3.5 6 10 10l6.5-4M10 10v7.5" />
+                </svg>
+              </span>
               <span>Classic</span>
             </button>
             <button
@@ -821,6 +835,12 @@ export default function App() {
               onClick={() => setActiveMobFilter("recent")}
               type="button"
             >
+              <span aria-hidden="true" className="filter-button-icon" role="presentation">
+                <svg fill="none" viewBox="0 0 20 20">
+                  <circle cx="10" cy="10" r="7.2" />
+                  <path d="M10 5.7v4.55l3 1.8" />
+                </svg>
+              </span>
               <span>Recently Added</span>
             </button>
           </div>
@@ -914,17 +934,9 @@ export default function App() {
                                           <div className="variant-heading-row">
                                             <div className="variant-heading-main">
                                               <strong>{group.label}</strong>
-                                              <span className="variant-count-chip">{variantCountLabel}</span>
                                             </div>
                                             <div className="variant-meta">
                                               {pitchSummary ? <span className="variant-info-chip">{pitchSummary}</span> : null}
-                                              {customization ? (
-                                                <span className="custom-chip">
-                                                  {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
-                                                </span>
-                                              ) : (
-                                                <span className="variant-info-chip">Original only</span>
-                                              )}
                                               {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
                                             </div>
                                           </div>
