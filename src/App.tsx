@@ -898,6 +898,7 @@ export default function App() {
                                   const customization = getRepresentativeCustomization(group.variants, customizations);
                                   const isMuted = isGroupedSoundMuted(group.variants, mutedVariantIds);
                                   const pitchSummary = formatPitchSummary(group.pitchValues);
+                                  const variantCountLabel = group.variants.length === 1 ? "1 variant" : `${group.variants.length} variants`;
                                   const sampleVariant = group.variants[0];
                                   const isRecording = recordingGroupId === group.id;
                                   const isPlayingOriginal = playingPreview?.groupId === group.id && playingPreview.source === "original";
@@ -911,112 +912,123 @@ export default function App() {
                                       <div className="variant-summary">
                                         <div className="variant-copy">
                                           <div className="variant-heading-row">
-                                            <strong>{group.label}</strong>
-                                          </div>
-                                          <div className="variant-waveform-stack">
-                                            <VariantPreviewRow
-                                              disabled={!sampleVariant.url}
-                                              isPlaying={isPlayingOriginal}
-                                              onToggle={() => togglePreview(group.id, "original", sampleVariant.url)}
-                                              previewLabel="Original"
-                                              variantLabel={group.label}
-                                            >
-                                              <VariantWaveform
-                                                isPlaying={isPlayingOriginal}
-                                                label={`${group.label} original`}
-                                                progress={isPlayingOriginal ? previewProgress : 0}
-                                                url={sampleVariant.url}
-                                              />
-                                            </VariantPreviewRow>
-                                            {customization ? (
-                                              <VariantPreviewRow
-                                                disabled={!customization.url}
-                                                isPlaying={isPlayingCustom}
-                                                onToggle={() => togglePreview(group.id, "custom", customization.url)}
-                                                previewLabel="Custom"
-                                                variantLabel={group.label}
-                                              >
-                                                <VariantWaveform
-                                                  isPlaying={isPlayingCustom}
-                                                  label={`${group.label} custom`}
-                                                  progress={isPlayingCustom ? previewProgress : 0}
-                                                  url={customization.url}
-                                                />
-                                              </VariantPreviewRow>
-                                            ) : null}
-                                          </div>
-                                          <div className="variant-detail-row">
-                                            {pitchSummary ? <span className="variant-pitch-summary">{pitchSummary}</span> : null}
+                                            <div className="variant-heading-main">
+                                              <strong>{group.label}</strong>
+                                              <span className="variant-count-chip">{variantCountLabel}</span>
+                                            </div>
                                             <div className="variant-meta">
+                                              {pitchSummary ? <span className="variant-info-chip">{pitchSummary}</span> : null}
                                               {customization ? (
                                                 <span className="custom-chip">
                                                   {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
                                                 </span>
-                                              ) : null}
+                                              ) : (
+                                                <span className="variant-info-chip">Original only</span>
+                                              )}
                                               {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
+                                            </div>
+                                          </div>
+                                          <div className="variant-content-row">
+                                            <div className="variant-waveform-stack">
+                                              <VariantPreviewRow
+                                                disabled={!sampleVariant.url}
+                                                isPlaying={isPlayingOriginal}
+                                                onToggle={() => togglePreview(group.id, "original", sampleVariant.url)}
+                                                previewLabel="Original"
+                                                variantLabel={group.label}
+                                              >
+                                                <VariantWaveform
+                                                  isPlaying={isPlayingOriginal}
+                                                  label={`${group.label} original`}
+                                                  progress={isPlayingOriginal ? previewProgress : 0}
+                                                  url={sampleVariant.url}
+                                                />
+                                              </VariantPreviewRow>
+                                              {customization ? (
+                                                <VariantPreviewRow
+                                                  disabled={!customization.url}
+                                                  isPlaying={isPlayingCustom}
+                                                  onToggle={() => togglePreview(group.id, "custom", customization.url)}
+                                                  previewLabel="Custom"
+                                                  variantLabel={group.label}
+                                                >
+                                                  <VariantWaveform
+                                                    isPlaying={isPlayingCustom}
+                                                    label={`${group.label} custom`}
+                                                    progress={isPlayingCustom ? previewProgress : 0}
+                                                    url={customization.url}
+                                                  />
+                                                </VariantPreviewRow>
+                                              ) : null}
+                                            </div>
+                                            <div className="variant-actions">
+                                              <div
+                                                aria-label={`${group.label} editing controls`}
+                                                className="variant-action-row variant-action-row--edit"
+                                                role="group"
+                                              >
+                                                <button
+                                                  className={`variant-primary-button${isRecording ? " recording" : ""}`}
+                                                  onClick={() => toggleRecording(group.id, group.variants, mob, group.label)}
+                                                  type="button"
+                                                >
+                                                  {isRecording ? "Stop Recording" : "Record"}
+                                                </button>
+                                                <button className="variant-secondary-button" onClick={() => handlePickFile(group.id)} type="button">
+                                                  Upload
+                                                </button>
+                                              </div>
+                                              <div
+                                                aria-label={`${group.label} pack controls`}
+                                                className="variant-action-row"
+                                                role="group"
+                                              >
+                                                <button
+                                                  className="variant-secondary-button"
+                                                  disabled={!customization}
+                                                  onClick={() => {
+                                                    if (!customization) {
+                                                      return;
+                                                    }
+
+                                                    applyCustomizationToEvent(eventDefinition, customization);
+                                                  }}
+                                                  type="button"
+                                                >
+                                                  Apply To Event
+                                                </button>
+                                                <button
+                                                  className={`variant-secondary-button${isMuted ? " is-active" : ""}`}
+                                                  onClick={() => toggleMuteForGroup(group.variants)}
+                                                  type="button"
+                                                >
+                                                  {isMuted ? "Unmute In Pack" : "Mute In Pack"}
+                                                </button>
+                                                <button
+                                                  className="variant-secondary-button"
+                                                  disabled={!customization && !isMuted}
+                                                  onClick={() => resetGroupedSound(group.variants)}
+                                                  type="button"
+                                                >
+                                                  Reset Changes
+                                                </button>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
-                                      <div className="variant-actions">
-                                        <div
-                                          aria-label={`${group.label} editing controls`}
-                                          className="variant-action-row variant-action-row--edit"
-                                          role="group"
-                                        >
-                                          <button
-                                            className={`variant-primary-button${isRecording ? " recording" : ""}`}
-                                            onClick={() => toggleRecording(group.id, group.variants, mob, group.label)}
-                                            type="button"
-                                          >
-                                            {isRecording ? "Stop Recording" : "Record"}
-                                          </button>
-                                          <button className="variant-secondary-button" onClick={() => handlePickFile(group.id)} type="button">
-                                            Upload
-                                          </button>
-                                          <button
-                                            className="variant-secondary-button"
-                                            disabled={!customization}
-                                            onClick={() => {
-                                              if (!customization) {
-                                                return;
-                                              }
-
-                                              applyCustomizationToEvent(eventDefinition, customization);
-                                            }}
-                                            type="button"
-                                          >
-                                            Apply To Event
-                                          </button>
-                                          <button
-                                            className={`variant-secondary-button${isMuted ? " is-active" : ""}`}
-                                            onClick={() => toggleMuteForGroup(group.variants)}
-                                            type="button"
-                                          >
-                                            {isMuted ? "Unmute In Pack" : "Mute In Pack"}
-                                          </button>
-                                          <button
-                                            className="variant-secondary-button"
-                                            disabled={!customization && !isMuted}
-                                            onClick={() => resetGroupedSound(group.variants)}
-                                            type="button"
-                                          >
-                                            Reset Changes
-                                          </button>
-                                        </div>
-                                        <input
-                                          accept="audio/*"
-                                          hidden
-                                          onChange={(event) => {
-                                            handleFileSelected(group.variants, event.target.files?.[0]);
-                                            event.currentTarget.value = "";
-                                          }}
-                                          ref={(element) => {
-                                            fileInputRefs.current[group.id] = element;
-                                          }}
-                                          type="file"
-                                        />
-                                      </div>
+                                      <input
+                                        accept="audio/*"
+                                        hidden
+                                        onChange={(event) => {
+                                          handleFileSelected(group.variants, event.target.files?.[0]);
+                                          event.currentTarget.value = "";
+                                        }}
+                                        ref={(element) => {
+                                          fileInputRefs.current[group.id] = element;
+                                        }}
+                                        type="file"
+                                      />
                                     </div>
                                   );
                                 })}
