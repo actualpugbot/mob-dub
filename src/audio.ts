@@ -1,4 +1,10 @@
 const OGG_CANDIDATES = ["audio/ogg;codecs=opus", "audio/ogg"] as const;
+const DEFAULT_WAVEFORM_BAR_COUNT = 28;
+
+const waveformCache = new Map<string, number[]>();
+const waveformRequestCache = new Map<string, Promise<number[]>>();
+
+let analysisAudioContext: AudioContext | null = null;
 
 export function getPreferredRecordingMimeType(): string {
   if (typeof MediaRecorder === "undefined") {
@@ -6,6 +12,51 @@ export function getPreferredRecordingMimeType(): string {
   }
 
   return OGG_CANDIDATES.find((candidate) => MediaRecorder.isTypeSupported(candidate)) ?? "";
+}
+
+export function getCachedWaveformBars(url: string): number[] | null {
+  return waveformCache.get(url) ?? null;
+}
+
+export async function getWaveformBars(url: string, barCount = DEFAULT_WAVEFORM_BAR_COUNT): Promise<number[]> {
+  if (!url || typeof fetch === "undefined") {
+    return [];
+  }
+
+  const cached = waveformCache.get(url);
+  if (cached) {
+    return cached;
+  }
+
+  const existingRequest = waveformRequestCache.get(url);
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  const request = (async () => {
+    const audioContext = getAnalysisAudioContext();
+    if (!audioContext) {
+      return [];
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Could not load audio preview (${response.status}).`);
+    }
+
+    const audioBuffer = await decodeBlob(audioContext, await response.blob());
+    const bars = buildWaveformBars(audioBuffer, barCount);
+    waveformCache.set(url, bars);
+    return bars;
+  })();
+
+  waveformRequestCache.set(url, request);
+
+  try {
+    return await request;
+  } finally {
+    waveformRequestCache.delete(url);
+  }
 }
 
 export async function ensureOggBlob(blob: Blob, progress?: (message: string) => void): Promise<Blob> {
@@ -73,4 +124,66 @@ async function transcodeBlobToOgg(blob: Blob): Promise<Blob> {
 async function decodeBlob(audioContext: AudioContext, blob: Blob): Promise<AudioBuffer> {
   const arrayBuffer = await blob.arrayBuffer();
   return audioContext.decodeAudioData(arrayBuffer.slice(0));
+}
+
+function getAnalysisAudioContext(): AudioContext | null {
+  if (typeof AudioContext === "undefined") {
+    return null;
+  }
+
+  analysisAudioContext ??= new AudioContext();
+  return analysisAudioContext;
+}
+
+function buildWaveformBars(audioBuffer: AudioBuffer, barCount: number): number[] {
+  const safeBarCount = Math.max(16, Math.min(barCount, 48));
+  const monoSamples = mixAudioBufferToMono(audioBuffer);
+  if (!monoSamples.length) {
+    return [];
+  }
+
+  const samplesPerBar = Math.max(1, Math.floor(monoSamples.length / safeBarCount));
+  const bars: number[] = [];
+  let maxRms = 0;
+
+  for (let index = 0; index < safeBarCount; index += 1) {
+    const start = index * samplesPerBar;
+    if (start >= monoSamples.length) {
+      break;
+    }
+
+    const end = Math.min(monoSamples.length, start + samplesPerBar);
+    let energy = 0;
+
+    for (let sampleIndex = start; sampleIndex < end; sampleIndex += 1) {
+      const sample = monoSamples[sampleIndex] ?? 0;
+      energy += sample * sample;
+    }
+
+    const rms = Math.sqrt(energy / Math.max(1, end - start));
+    bars.push(rms);
+    if (rms > maxRms) {
+      maxRms = rms;
+    }
+  }
+
+  if (!bars.length || maxRms <= 0) {
+    return [];
+  }
+
+  return bars.map((value) => Math.max(12, Math.round((value / maxRms) * 100)));
+}
+
+function mixAudioBufferToMono(audioBuffer: AudioBuffer): Float32Array {
+  const channelCount = Math.max(1, audioBuffer.numberOfChannels || 1);
+  const monoSamples = new Float32Array(audioBuffer.length || 0);
+
+  for (let channelIndex = 0; channelIndex < channelCount; channelIndex += 1) {
+    const channelData = audioBuffer.getChannelData(channelIndex);
+    for (let sampleIndex = 0; sampleIndex < monoSamples.length; sampleIndex += 1) {
+      monoSamples[sampleIndex] += (channelData[sampleIndex] ?? 0) / channelCount;
+    }
+  }
+
+  return monoSamples;
 }

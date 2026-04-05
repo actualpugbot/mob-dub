@@ -1,6 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { getPreferredRecordingMimeType } from "./audio";
+import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
 import { formatPitchSummary, getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
@@ -8,9 +8,25 @@ import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEve
 
 const DATASET_URL = "/data/mob-sounds.json";
 const MODEL_DATASET_URL = "/data/mob-models.json";
-const FORCE_MODEL_PREVIEW_MOB_IDS = new Set(["illusioner", "pufferfish"]);
+// These assets are texture atlases, not finished thumbnail renders, so they need a
+// static model preview instead of being shown directly as images.
+const STATIC_MODEL_PREVIEW_MOB_IDS = new Set([
+  "camel_husk",
+  "cod",
+  "happy_ghast",
+  "illusioner",
+  "nautilus",
+  "pufferfish",
+  "salmon",
+  "zombie_nautilus",
+]);
 const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
 const BROWSER_LIST_GAP = 16;
+const MOB_LIST_POP_IN_STAGGER_MS = 36;
+const MOB_LIST_POP_IN_BASE_MS = 180;
+const MOB_LIST_POP_IN_MAX_DURATION_MS = 1700;
+const MOB_LIST_POP_IN_MAX_STAGGERED_ITEMS = 24;
+const VARIANT_WAVEFORM_BAR_COUNT = 28;
 const DEFAULT_VISIBLE_EVENT_LABELS_BY_MOB: Record<string, string[]> = {
   allay: ["ambient with item"],
   armadillo: ["ambient"],
@@ -106,7 +122,8 @@ export default function App() {
   const [dataset, setDataset] = useState<MobSoundsDataset | null>(null);
   const [mobModels, setMobModels] = useState<Record<string, MobModelDefinition>>({});
   const [search, setSearch] = useState("");
-  const [activeMobFilter, setActiveMobFilter] = useState("all");
+  const [activeMobFilter, setActiveMobFilter] = useState("classic");
+  const [hasMobListIntroPlayed, setHasMobListIntroPlayed] = useState(false);
   const [selectedMobIds, setSelectedMobIds] = useState<string[]>([]);
   const [customizations, setCustomizations] = useState<Record<string, CustomVariantSound>>({});
   const [mutedVariantIds, setMutedVariantIds] = useState<Record<string, boolean>>({});
@@ -116,6 +133,8 @@ export default function App() {
   const [playingPreview, setPlayingPreview] = useState<{ groupId: string; source: PreviewSource } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [expandedMobIds, setExpandedMobIds] = useState<Record<string, boolean>>({});
+  const [mobPendingRemoval, setMobPendingRemoval] = useState<MobDefinition | null>(null);
+  const [openActionMenuGroupId, setOpenActionMenuGroupId] = useState<string | null>(null);
 
   const deferredSearch = useDeferredValue(search);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -182,6 +201,52 @@ export default function App() {
     customizationsRef.current = customizations;
   }, [customizations]);
 
+  useEffect(() => {
+    if (!mobPendingRemoval) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobPendingRemoval(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobPendingRemoval]);
+
+  useEffect(() => {
+    if (!openActionMenuGroupId) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest(".variant-menu")) {
+        return;
+      }
+
+      setOpenActionMenuGroupId(null);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenActionMenuGroupId(null);
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [openActionMenuGroupId]);
+
   useLayoutEffect(() => {
     const controlsElement = browserControlsRef.current;
 
@@ -232,6 +297,23 @@ export default function App() {
   }, []);
 
   const mobs = dataset?.mobs ?? [];
+  const hasClassicMobs = useMemo(
+    () => mobs.some((mob) => mob.introducedVersion === "Classic" && !CLASSIC_FILTER_EXCLUDED_MOB_IDS.has(mob.localId)),
+    [mobs],
+  );
+
+  useEffect(() => {
+    if (!dataset) {
+      return;
+    }
+
+    if (activeMobFilter !== "classic" || hasClassicMobs) {
+      return;
+    }
+
+    setActiveMobFilter("all");
+  }, [activeMobFilter, dataset, hasClassicMobs]);
+
   const mobById = useMemo(() => new Map(mobs.map((mob) => [mob.id, mob])), [mobs]);
   const filteredMobs = useMemo(() => {
     const normalizedQuery = deferredSearch.trim().toLowerCase();
@@ -244,10 +326,6 @@ export default function App() {
         return false;
       }
 
-      if (activeMobFilter === "unreleased" && mob.releaseStatus !== "unreleased") {
-        return false;
-      }
-
       if (!normalizedQuery) {
         return true;
       }
@@ -257,6 +335,26 @@ export default function App() {
       );
     });
   }, [activeMobFilter, deferredSearch, mobs]);
+  const isMobListIntroActive = Boolean(dataset) && !hasMobListIntroPlayed;
+
+  useEffect(() => {
+    if (!isMobListIntroActive) {
+      return;
+    }
+
+    const staggeredItemCount = Math.min(filteredMobs.length, MOB_LIST_POP_IN_MAX_STAGGERED_ITEMS);
+    const introDuration = Math.min(
+      MOB_LIST_POP_IN_MAX_DURATION_MS,
+      MOB_LIST_POP_IN_BASE_MS + staggeredItemCount * MOB_LIST_POP_IN_STAGGER_MS,
+    );
+    const timeoutId = window.setTimeout(() => {
+      setHasMobListIntroPlayed(true);
+    }, introDuration);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [filteredMobs.length, isMobListIntroActive]);
 
   const selectedMobs = selectedMobIds.map((id) => mobById.get(id)).filter(Boolean) as MobDefinition[];
   const customizedVariantCount = Object.keys(customizations).length;
@@ -304,7 +402,7 @@ export default function App() {
     });
   }
 
-  function handleRemoveMob(mob: MobDefinition) {
+  function removeMob(mob: MobDefinition) {
     stopPreview();
     setSelectedMobIds((current) => current.filter((id) => id !== mob.id));
     setExpandedMobIds((current) => {
@@ -317,6 +415,28 @@ export default function App() {
       return next;
     });
     clearMobEdits(mob);
+  }
+
+  function mobHasCustomAudio(mob: MobDefinition) {
+    return mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => Boolean(customizations[variant.id])));
+  }
+
+  function handleRemoveMob(mob: MobDefinition) {
+    if (mobHasCustomAudio(mob)) {
+      setMobPendingRemoval(mob);
+      return;
+    }
+
+    removeMob(mob);
+  }
+
+  function confirmRemoveMob() {
+    if (!mobPendingRemoval) {
+      return;
+    }
+
+    removeMob(mobPendingRemoval);
+    setMobPendingRemoval(null);
   }
 
   function stopPreview() {
@@ -625,17 +745,25 @@ export default function App() {
           <div className="browser-controls" ref={browserControlsRef}>
             <label className="search-field">
               <span aria-hidden="true" className="search-field-icon" />
-              <input aria-label="Search mobs" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for mob" />
+              <input aria-label="Search mobs" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for a mob" />
             </label>
           </div>
           <div className="mob-list">
             {filteredMobs.length === 0 ? (
               <div className="mob-list-empty">No mobs match this search and filter combo yet.</div>
             ) : (
-              filteredMobs.map((mob) => {
+              filteredMobs.map((mob, index) => {
                 const isSelected = selectedMobIds.includes(mob.id);
                 return (
-                  <div className={`mob-list-item${isSelected ? " is-selected" : ""}`} key={mob.id}>
+                  <div
+                    className={`mob-list-item${isSelected ? " is-selected" : ""}${isMobListIntroActive ? " is-intro" : ""}`}
+                    key={mob.id}
+                    style={
+                      isMobListIntroActive
+                        ? ({ "--mob-pop-delay": `${MOB_LIST_POP_IN_BASE_MS + index * MOB_LIST_POP_IN_STAGGER_MS}ms` } as CSSProperties)
+                        : undefined
+                    }
+                  >
                     <button className="mob-list-select" onClick={() => handleSelectMob(mob)} type="button">
                       <span className="mob-list-copy">
                         <MobArtwork mob={mob} model={mobModels[mob.localId]} size="list" />
@@ -653,45 +781,32 @@ export default function App() {
 
         <section className="cards-panel">
           <div aria-label="Mob filters" className="cards-toolbar">
-            <div className="filter-bar">
-              <button
-                className={`filter-button${activeMobFilter === "all" ? " is-active" : ""}`}
-                onClick={() => setActiveMobFilter("all")}
-                type="button"
-              >
-                <span>All</span>
-              </button>
-              <button
-                className={`filter-button${activeMobFilter === "classic" ? " is-active" : ""}`}
-                onClick={() => setActiveMobFilter("classic")}
-                type="button"
-              >
-                <span>Classic</span>
-              </button>
-              <button
-                className={`filter-button${activeMobFilter === "recent" ? " is-active" : ""}`}
-                onClick={() => setActiveMobFilter("recent")}
-                type="button"
-              >
-                <span>Recent</span>
-              </button>
-              <button
-                className={`filter-button${activeMobFilter === "unreleased" ? " is-active" : ""}`}
-                onClick={() => setActiveMobFilter("unreleased")}
-                type="button"
-              >
-                <span>Unreleased</span>
-              </button>
-            </div>
+            <button
+              className={`filter-button filter-button--all${activeMobFilter === "all" ? " is-active" : ""}`}
+              onClick={() => setActiveMobFilter("all")}
+              type="button"
+            >
+              <span>All</span>
+            </button>
+            <button
+              className={`filter-button filter-button--classic${activeMobFilter === "classic" ? " is-active" : ""}`}
+              onClick={() => setActiveMobFilter("classic")}
+              type="button"
+            >
+              <span>Classic</span>
+            </button>
+            <button
+              className={`filter-button filter-button--recent${activeMobFilter === "recent" ? " is-active" : ""}`}
+              onClick={() => setActiveMobFilter("recent")}
+              type="button"
+            >
+              <span>Recently Added</span>
+            </button>
           </div>
           {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {selectedMobs.length === 0 ? (
             <div className="empty-state">
-              <div aria-hidden="true" className="empty-state-arrow">
-                <span className="empty-state-arrow-line" />
-                <span className="empty-state-arrow-head" />
-              </div>
               <div className="empty-state-copy">
                 <h3>Build a pack in three quick steps.</h3>
                 <ol className="empty-state-steps">
@@ -717,8 +832,8 @@ export default function App() {
                   const hasCustomizedHiddenEvents = hiddenEvents.some((eventDefinition) =>
                     eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id]),
                   );
-                  const isExpanded = expandedMobIds[mob.id] || hasCustomizedHiddenEvents;
-                  const visibleEvents = isExpanded ? orderedSoundEvents : defaultEvents;
+                  const isMobExpanded = expandedMobIds[mob.id] || hasCustomizedHiddenEvents;
+                  const visibleEvents = isMobExpanded ? orderedSoundEvents : defaultEvents;
 
                   return (
                     <article
@@ -735,7 +850,7 @@ export default function App() {
                             <h3>{mob.displayName}</h3>
                           </div>
                         </div>
-                        <button className="ghost-button" onClick={() => handleRemoveMob(mob)} type="button">
+                        <button className="ghost-button danger-button" onClick={() => handleRemoveMob(mob)} type="button">
                           Remove
                         </button>
                       </header>
@@ -746,13 +861,17 @@ export default function App() {
 
                           return (
                             <section className="event-card" key={eventDefinition.id}>
-                              <header className="event-header">
-                                <div className="event-title">
-                                  <strong>{eventLabel(eventDefinition.id)}</strong>
-                                  <small>{eventDefinition.id}</small>
-                                </div>
-                              </header>
-                              {eventDefinition.subtitle ? <p className="event-subtitle">Subtitle: {eventDefinition.subtitle}</p> : null}
+                              {isMobExpanded ? (
+                                <>
+                                  <header className="event-header">
+                                    <div className="event-title">
+                                      <strong>{eventLabel(eventDefinition.id)}</strong>
+                                      <small>{eventDefinition.id}</small>
+                                    </div>
+                                  </header>
+                                  {eventDefinition.subtitle ? <p className="event-subtitle">Subtitle: {eventDefinition.subtitle}</p> : null}
+                                </>
+                              ) : null}
                               <div className="variant-list">
                                 {groupedVariants.map((group) => {
                                   const customization = getRepresentativeCustomization(group.variants, customizations);
@@ -774,73 +893,119 @@ export default function App() {
                                       key={group.id}
                                     >
                                       <div className="variant-copy">
-                                        <button
-                                          className={`sound-label-button${isPlayingOriginal ? " is-playing" : ""}`}
-                                          disabled={!sampleVariant.url}
-                                          onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
-                                          type="button"
-                                        >
-                                          <WaveformBars isActive={isPlayingOriginal || isPlayingCustom} />
-                                          <span className="sound-label-text">
+                                        <div className="sound-label-text">
+                                          <div className="variant-heading-row">
                                             <strong>{group.label}</strong>
-                                            {pitchSummary ? <span>{pitchSummary}</span> : null}
-                                          </span>
-                                        </button>
+                                            <VariantWaveform
+                                              isPlaying={isPlayingOriginal || isPlayingCustom}
+                                              label={group.label}
+                                              url={sampleVariant.url}
+                                            />
+                                          </div>
+                                          {pitchSummary ? <span>{pitchSummary}</span> : null}
+                                        </div>
                                         <div className="variant-meta">
                                           {playbackStateLabel ? <span className="playback-chip">{playbackStateLabel}</span> : null}
                                           {customization ? (
                                             <span className="custom-chip">
-                                              {customization.kind === "recording" ? "Mic Take" : "Uploaded File"}: {customization.fileName}
+                                              {customization.kind === "recording" ? "Recorded" : "Uploaded"}: {customization.fileName}
                                             </span>
                                           ) : null}
-                                          {customization ? <span className="compare-chip">Compare original vs custom</span> : null}
                                           {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
                                         </div>
                                       </div>
                                       <div className="variant-actions">
-                                        <button
-                                          className={isPlayingOriginal ? "is-active" : ""}
-                                          disabled={!sampleVariant.url}
-                                          onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
-                                          type="button"
+                                        <div
+                                          aria-label={`${group.label} preview controls`}
+                                          className="variant-action-row variant-action-row--preview"
+                                          role="group"
                                         >
-                                          Play Original
-                                        </button>
-                                        <button
-                                          className={isPlayingCustom ? "is-active" : ""}
-                                          disabled={!customization}
-                                          onClick={() => customization && togglePreview(group.id, "custom", customization.url)}
-                                          type="button"
+                                          <button
+                                            className={`variant-pill-button${isPlayingOriginal ? " is-active" : ""}`}
+                                            disabled={!sampleVariant.url}
+                                            onClick={() => togglePreview(group.id, "original", sampleVariant.url)}
+                                            type="button"
+                                          >
+                                            Original
+                                          </button>
+                                          <button
+                                            className={`variant-pill-button${isPlayingCustom ? " is-active" : ""}`}
+                                            disabled={!customization}
+                                            onClick={() => customization && togglePreview(group.id, "custom", customization.url)}
+                                            type="button"
+                                          >
+                                            Custom
+                                          </button>
+                                        </div>
+                                        <div
+                                          aria-label={`${group.label} editing controls`}
+                                          className="variant-action-row variant-action-row--edit"
+                                          role="group"
                                         >
-                                          Play Custom
-                                        </button>
-                                        <button
-                                          className={isRecording ? "recording" : ""}
-                                          onClick={() => toggleRecording(group.id, group.variants, mob, group.label)}
-                                          type="button"
-                                        >
-                                          {isRecording ? "Stop" : "Record"}
-                                        </button>
-                                        <button onClick={() => handlePickFile(group.id)} type="button">
-                                          Upload
-                                        </button>
-                                        <button
-                                          disabled={!customization}
-                                          onClick={() => customization && applyCustomizationToEvent(eventDefinition, customization)}
-                                          type="button"
-                                        >
-                                          Override Event
-                                        </button>
-                                        <button className={isMuted ? "is-active" : ""} onClick={() => toggleMuteForGroup(group.variants)} type="button">
-                                          {isMuted ? "Unmute" : "Mute"}
-                                        </button>
-                                        <button
-                                          disabled={!customization && !isMuted}
-                                          onClick={() => resetGroupedSound(group.variants)}
-                                          type="button"
-                                        >
-                                          Reset
-                                        </button>
+                                          <button
+                                            className={`variant-primary-button${isRecording ? " recording" : ""}`}
+                                            onClick={() => toggleRecording(group.id, group.variants, mob, group.label)}
+                                            type="button"
+                                          >
+                                            {isRecording ? "Stop Recording" : "Record"}
+                                          </button>
+                                          <button className="variant-secondary-button" onClick={() => handlePickFile(group.id)} type="button">
+                                            Upload
+                                          </button>
+                                          <div className={`variant-menu${openActionMenuGroupId === group.id ? " is-open" : ""}`}>
+                                            <button
+                                              aria-expanded={openActionMenuGroupId === group.id}
+                                              className={`variant-menu-toggle${isMuted ? " is-active" : ""}`}
+                                              onClick={() =>
+                                                setOpenActionMenuGroupId((current) => (current === group.id ? null : group.id))
+                                              }
+                                              type="button"
+                                            >
+                                              More
+                                            </button>
+                                            {openActionMenuGroupId === group.id ? (
+                                              <div className="variant-menu-panel" role="menu">
+                                                <button
+                                                  disabled={!customization}
+                                                  onClick={() => {
+                                                    if (!customization) {
+                                                      return;
+                                                    }
+
+                                                    applyCustomizationToEvent(eventDefinition, customization);
+                                                    setOpenActionMenuGroupId(null);
+                                                  }}
+                                                  role="menuitem"
+                                                  type="button"
+                                                >
+                                                  Apply To Event
+                                                </button>
+                                                <button
+                                                  className={isMuted ? "is-active" : ""}
+                                                  onClick={() => {
+                                                    toggleMuteForGroup(group.variants);
+                                                    setOpenActionMenuGroupId(null);
+                                                  }}
+                                                  role="menuitem"
+                                                  type="button"
+                                                >
+                                                  {isMuted ? "Unmute In Pack" : "Mute In Pack"}
+                                                </button>
+                                                <button
+                                                  disabled={!customization && !isMuted}
+                                                  onClick={() => {
+                                                    resetGroupedSound(group.variants);
+                                                    setOpenActionMenuGroupId(null);
+                                                  }}
+                                                  role="menuitem"
+                                                  type="button"
+                                                >
+                                                  Reset Changes
+                                                </button>
+                                              </div>
+                                            ) : null}
+                                          </div>
+                                        </div>
                                         <input
                                           accept="audio/*"
                                           hidden
@@ -866,7 +1031,7 @@ export default function App() {
                       {hiddenEvents.length > 0 ? (
                         <div className="event-toggle-row">
                           <button className="event-toggle-button" onClick={() => toggleMobEventExpansion(mob.id)} type="button">
-                            {isExpanded ? "show less" : `more... (${hiddenEvents.length} more)`}
+                            {isMobExpanded ? "show less" : `more... (${hiddenEvents.length} more)`}
                           </button>
                         </div>
                       ) : null}
@@ -879,8 +1044,106 @@ export default function App() {
         </section>
       </main>
       <p className="sr-only">Modified sounds: {customizedVariantCount}</p>
+      {mobPendingRemoval ? (
+        <div className="modal-backdrop" onClick={() => setMobPendingRemoval(null)} role="presentation">
+          <div
+            aria-labelledby="remove-mob-title"
+            aria-modal="true"
+            className="confirm-modal"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+          >
+            <div className="confirm-modal-copy">
+              <p className="confirm-modal-eyebrow">Remove Mob</p>
+              <h2 id="remove-mob-title">Remove {mobPendingRemoval.displayName}?</h2>
+              <p>
+                This mob already has recorded or uploaded custom sounds. Removing it now will discard those audio edits for this mob.
+              </p>
+            </div>
+            <div className="confirm-modal-actions">
+              <button className="ghost-button" onClick={() => setMobPendingRemoval(null)} type="button">
+                Cancel
+              </button>
+              <button className="ghost-button danger-button" onClick={confirmRemoveMob} type="button">
+                Remove Mob
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
+}
+
+function VariantWaveform({ isPlaying, label, url }: { isPlaying: boolean; label: string; url?: string }) {
+  const cachedBars = url ? getCachedWaveformBars(url) : null;
+  const [bars, setBars] = useState<number[]>(cachedBars ?? []);
+  const [status, setStatus] = useState<"loading" | "ready" | "fallback">(
+    url ? (cachedBars?.length ? "ready" : "loading") : "fallback",
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    if (!url) {
+      setBars([]);
+      setStatus("fallback");
+      return;
+    }
+
+    const cachedWaveform = getCachedWaveformBars(url);
+    if (cachedWaveform) {
+      setBars(cachedWaveform);
+      setStatus(cachedWaveform.length > 0 ? "ready" : "fallback");
+      return;
+    }
+
+    setStatus("loading");
+
+    getWaveformBars(url, VARIANT_WAVEFORM_BAR_COUNT)
+      .then((nextBars) => {
+        if (!active) {
+          return;
+        }
+
+        setBars(nextBars);
+        setStatus(nextBars.length > 0 ? "ready" : "fallback");
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+
+        setBars([]);
+        setStatus("fallback");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [url]);
+
+  const displayBars = bars.length > 0 ? bars : placeholderWaveformBars(label);
+
+  return (
+    <div
+      aria-label={`Waveform preview for ${label}`}
+      className={`variant-waveform${status === "loading" ? " is-loading" : ""}${status === "fallback" ? " is-fallback" : ""}${
+        isPlaying ? " is-playing" : ""
+      }`}
+      role="img"
+    >
+      <div className="waveform-bars">
+        {displayBars.map((height, index) => (
+          <span className="waveform-bar" key={`${label}-${index}`} style={{ "--bar-h": `${height}%` } as CSSProperties} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function usesStaticModelPreview(localId: string) {
+  return STATIC_MODEL_PREVIEW_MOB_IDS.has(localId);
 }
 
 function MobArtwork({
@@ -892,23 +1155,11 @@ function MobArtwork({
   model?: MobModelDefinition;
   size: "card" | "list";
 }) {
-  if (mob.imagePath && !FORCE_MODEL_PREVIEW_MOB_IDS.has(mob.localId)) {
+  if (mob.imagePath && !usesStaticModelPreview(mob.localId)) {
     return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={mob.imagePath} />;
   }
 
   return <MobModelPreview mob={mob} model={model} size={size} />;
-}
-
-function WaveformBars({ isActive }: { isActive: boolean }) {
-  return (
-    <span aria-hidden="true" className={`waveform-bars${isActive ? " is-active" : ""}`}>
-      <span />
-      <span />
-      <span />
-      <span />
-      <span />
-    </span>
-  );
 }
 
 function eventLabel(value: string) {
@@ -947,4 +1198,14 @@ function orderSoundEvents(mob: MobDefinition) {
   const [yesEvent] = orderedEvents.splice(yesEventIndex, 1);
   orderedEvents.splice(firstWorkEventIndex, 0, yesEvent);
   return orderedEvents;
+}
+
+function placeholderWaveformBars(seedText: string) {
+  const seed = Array.from(seedText).reduce((total, character, index) => total + character.charCodeAt(0) * (index + 1), 0);
+
+  return Array.from({ length: VARIANT_WAVEFORM_BAR_COUNT }, (_, index) => {
+    const wave = Math.sin((seed + index * 23) / 11) + Math.cos((seed + index * 17) / 19);
+    const normalized = (wave + 2) / 4;
+    return 18 + Math.round(normalized * 58);
+  });
 }

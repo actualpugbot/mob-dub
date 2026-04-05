@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import App from "./App";
+import App, { usesStaticModelPreview } from "./App";
 import type { MobSoundsDataset } from "./types";
 
 class AudioMock {
@@ -21,6 +21,31 @@ class AudioMock {
   }
 }
 
+class AudioContextMock {
+  decodeAudioData = vi.fn(async () => ({
+    length: 56,
+    numberOfChannels: 1,
+    sampleRate: 48_000,
+    getChannelData: () =>
+      Float32Array.from([
+        0.05,
+        0.18,
+        0.32,
+        0.56,
+        0.74,
+        0.48,
+        0.28,
+        0.1,
+        0.08,
+        0.22,
+        0.36,
+        0.58,
+        0.78,
+        0.54,
+      ]),
+  }));
+}
+
 const TEST_DATASET: MobSoundsDataset = {
   generatedAt: "2026-04-04T00:00:00.000Z",
   mobs: [
@@ -34,7 +59,7 @@ const TEST_DATASET: MobSoundsDataset = {
       localId: "cow",
       mobCategory: "creature",
       releaseStatus: "released",
-      soundEventCount: 1,
+      soundEventCount: 2,
       soundEvents: [
         {
           id: "entity.cow.ambient",
@@ -82,9 +107,29 @@ const TEST_DATASET: MobSoundsDataset = {
             },
           ],
         },
+        {
+          id: "entity.cow.hurt",
+          subtitle: "Cow hurts",
+          subtitleKey: "subtitles.entity.cow.hurt",
+          variants: [
+            {
+              assetPath: "minecraft/sounds/mob/cow/hurt1.ogg",
+              hash: "d",
+              id: "entity.cow.hurt#1",
+              pitch: 1,
+              preload: false,
+              size: 1,
+              soundPath: "mob/cow/hurt1",
+              stream: false,
+              url: "https://example.com/cow-hurt1.ogg",
+              volume: 1,
+              weight: 1,
+            },
+          ],
+        },
       ],
       soundId: "cow",
-      soundVariantCount: 3,
+      soundVariantCount: 4,
       translationKey: "entity.minecraft.cow",
     },
   ],
@@ -98,12 +143,20 @@ describe("App", () => {
   beforeEach(() => {
     AudioMock.instances = [];
     vi.stubGlobal("Audio", AudioMock as unknown as typeof Audio);
+    vi.stubGlobal("AudioContext", AudioContextMock as unknown as typeof AudioContext);
     vi.stubGlobal(
       "fetch",
       vi.fn(async (input: RequestInfo | URL) => {
         const url = String(input);
         if (url.includes("mob-sounds.json")) {
           return new Response(JSON.stringify(TEST_DATASET), { status: 200 });
+        }
+
+        if (url.endsWith(".ogg")) {
+          return new Response(new Uint8Array([1, 3, 5, 7]).buffer, {
+            status: 200,
+            headers: { "Content-Type": "audio/ogg" },
+          });
         }
 
         return new Response(JSON.stringify({ mobs: {} }), { status: 200 });
@@ -122,15 +175,70 @@ describe("App", () => {
 
     await user.click(screen.getByRole("button", { name: /cow/i }));
 
-    const say1Button = await screen.findByRole("button", { name: /say1/i });
-    await user.click(say1Button);
+    const say1Label = await screen.findByText(/say1/i);
+    const say1Row = say1Label.closest(".variant-row") as HTMLElement | null;
+    expect(say1Row).not.toBeNull();
+
+    await user.click(within(say1Row!).getByRole("button", { name: "Original" }));
 
     expect(AudioMock.instances).toHaveLength(1);
     expect(AudioMock.instances[0]?.url).toBe("https://example.com/cow-say1.ogg");
     expect(AudioMock.instances[0]?.play).toHaveBeenCalled();
     expect(screen.getByText("Playing original")).toBeTruthy();
+    expect(screen.queryByText("entity.cow.ambient")).toBeNull();
 
-    const say1Row = say1Button.closest(".variant-row") as HTMLElement | null;
+    const fileInput = say1Row?.querySelector("input[type='file']") as HTMLInputElement | null;
+    expect(fileInput).not.toBeNull();
+
+    fireEvent.change(fileInput!, {
+      target: {
+        files: [new File(["moo"], "custom-cow.ogg", { type: "audio/ogg" })],
+      },
+    });
+
+    expect(await within(say1Row!).findByText(/custom-cow\.ogg/i)).toBeTruthy();
+
+    await user.click(within(say1Row!).getByRole("button", { name: "More" }));
+    await user.click(within(say1Row!).getByRole("menuitem", { name: "Apply To Event" }));
+
+    const say2Label = screen.getByText(/say2/i);
+    const say2Row = say2Label.closest(".variant-row") as HTMLElement | null;
+    expect(say2Row).not.toBeNull();
+    expect(within(say2Row!).getByRole("button", { name: "Custom" }).hasAttribute("disabled")).toBe(false);
+
+    await user.click(within(say2Row!).getByRole("button", { name: "More" }));
+    await user.click(within(say2Row!).getByRole("menuitem", { name: "Mute In Pack" }));
+    expect(await within(say2Row!).findByText("Muted in pack")).toBeTruthy();
+
+    expect(screen.queryByText("entity.cow.ambient")).toBeNull();
+    await user.click(screen.getByRole("button", { name: /more\.\.\. \(1 more\)/i }));
+    expect(screen.getByText("entity.cow.ambient")).toBeTruthy();
+    expect(screen.getByText("entity.cow.hurt")).toBeTruthy();
+
+    await waitFor(() => {
+      expect(container.querySelectorAll(".waveform-bar").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("removes a mob immediately when it has no uploaded or recorded custom audio", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /cow/i }));
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
+  });
+
+  it("asks for confirmation before removing a mob with uploaded custom audio", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /cow/i }));
+
+    const say1Label = await screen.findByText(/say1/i);
+    const say1Row = say1Label.closest(".variant-row") as HTMLElement | null;
     expect(say1Row).not.toBeNull();
 
     const fileInput = say1Row?.querySelector("input[type='file']") as HTMLInputElement | null;
@@ -144,16 +252,30 @@ describe("App", () => {
 
     expect(await within(say1Row!).findByText(/custom-cow\.ogg/i)).toBeTruthy();
 
-    await user.click(within(say1Row!).getByRole("button", { name: "Override Event" }));
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Remove Cow?" })).toBeTruthy();
 
-    const say2Label = screen.getByRole("button", { name: /say2/i });
-    const say2Row = say2Label.closest(".variant-row") as HTMLElement | null;
-    expect(say2Row).not.toBeNull();
-    expect(within(say2Row!).getByRole("button", { name: "Play Custom" }).hasAttribute("disabled")).toBe(false);
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("heading", { name: "Cow" })).toBeTruthy();
 
-    await user.click(within(say2Row!).getByRole("button", { name: "Mute" }));
-    expect(await within(say2Row!).findByText("Muted in pack")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+    await user.click(screen.getByRole("button", { name: "Remove Mob" }));
 
-    expect(container.querySelectorAll(".waveform-bars").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
+  });
+
+  it("uses static model previews for mobs whose local assets are texture atlases", () => {
+    expect(usesStaticModelPreview("camel_husk")).toBe(true);
+    expect(usesStaticModelPreview("cod")).toBe(true);
+    expect(usesStaticModelPreview("happy_ghast")).toBe(true);
+    expect(usesStaticModelPreview("illusioner")).toBe(true);
+    expect(usesStaticModelPreview("nautilus")).toBe(true);
+    expect(usesStaticModelPreview("pufferfish")).toBe(true);
+    expect(usesStaticModelPreview("salmon")).toBe(true);
+    expect(usesStaticModelPreview("zombie_nautilus")).toBe(true);
+    expect(usesStaticModelPreview("cow")).toBe(false);
   });
 });
