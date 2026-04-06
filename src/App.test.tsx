@@ -168,7 +168,7 @@ describe("App", () => {
     const user = userEvent.setup();
     const { container } = render(<App />);
 
-    expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
+    expect(await screen.findByText("Build a pack in three quick steps")).toBeTruthy();
     expect(screen.getByText("Pick a mob")).toBeTruthy();
     expect(screen.getByText("Record or upload a sound")).toBeTruthy();
     expect(screen.getByText("Click Create Resource Pack")).toBeTruthy();
@@ -227,7 +227,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Remove" }));
 
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
+    expect(await screen.findByText("Build a pack in three quick steps")).toBeTruthy();
   });
 
   it("asks for confirmation before removing a mob with uploaded custom audio", async () => {
@@ -263,7 +263,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Remove Mob" }));
 
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
+    expect(await screen.findByText("Build a pack in three quick steps")).toBeTruthy();
   });
 
   it("uses static model previews for mobs whose local assets are texture atlases", () => {

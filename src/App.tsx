@@ -584,7 +584,7 @@ function EmptyState() {
   return (
     <div className="empty-state">
       <div className="empty-state-copy">
-        <h3>Build a pack in three quick steps.</h3>
+        <h3>Build a pack in three quick steps</h3>
         <ol className="empty-state-steps">
           <li>Pick a mob</li>
           <li>Record or upload a sound</li>
