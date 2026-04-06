@@ -169,9 +169,9 @@ describe("App", () => {
     const { container } = render(<App />);
 
     expect(await screen.findByText("Build a pack in three quick steps.")).toBeTruthy();
-    expect(screen.getByText("Pick a mob on the left.")).toBeTruthy();
-    expect(screen.getByText("Record or upload a sound.")).toBeTruthy();
-    expect(screen.getByText("Click Create Resource Pack.")).toBeTruthy();
+    expect(screen.getByText("Pick a mob")).toBeTruthy();
+    expect(screen.getByText("Record or upload a sound")).toBeTruthy();
+    expect(screen.getByText("Click Create Resource Pack")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: /cow/i }));
 

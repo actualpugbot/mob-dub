@@ -851,9 +851,9 @@ export default function App() {
               <div className="empty-state-copy">
                 <h3>Build a pack in three quick steps.</h3>
                 <ol className="empty-state-steps">
-                  <li>Pick a mob on the left.</li>
-                  <li>Record or upload a sound.</li>
-                  <li>Click Create Resource Pack.</li>
+                  <li>Pick a mob</li>
+                  <li>Record or upload a sound</li>
+                  <li>Click Create Resource Pack</li>
                 </ol>
               </div>
             </div>
