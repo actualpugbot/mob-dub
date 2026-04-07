@@ -9,7 +9,7 @@ const datahubRoot = resolve(process.env.MOB_DUB_DATAHUB_ROOT ?? join(projectRoot
 const datasetsRoot = join(datahubRoot, "workspace", "datasets");
 const statePath = join(datahubRoot, "workspace", "state.json");
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
-const outputImagesDir = join(projectRoot, "public", "images", "mobs");
+const remoteImageBaseUrl = "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs";
 const OMITTED_MOB_IDS = new Set(["giant"]);
 
 const requestedVersion = process.argv[2];
@@ -25,7 +25,6 @@ async function main() {
   const normalizedMobDataset = withManualMobCorrections(withInheritedMobSounds(mobDataset));
 
   await mkdir(dirname(outputPath), { recursive: true });
-  await mkdir(outputImagesDir, { recursive: true });
 
   const missingReleaseMetadata = normalizedMobDataset.mobs
     .map((mob) => mob.localId)
@@ -37,15 +36,13 @@ async function main() {
 
   const enrichedMobs = await Promise.all(
     normalizedMobDataset.mobs.map(async (mob) => {
-      const targetFileName = await resolveLocalImageFileName(mob.localId);
-      const targetImagePath = join(outputImagesDir, targetFileName);
-      await assertLocalImageExists(targetImagePath, targetFileName, mob.localId);
+      const targetFileName = await resolveImageFileName(mob.localId);
       const releaseMetadata = MOB_RELEASE_METADATA_BY_LOCAL_ID[mob.localId];
 
       return {
         ...mob,
         ...releaseMetadata,
-        imagePath: `images/mobs/${targetFileName}`,
+        imagePath: `${remoteImageBaseUrl}/${targetFileName}`,
       };
     }),
   );
@@ -63,7 +60,7 @@ async function main() {
   );
 
   console.log(`Synced ${version} mob sound data from ${sourcePath} to ${outputPath}`);
-  console.log(`Validated ${enrichedMobs.length} vendored mob images in ${outputImagesDir}`);
+  console.log(`Validated ${enrichedMobs.length} mob image references against ${remoteImageBaseUrl}`);
 }
 
 function withInheritedMobSounds(mobDataset) {
@@ -178,32 +175,37 @@ async function resolveLatestProcessedVersion() {
   return processedVersions[0]?.version;
 }
 
-async function resolveLocalImageFileName(mobId) {
+async function resolveImageFileName(mobId) {
   const candidates = [`${mobId}.png`, `${mobId}.gif`].filter(
     (fileName, index, fileNames) => Boolean(fileName) && fileNames.indexOf(fileName) === index,
   );
 
   for (const fileName of candidates) {
-    try {
-      await access(join(outputImagesDir, fileName));
+    if ((await imageExistsLocally(fileName)) || (await imageExistsRemotely(fileName))) {
       return fileName;
-    } catch {
-      // Try the next local candidate.
     }
   }
 
   throw new Error(
-    `Missing vendored mob image for ${mobId}: expected one of ${candidates.join(", ")} in ${outputImagesDir}. Copy it from ../mob-voice-over/public/assets/mobs before syncing.`,
+    `Missing mob image for ${mobId}: expected one of ${candidates.join(", ")} in ${remoteImageBaseUrl}.`,
   );
 }
 
-async function assertLocalImageExists(targetImagePath, targetFileName, mobId) {
+async function imageExistsLocally(fileName) {
   try {
-    await access(targetImagePath);
+    await access(join(projectRoot, "public", "images", "mobs", fileName));
+    return true;
   } catch {
-    throw new Error(
-      `Missing vendored mob image for ${mobId}: expected ${targetFileName} in ${outputImagesDir}. Copy it from ../mob-voice-over/public/assets/mobs before syncing.`,
-    );
+    return false;
+  }
+}
+
+async function imageExistsRemotely(fileName) {
+  try {
+    const response = await fetch(`${remoteImageBaseUrl}/${fileName}`, { method: "HEAD" });
+    return response.ok;
+  } catch {
+    return false;
   }
 }
 

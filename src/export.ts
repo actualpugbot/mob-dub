@@ -1,5 +1,4 @@
 import { strToU8, zipSync } from "fflate";
-import { RESOURCE_PACK_IMAGE_BASE64 } from "./resourcePackImage";
 import { ensureOggBlob } from "./audio";
 import type { CompatibilityMode, CustomVariantSound, MobDefinition, MobSoundsDataset, MobSoundEvent, MobSoundVariant } from "./types";
 
@@ -8,6 +7,8 @@ const CUSTOM_SOUND_DIRECTORY = "mobvoices";
 const RESOURCE_PACK_DESCRIPTION = "Custom mob voices recorded with Mob Dub";
 const RESOURCE_PACK_FILE_NAME_FALLBACK = "MobDub";
 const RESOURCE_PACK_NAME = "Mob Dub";
+const RESOURCE_PACK_IMAGE_BASE64 =
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO0ZJ+QAAAAASUVORK5CYII=";
 const RESOURCE_PACK_IMAGE_BYTES = Uint8Array.from(decodeBase64(RESOURCE_PACK_IMAGE_BASE64), (char) => char.charCodeAt(0));
 
 interface BuildResourcePackOptions {
