@@ -1,8 +1,10 @@
 import { strToU8, zipSync } from "fflate";
+import { RESOURCE_PACK_IMAGE_BASE64 } from "./resourcePackImage";
 import { ensureOggBlob } from "./audio";
 import type { CompatibilityMode, CustomVariantSound, MobDefinition, MobSoundsDataset, MobSoundEvent, MobSoundVariant } from "./types";
 
 export const BROAD_COMPATIBILITY_MIN_FORMAT = 34;
+const RESOURCE_PACK_IMAGE_BYTES = Uint8Array.from(decodeBase64(RESOURCE_PACK_IMAGE_BASE64), (char) => char.charCodeAt(0));
 
 interface BuildResourcePackOptions {
   compatibilityMode: CompatibilityMode;
@@ -26,6 +28,7 @@ export async function buildResourcePackBlob({
   const description = `Mob Dub custom voices for ${modifiedMobCount} mob${modifiedMobCount === 1 ? "" : "s"}`;
   const zipEntries: Record<string, Uint8Array> = {
     "pack.mcmeta": strToU8(JSON.stringify({ pack: buildPackMetadata(packFormat, description, compatibilityMode) }, null, 2)),
+    "pack.png": RESOURCE_PACK_IMAGE_BYTES.slice(),
   };
   const soundsJson: Record<string, { replace: true; sounds: Array<Record<string, unknown>>; subtitle?: string }> = {};
 
@@ -139,4 +142,21 @@ function slugify(value: string) {
 
 function eventLabel(value: string) {
   return value.split(".").slice(2).join(" ").replace(/_/g, " ");
+}
+
+function decodeBase64(value: string) {
+  if (typeof globalThis.atob === "function") {
+    return globalThis.atob(value);
+  }
+
+  const bufferCtor = (globalThis as typeof globalThis & {
+    Buffer?: {
+      from(input: string, encoding: string): { toString(encoding: string): string };
+    };
+  }).Buffer;
+  if (bufferCtor) {
+    return bufferCtor.from(value, "base64").toString("binary");
+  }
+
+  throw new Error("This environment cannot decode the bundled resource pack image.");
 }

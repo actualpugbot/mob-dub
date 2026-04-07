@@ -79,6 +79,7 @@ describe("buildResourcePackBlob", () => {
     const zip = unzipSync(new Uint8Array(await blob.arrayBuffer()));
     const soundsJson = JSON.parse(strFromU8(zip["assets/minecraft/sounds.json"]));
 
+    expect(Array.from(zip["pack.png"].slice(0, 8))).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
     expect(soundsJson["entity.cow.ambient"]).toEqual({
       replace: true,
       sounds: [{ name: "mob/cow/say1" }],
