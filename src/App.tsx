@@ -1,7 +1,7 @@
 import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { ButtonHTMLAttributes, CSSProperties, MutableRefObject, ReactNode } from "react";
 import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
-import { buildResourcePackBlob } from "./export";
+import { buildResourcePackBlob, getResourcePackFileName } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
 import { formatPitchSummary, getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
 import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEvent, MobSoundVariant, MobSoundsDataset } from "./types";
@@ -390,7 +390,7 @@ export default function App() {
         onProgress: setStatusMessage,
       });
 
-      const fileName = `mob-dub-${dataset.version}-${modifiedMobCount || "custom"}-mobs.zip`;
+      const fileName = getResourcePackFileName();
       const anchor = document.createElement("a");
       anchor.href = URL.createObjectURL(blob);
       anchor.download = fileName;
@@ -403,7 +403,7 @@ export default function App() {
     } finally {
       setIsExporting(false);
     }
-  }, [canCreateResourcePack, customizations, dataset, modifiedMobCount, mutedVariantIds, selectedMobs]);
+  }, [canCreateResourcePack, customizations, dataset, mutedVariantIds, selectedMobs]);
 
   const editorHandlers = useMemo<VariantEditorHandlers>(
     () => ({

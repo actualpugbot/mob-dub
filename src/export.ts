@@ -4,6 +4,10 @@ import { ensureOggBlob } from "./audio";
 import type { CompatibilityMode, CustomVariantSound, MobDefinition, MobSoundsDataset, MobSoundEvent, MobSoundVariant } from "./types";
 
 export const BROAD_COMPATIBILITY_MIN_FORMAT = 34;
+const CUSTOM_SOUND_DIRECTORY = "mobvoices";
+const RESOURCE_PACK_DESCRIPTION = "Custom mob voices recorded with Mob Dub";
+const RESOURCE_PACK_FILE_NAME_FALLBACK = "MobDub";
+const RESOURCE_PACK_NAME = "Mob Dub";
 const RESOURCE_PACK_IMAGE_BYTES = Uint8Array.from(decodeBase64(RESOURCE_PACK_IMAGE_BASE64), (char) => char.charCodeAt(0));
 
 interface BuildResourcePackOptions {
@@ -24,10 +28,8 @@ export async function buildResourcePackBlob({
   onProgress,
 }: BuildResourcePackOptions): Promise<Blob> {
   const packFormat = dataset.resourcePack?.packFormat ?? 84;
-  const modifiedMobCount = countModifiedMobs(mobs, customizations, mutedVariantIds);
-  const description = `Mob Dub custom voices for ${modifiedMobCount} mob${modifiedMobCount === 1 ? "" : "s"}`;
   const zipEntries: Record<string, Uint8Array> = {
-    "pack.mcmeta": strToU8(JSON.stringify({ pack: buildPackMetadata(packFormat, description, compatibilityMode) }, null, 2)),
+    "pack.mcmeta": strToU8(JSON.stringify({ pack: buildPackMetadata(packFormat, compatibilityMode) }, null, 2)),
     "pack.png": RESOURCE_PACK_IMAGE_BYTES.slice(),
   };
   const soundsJson: Record<string, { replace: true; sounds: Array<Record<string, unknown>>; subtitle?: string }> = {};
@@ -72,10 +74,14 @@ export async function buildResourcePackBlob({
   return new Blob([zipBlobBuffer.buffer], { type: "application/zip" });
 }
 
-function buildPackMetadata(packFormat: number, description: string, compatibilityMode: CompatibilityMode) {
+export function getResourcePackFileName() {
+  return `${sanitizePackName(RESOURCE_PACK_NAME)}.zip`;
+}
+
+function buildPackMetadata(packFormat: number, compatibilityMode: CompatibilityMode) {
   if (compatibilityMode === "broad") {
     return {
-      description,
+      description: RESOURCE_PACK_DESCRIPTION,
       pack_format: packFormat,
       supported_formats: {
         min_inclusive: BROAD_COMPATIBILITY_MIN_FORMAT,
@@ -87,7 +93,7 @@ function buildPackMetadata(packFormat: number, description: string, compatibilit
   }
 
   return {
-    description,
+    description: RESOURCE_PACK_DESCRIPTION,
     pack_format: packFormat,
     supported_formats: {
       min_inclusive: packFormat,
@@ -107,9 +113,14 @@ async function writeCustomVariant(
   customization: CustomVariantSound,
   onProgress?: (message: string) => void,
 ): Promise<string> {
-  const oggBlob = await ensureOggBlob(customization.blob, onProgress);
+  const customSoundName = buildCustomSoundName(mob, eventDefinition, variantIndex);
+  const oggBlob = await ensureOggBlob(customization.blob, {
+    mimeType: customization.mimeType,
+    onProgress,
+    sourceId: customSoundName,
+    sourceName: customization.fileName,
+  });
   const arrayBuffer = await oggBlob.arrayBuffer();
-  const customSoundName = `mob_dub/${mob.localId}/${slugify(eventDefinition.id)}/variant_${variantIndex + 1}`;
   zipEntries[`assets/minecraft/sounds/${customSoundName}.ogg`] = new Uint8Array(arrayBuffer);
   return customSoundName;
 }
@@ -126,14 +137,18 @@ function toSoundEntry(name: string, variant: MobSoundVariant) {
   };
 }
 
-function countModifiedMobs(
-  mobs: MobDefinition[],
-  customizations: Record<string, CustomVariantSound>,
-  mutedVariantIds: Record<string, boolean>,
-) {
-  return mobs.filter((mob) =>
-    mob.soundEvents.some((eventDefinition) => eventDefinition.variants.some((variant) => customizations[variant.id] || mutedVariantIds[variant.id])),
-  ).length;
+function buildCustomSoundName(mob: MobDefinition, eventDefinition: MobSoundEvent, variantIndex: number) {
+  return `${CUSTOM_SOUND_DIRECTORY}/${mob.localId}/${soundEventPath(eventDefinition.id)}/voice_${variantIndex + 1}`;
+}
+
+function soundEventPath(value: string) {
+  const parts = value
+    .split(".")
+    .slice(2)
+    .map((segment) => slugify(segment))
+    .filter(Boolean);
+
+  return parts.join("/") || "custom";
 }
 
 function slugify(value: string) {
@@ -159,4 +174,8 @@ function decodeBase64(value: string) {
   }
 
   throw new Error("This environment cannot decode the bundled resource pack image.");
+}
+
+function sanitizePackName(value: string) {
+  return value.replace(/[^a-z0-9-_ ]/gi, "").trim().replace(/\s+/g, "_") || RESOURCE_PACK_FILE_NAME_FALLBACK;
 }

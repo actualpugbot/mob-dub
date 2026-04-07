@@ -227,12 +227,12 @@ describe("App", () => {
     expect(await within(say1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
     expect(say1Row.querySelectorAll(".variant-waveform-row")).toHaveLength(2);
 
-    await user.click(within(say1Row).getByRole("button", { name: "Apply To Event" }));
+    await user.click(within(say1Row).getByRole("button", { name: /apply to event/i }));
 
     const say2Row = getVariantRow(/say2/i);
     expect(within(say2Row).getByRole("button", { name: /play custom preview for say2/i }).hasAttribute("disabled")).toBe(false);
 
-    await user.click(within(say2Row).getByRole("button", { name: "Mute In Pack" }));
+    await user.click(within(say2Row).getByRole("button", { name: /mute in pack/i }));
     expect(await within(say2Row).findByText("Muted in pack")).toBeTruthy();
 
     expect(screen.queryByText("entity.cow.ambient")).toBeNull();

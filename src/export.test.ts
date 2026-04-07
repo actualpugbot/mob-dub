@@ -2,7 +2,7 @@
 
 import { strFromU8, unzipSync } from "fflate";
 import { describe, expect, it } from "vitest";
-import { buildResourcePackBlob } from "./export";
+import { buildResourcePackBlob, getResourcePackFileName } from "./export";
 import type { MobDefinition, MobSoundsDataset } from "./types";
 
 const TEST_MOB: MobDefinition = {
@@ -83,6 +83,48 @@ describe("buildResourcePackBlob", () => {
     expect(soundsJson["entity.cow.ambient"]).toEqual({
       replace: true,
       sounds: [{ name: "mob/cow/say1" }],
+      subtitle: "subtitles.entity.cow.ambient",
+    });
+  });
+
+  it("writes customized variants into the mobvoices export layout", async () => {
+    const blob = await buildResourcePackBlob({
+      compatibilityMode: "broad",
+      customizations: {
+        "entity.cow.ambient#1": {
+          blob: new Blob(["moo"], { type: "audio/ogg" }),
+          fileName: "custom-cow.ogg",
+          kind: "upload",
+          mimeType: "audio/ogg",
+          url: "blob:custom-cow",
+        },
+      },
+      dataset: TEST_DATASET,
+      mobs: [TEST_MOB],
+      mutedVariantIds: {},
+    });
+
+    const zip = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const packMeta = JSON.parse(strFromU8(zip["pack.mcmeta"]));
+    const soundsJson = JSON.parse(strFromU8(zip["assets/minecraft/sounds.json"]));
+
+    expect(getResourcePackFileName()).toBe("Mob_Dub.zip");
+    expect(zip["assets/minecraft/sounds/mobvoices/cow/ambient/voice_1.ogg"]).toBeTruthy();
+    expect(packMeta).toEqual({
+      pack: {
+        description: "Custom mob voices recorded with Mob Dub",
+        max_format: 84,
+        min_format: 34,
+        pack_format: 84,
+        supported_formats: {
+          max_inclusive: 84,
+          min_inclusive: 34,
+        },
+      },
+    });
+    expect(soundsJson["entity.cow.ambient"]).toEqual({
+      replace: true,
+      sounds: [{ name: "mobvoices/cow/ambient/voice_1" }, { name: "mob/cow/say2" }],
       subtitle: "subtitles.entity.cow.ambient",
     });
   });
