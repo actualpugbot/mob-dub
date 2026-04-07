@@ -1,5 +1,5 @@
 import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, MutableRefObject, ReactNode } from "react";
+import type { ButtonHTMLAttributes, CSSProperties, MutableRefObject, ReactNode } from "react";
 import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
@@ -751,6 +751,93 @@ function EventCard({
   );
 }
 
+type VariantActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  icon: ReactNode;
+};
+
+function VariantActionButton({ children, className, icon, ...props }: VariantActionButtonProps) {
+  return (
+    <button {...props} className={cx("variant-action-button", className)}>
+      <span aria-hidden="true" className="variant-action-button__icon">
+        {icon}
+      </span>
+      <span className="variant-action-button__label">{children}</span>
+    </button>
+  );
+}
+
+function ActionIcon({
+  kind,
+}: {
+  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset";
+}) {
+  switch (kind) {
+    case "play":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M7 5.5L14 10L7 14.5V5.5Z" fill="currentColor" stroke="none" />
+        </svg>
+      );
+
+    case "stop":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <rect x="6" y="6" width="8" height="8" rx="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      );
+
+    case "record":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <circle cx="10" cy="10" r="4.5" fill="currentColor" stroke="none" />
+        </svg>
+      );
+
+    case "upload":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M10 13V5" />
+          <path d="M6.8 8.2L10 5L13.2 8.2" />
+          <path d="M5 14.5H15" />
+        </svg>
+      );
+
+    case "apply":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M6 10.5L8.5 13L14 7.5" />
+          <path d="M10 3.5L11.2 6L14 6.3L12 8.2L12.5 11L10 9.7L7.5 11L8 8.2L6 6.3L8.8 6L10 3.5Z" />
+        </svg>
+      );
+
+    case "mute":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M4.5 11.5H7.5L11.5 14.5V5.5L7.5 8.5H4.5V11.5Z" />
+          <path d="M14 7L17 13" />
+          <path d="M17 7L14 13" />
+        </svg>
+      );
+
+    case "unmute":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M4.5 11.5H7.5L11.5 14.5V5.5L7.5 8.5H4.5V11.5Z" />
+          <path d="M14 8C14.9 8.6 15.5 9.7 15.5 11C15.5 12.3 14.9 13.4 14 14" />
+          <path d="M15.8 6.2C17.1 7.3 18 9.1 18 11C18 12.9 17.1 14.7 15.8 15.8" />
+        </svg>
+      );
+
+    case "reset":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M5.5 9A4.5 4.5 0 1 1 7 13.2" />
+          <path d="M5.5 5.5V9H9" />
+        </svg>
+      );
+  }
+}
+
 function VariantGroupRow({
   customizations,
   eventDefinition,
@@ -835,50 +922,68 @@ function VariantGroupRow({
               ) : null}
             </div>
 
-            <div className="variant-actions">
-              <div aria-label={`${group.label} editing controls`} className="variant-action-row variant-action-row--edit" role="group">
-                <button
-                  className={cx("variant-primary-button", isRecording && "recording")}
-                  onClick={() => {
-                    void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
-                  }}
-                  type="button"
-                >
-                  {isRecording ? "Stop Recording" : "Record"}
-                </button>
-                <button className="variant-secondary-button" onClick={() => handlers.onPickFile(group.id)} type="button">
-                  Upload
-                </button>
+            <div className="variant-toolbar">
+              <div className="variant-toolbar-section">
+                <span className="variant-toolbar-label">Edit sound</span>
+                <div className="variant-button-grid variant-button-grid--primary">
+                  <VariantActionButton
+                    className={cx("variant-action-button--primary", isRecording && "variant-action-button--recording")}
+                    icon={<ActionIcon kind={isRecording ? "stop" : "record"} />}
+                    onClick={() => {
+                      void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
+                    }}
+                    type="button"
+                  >
+                    {isRecording ? "Stop recording" : "Record"}
+                  </VariantActionButton>
+
+                  <VariantActionButton
+                    className="variant-action-button--secondary"
+                    icon={<ActionIcon kind="upload" />}
+                    onClick={() => handlers.onPickFile(group.id)}
+                    type="button"
+                  >
+                    Upload audio
+                  </VariantActionButton>
+                </div>
               </div>
 
-              <div aria-label={`${group.label} pack controls`} className="variant-action-row" role="group">
-                <button
-                  className="variant-secondary-button"
-                  disabled={!customization}
-                  onClick={() => {
-                    if (customization) {
-                      handlers.onApplyCustomizationToEvent(eventDefinition, customization);
-                    }
-                  }}
-                  type="button"
-                >
-                  Apply To Event
-                </button>
-                <button
-                  className={cx("variant-secondary-button", isMuted && "is-active")}
-                  onClick={() => handlers.onToggleMuteForGroup(group.variants)}
-                  type="button"
-                >
-                  {isMuted ? "Unmute In Pack" : "Mute In Pack"}
-                </button>
-                <button
-                  className="variant-secondary-button"
-                  disabled={!customization && !isMuted}
-                  onClick={() => handlers.onResetGroupedSound(group.variants)}
-                  type="button"
-                >
-                  Reset Changes
-                </button>
+              <div className="variant-toolbar-section">
+                <span className="variant-toolbar-label">Pack controls</span>
+                <div aria-label={`${group.label} pack controls`} className="variant-button-grid" role="group">
+                  <VariantActionButton
+                    className="variant-action-button--secondary"
+                    disabled={!customization}
+                    icon={<ActionIcon kind="apply" />}
+                    onClick={() => {
+                      if (customization) {
+                        handlers.onApplyCustomizationToEvent(eventDefinition, customization);
+                      }
+                    }}
+                    type="button"
+                  >
+                    Apply to event
+                  </VariantActionButton>
+
+                  <VariantActionButton
+                    className={cx("variant-action-button--secondary", isMuted && "is-active")}
+                    icon={<ActionIcon kind={isMuted ? "unmute" : "mute"} />}
+                    onClick={() => handlers.onToggleMuteForGroup(group.variants)}
+                    type="button"
+                  >
+                    {isMuted ? "Unmute in pack" : "Mute in pack"}
+                  </VariantActionButton>
+
+                  <VariantActionButton
+                    className="variant-action-button--secondary"
+                    disabled={!customization && !isMuted}
+                    icon={<ActionIcon kind="reset" />}
+                    onClick={() => handlers.onResetGroupedSound(group.variants)}
+                    type="button"
+                  >
+                    Reset changes
+                  </VariantActionButton>
+                </div>
               </div>
             </div>
           </div>
@@ -966,7 +1071,10 @@ function VariantPreviewRow({
         onClick={onToggle}
         type="button"
       >
-        {isPlaying ? "Stop" : "Play"}
+        <span aria-hidden="true" className="variant-waveform-button__icon">
+          <ActionIcon kind={isPlaying ? "stop" : "play"} />
+        </span>
+        <span>{isPlaying ? "Stop" : "Play"}</span>
       </button>
       {children}
     </div>

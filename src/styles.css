@@ -189,9 +189,7 @@ h3 {
 }
 
 .export-button:hover:not(:disabled),
-.variant-primary-button.recording:hover:not(:disabled) {
-  box-shadow: var(--shadow-accent);
-}
+
 
 .danger-button {
   border-color: rgba(255, 176, 160, 0.46);
@@ -211,14 +209,16 @@ h3 {
 .mob-list-select:focus-visible,
 .export-button:focus-visible,
 .ghost-button:focus-visible,
-.variant-actions button:focus-visible {
+.variant-waveform-button:focus-visible,
+.variant-action-button:focus-visible {
   outline: none;
   border-color: rgba(84, 224, 179, 0.5);
   box-shadow: var(--focus-ring);
 }
 
 .export-button:disabled,
-.variant-actions button:disabled {
+.variant-waveform-button:disabled,
+.variant-action-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -822,43 +822,40 @@ h3 {
 
 .variant-content-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 34%);
-  align-items: flex-start;
-  gap: 12px 18px;
+  grid-template-columns: 1fr;
+  gap: 14px;
   min-width: 0;
 }
 
-.variant-actions {
-  display: grid;
-  justify-items: end;
-  align-content: start;
-  gap: 8px;
-  min-width: 0;
-}
-
-.variant-action-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.variant-action-row--edit {
-  max-width: none;
-}
-
-.variant-waveform-row {
-  display: grid;
-  grid-template-columns: 64px auto minmax(0, 1fr);
-  align-items: center;
+.variant-waveform-stack {
   gap: 10px;
   min-width: 0;
 }
 
+.variant-waveform-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(153, 190, 214, 0.12);
+  border-radius: var(--radius-lg);
+  background: rgba(8, 16, 26, 0.4);
+}
+
 .variant-waveform-source {
-  color: rgba(152, 181, 201, 0.92);
-  font-size: 0.73rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(153, 190, 214, 0.14);
+  border-radius: var(--radius-pill);
+  background: rgba(153, 190, 214, 0.08);
+  color: rgba(152, 181, 201, 0.94);
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -866,6 +863,8 @@ h3 {
 
 .variant-waveform-row.is-playing .variant-waveform-source {
   color: #c8fff0;
+  border-color: rgba(84, 224, 179, 0.24);
+  background: rgba(84, 224, 179, 0.08);
 }
 
 .variant-waveform {
@@ -968,20 +967,30 @@ h3 {
   box-shadow: 0 0 14px rgba(84, 224, 179, 0.28);
 }
 
-:is(.variant-waveform-button, .variant-primary-button, .variant-secondary-button) {
+.variant-waveform-button,
+.variant-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border: 1px solid var(--line);
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .variant-waveform-button {
-  min-width: 50px;
-  min-height: 28px;
-  padding: 0 11px;
-  border-radius: var(--radius-pill);
+  min-width: 92px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 12px;
   background: rgba(153, 190, 214, 0.08);
+}
+
+.variant-waveform-button:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: rgba(153, 190, 214, 0.14);
 }
 
 .variant-waveform-button.is-active {
@@ -990,46 +999,101 @@ h3 {
   color: #c8fff0;
 }
 
-.variant-primary-button,
-.variant-secondary-button {
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: var(--radius-md);
+.variant-waveform-button__icon,
+.variant-action-button__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.variant-waveform-button svg,
+.variant-action-button svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.variant-toolbar {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(153, 190, 214, 0.12);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(10, 19, 31, 0.78), rgba(8, 16, 26, 0.64)),
+    radial-gradient(circle at top left, rgba(84, 224, 179, 0.06), transparent 40%);
+}
+
+.variant-toolbar-section {
+  display: grid;
+  gap: 8px;
+}
+
+.variant-toolbar-label {
+  color: rgba(152, 181, 201, 0.86);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.variant-button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.variant-button-grid--primary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.variant-action-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
   background: rgba(153, 190, 214, 0.08);
+  color: #dbe7f0;
 }
 
-.variant-primary-button {
-  background: linear-gradient(135deg, rgba(84, 224, 179, 0.24), rgba(27, 142, 140, 0.18));
+.variant-action-button__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.variant-action-button--primary {
   border-color: rgba(84, 224, 179, 0.28);
+  background: linear-gradient(135deg, rgba(84, 224, 179, 0.22), rgba(27, 142, 140, 0.16));
 }
 
-.variant-primary-button:hover:not(:disabled) {
+.variant-action-button--primary:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(84, 224, 179, 0.3), rgba(27, 142, 140, 0.24));
 }
 
-.variant-primary-button.recording {
+.variant-action-button--recording {
   border-color: transparent;
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: #061018;
 }
 
-.variant-primary-button.recording:hover:not(:disabled) {
+.variant-action-button--recording:hover:not(:disabled) {
   background: linear-gradient(135deg, #7bf0cb, #28a6a3);
+  box-shadow: var(--shadow-accent);
 }
 
-.variant-secondary-button {
-  color: #dbe7f0;
-}
-
-.variant-secondary-button.is-active {
-  border-color: rgba(84, 224, 179, 0.3);
-  background: rgba(84, 224, 179, 0.14);
-}
-
-.variant-waveform-button:hover:not(:disabled),
-.variant-secondary-button:hover:not(:disabled) {
+.variant-action-button--secondary:hover:not(:disabled) {
   border-color: var(--line-strong);
   background: rgba(153, 190, 214, 0.14);
+}
+
+.variant-action-button--secondary.is-active {
+  border-color: rgba(84, 224, 179, 0.34);
+  background: rgba(84, 224, 179, 0.14);
+  color: #c8fff0;
 }
 
 .modal-backdrop {
@@ -1151,6 +1215,12 @@ h3 {
   }
 }
 
+@media (max-width: 900px) {
+  .variant-button-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 720px) {
   .shell {
     padding: 18px;
@@ -1179,28 +1249,30 @@ h3 {
     padding: 14px;
   }
 
-  .variant-meta,
-  .variant-action-row,
-  .variant-actions {
-    justify-content: flex-start;
+  .variant-content-row {
+    gap: 12px;
   }
 
-  .variant-content-row {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .variant-button-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .variant-waveform-row {
-    grid-template-columns: 60px auto minmax(0, 1fr);
-    gap: 8px;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .variant-waveform-source {
+    justify-self: start;
   }
 
   .variant-waveform {
     height: 24px;
   }
 
-  .variant-actions {
-    justify-items: stretch;
+  .variant-button-grid,
+  .variant-button-grid--primary {
+    grid-template-columns: 1fr;
   }
 
   .confirm-modal {
