@@ -923,69 +923,61 @@ function VariantGroupRow({
               ) : null}
             </div>
 
-            <div className="variant-toolbar">
-              <div className="variant-toolbar-section">
-                <span className="variant-toolbar-label">Edit sound</span>
-                <div className="variant-button-grid variant-button-grid--primary">
-                  <VariantActionButton
-                    className={cx("variant-action-button--primary", isRecording && "variant-action-button--recording")}
-                    icon={<ActionIcon kind={isRecording ? "stop" : "record"} />}
-                    onClick={() => {
-                      void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
-                    }}
-                    type="button"
-                  >
-                    {isRecording ? "Stop recording" : "Record"}
-                  </VariantActionButton>
+            <div className="variant-actions">
+              <VariantActionButton
+                className={cx("variant-action-button--primary", isRecording && "variant-action-button--recording")}
+                icon={<ActionIcon kind={isRecording ? "stop" : "record"} />}
+                onClick={() => {
+                  void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
+                }}
+                type="button"
+              >
+                {isRecording ? "Stop recording" : "Record"}
+              </VariantActionButton>
 
-                  <VariantActionButton
-                    className="variant-action-button--secondary"
-                    icon={<ActionIcon kind="upload" />}
-                    onClick={() => handlers.onPickFile(group.id)}
-                    type="button"
-                  >
-                    Upload audio
-                  </VariantActionButton>
-                </div>
-              </div>
+              <VariantActionButton
+                className="variant-action-button--secondary"
+                icon={<ActionIcon kind="upload" />}
+                onClick={() => handlers.onPickFile(group.id)}
+                type="button"
+              >
+                Upload audio
+              </VariantActionButton>
 
-              <div className="variant-toolbar-section">
-                <span className="variant-toolbar-label">Pack controls</span>
-                <div aria-label={`${group.label} pack controls`} className="variant-button-grid" role="group">
-                  <VariantActionButton
-                    className="variant-action-button--secondary"
-                    disabled={!customization}
-                    icon={<ActionIcon kind="apply" />}
-                    onClick={() => {
-                      if (customization) {
-                        handlers.onApplyCustomizationToEvent(eventDefinition, customization);
-                      }
-                    }}
-                    type="button"
-                  >
-                    Apply to event
-                  </VariantActionButton>
+              <span aria-hidden="true" className="variant-actions-separator" />
 
-                  <VariantActionButton
-                    className={cx("variant-action-button--secondary", isMuted && "is-active")}
-                    icon={<ActionIcon kind={isMuted ? "unmute" : "mute"} />}
-                    onClick={() => handlers.onToggleMuteForGroup(group.variants)}
-                    type="button"
-                  >
-                    {isMuted ? "Unmute in pack" : "Mute in pack"}
-                  </VariantActionButton>
+              <VariantActionButton
+                className="variant-action-button--secondary"
+                disabled={!customization}
+                icon={<ActionIcon kind="apply" />}
+                onClick={() => {
+                  if (customization) {
+                    handlers.onApplyCustomizationToEvent(eventDefinition, customization);
+                  }
+                }}
+                type="button"
+              >
+                Apply to event
+              </VariantActionButton>
 
-                  <VariantActionButton
-                    className="variant-action-button--secondary"
-                    disabled={!customization && !isMuted}
-                    icon={<ActionIcon kind="reset" />}
-                    onClick={() => handlers.onResetGroupedSound(group.variants)}
-                    type="button"
-                  >
-                    Reset changes
-                  </VariantActionButton>
-                </div>
-              </div>
+              <VariantActionButton
+                className={cx("variant-action-button--secondary", isMuted && "is-active")}
+                icon={<ActionIcon kind={isMuted ? "unmute" : "mute"} />}
+                onClick={() => handlers.onToggleMuteForGroup(group.variants)}
+                type="button"
+              >
+                {isMuted ? "Unmute in pack" : "Mute in pack"}
+              </VariantActionButton>
+
+              <VariantActionButton
+                className="variant-action-button--secondary"
+                disabled={!customization && !isMuted}
+                icon={<ActionIcon kind="reset" />}
+                onClick={() => handlers.onResetGroupedSound(group.variants)}
+                type="button"
+              >
+                Reset changes
+              </VariantActionButton>
             </div>
           </div>
         </div>

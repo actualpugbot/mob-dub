@@ -1017,38 +1017,19 @@ h3 {
   stroke-linejoin: round;
 }
 
-.variant-toolbar {
-  display: grid;
-  gap: 12px;
-  padding: 14px;
-  border: 1px solid rgba(153, 190, 214, 0.12);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(180deg, rgba(10, 19, 31, 0.78), rgba(8, 16, 26, 0.64)),
-    radial-gradient(circle at top left, rgba(84, 224, 179, 0.06), transparent 40%);
-}
-
-.variant-toolbar-section {
-  display: grid;
+.variant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
-.variant-toolbar-label {
-  color: rgba(152, 181, 201, 0.86);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.variant-button-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.variant-button-grid--primary {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.variant-actions-separator {
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 4px;
+  background: rgba(153, 190, 214, 0.14);
+  border-radius: var(--radius-pill);
 }
 
 .variant-action-button {
@@ -1216,8 +1197,8 @@ h3 {
 }
 
 @media (max-width: 900px) {
-  .variant-button-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .variant-actions-separator {
+    display: none;
   }
 }
 
@@ -1253,10 +1234,6 @@ h3 {
     gap: 12px;
   }
 
-  .variant-button-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .variant-waveform-row {
     grid-template-columns: 1fr;
     align-items: stretch;
@@ -1268,11 +1245,6 @@ h3 {
 
   .variant-waveform {
     height: 24px;
-  }
-
-  .variant-button-grid,
-  .variant-button-grid--primary {
-    grid-template-columns: 1fr;
   }
 
   .confirm-modal {
