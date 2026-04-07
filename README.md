@@ -16,6 +16,8 @@ Production build:
 npm run build
 ```
 
+The GitHub Pages workflow builds with `VITE_BASE_PATH=/mob-dub/` so the app can be hosted at `https://actualpugbot.github.io/mob-dub/`.
+
 ## Data Source
 
 The app syncs its mob sound data from:

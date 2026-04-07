@@ -3,11 +3,12 @@ import type { ButtonHTMLAttributes, CSSProperties, MutableRefObject, ReactNode }
 import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob, getResourcePackFileName } from "./export";
 import { MobModelPreview } from "./mobModelPreview";
+import { publicUrl } from "./publicUrl";
 import { formatPitchSummary, getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
 import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEvent, MobSoundVariant, MobSoundsDataset } from "./types";
 
-const DATASET_URL = "/data/mob-sounds.json";
-const MODEL_DATASET_URL = "/data/mob-models.json";
+const DATASET_URL = publicUrl("data/mob-sounds.json");
+const MODEL_DATASET_URL = publicUrl("data/mob-models.json");
 const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
 const STATIC_MODEL_PREVIEW_MOB_IDS = new Set([
   "camel_husk",
@@ -1179,7 +1180,7 @@ function MobArtwork({
   size: "card" | "list";
 }) {
   if (mob.imagePath && !usesStaticModelPreview(mob.localId)) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={mob.imagePath} />;
+    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(mob.imagePath)} />;
   }
 
   return <MobModelPreview mob={mob} model={model} size={size} />;

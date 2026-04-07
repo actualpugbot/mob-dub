@@ -45,7 +45,7 @@ async function main() {
       return {
         ...mob,
         ...releaseMetadata,
-        imagePath: `/images/mobs/${targetFileName}`,
+        imagePath: `images/mobs/${targetFileName}`,
       };
     }),
   );

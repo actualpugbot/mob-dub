@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { publicUrl } from "./publicUrl";
 import type { MobDefinition, MobModelCube, MobModelDefinition, MobModelPart } from "./types";
 
 type PreviewSize = "card" | "list";
@@ -89,7 +90,7 @@ export function MobModelPreview({
 
 function FallbackPreview({ mob, size }: { mob: MobDefinition; size: PreviewSize }) {
   if (mob.imagePath) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={mob.imagePath} />;
+    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(mob.imagePath)} />;
   }
 
   return (
