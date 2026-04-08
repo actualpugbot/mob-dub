@@ -8,7 +8,8 @@
       "Read(///wsl.localhost/Ubuntu/home/actualpug/dev/mob-dub/**)",
       "Bash(npx tsc:*)",
       "Bash(wsl -e bash -c \"cd /home/actualpug/dev/mob-dub && npx tsc --noEmit 2>&1 | head -30\")",
-      "Bash(wsl -e bash -c \"cd /home/actualpug/dev/mob-dub && npx vite build 2>&1 | tail -10\")"
+      "Bash(wsl -e bash -c \"cd /home/actualpug/dev/mob-dub && npx vite build 2>&1 | tail -10\")",
+      "Bash(npm run:*)"
     ]
   }
 }

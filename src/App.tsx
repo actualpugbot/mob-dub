@@ -790,7 +790,10 @@ function ActionIcon({
     case "record":
       return (
         <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
-          <circle cx="10" cy="10" r="4.5" fill="currentColor" stroke="none" />
+          <rect x="7.5" y="2.5" width="5" height="8" rx="2.5" />
+          <path d="M4.5 9.5C4.5 12.538 6.962 15 10 15C13.038 15 15.5 12.538 15.5 9.5" />
+          <path d="M10 15V17.5" />
+          <path d="M7.5 17.5H12.5" />
         </svg>
       );
 
@@ -870,117 +873,121 @@ function VariantGroupRow({
   const isPlayingOriginal = playingPreview?.groupId === group.id && playingPreview.source === "original";
   const isPlayingCustom = playingPreview?.groupId === group.id && playingPreview.source === "custom";
 
+  const isPlayingAny = isPlayingOriginal || isPlayingCustom;
+
   return (
-    <div className={cx("variant-row", isMuted && "is-muted", (isPlayingOriginal || isPlayingCustom) && "is-playing")}>
-      <div className="variant-summary">
-        <div className="variant-copy">
-          <div className="variant-heading-row">
-            <div className="variant-heading-main">
-              <strong>{group.label}</strong>
-            </div>
-            <div className="variant-meta">
-              {pitchSummary ? <span className="variant-info-chip">{pitchSummary}</span> : null}
-              {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
-            </div>
-          </div>
-
-          <div className="variant-content-row">
-            <div className="variant-waveform-stack">
-              <VariantPreviewRow
-                disabled={!sampleVariant.url}
-                isPlaying={isPlayingOriginal}
-                onToggle={() => {
-                  void handlers.onTogglePreview(group.id, "original", sampleVariant.url);
-                }}
-                previewLabel="Original"
-                variantLabel={group.label}
-              >
-                <VariantWaveform
-                  isPlaying={isPlayingOriginal}
-                  label={`${group.label} original`}
-                  progress={isPlayingOriginal ? previewProgress : 0}
-                  url={sampleVariant.url}
-                />
-              </VariantPreviewRow>
-
-              {customization ? (
-                <VariantPreviewRow
-                  disabled={!customization.url}
-                  isPlaying={isPlayingCustom}
-                  onToggle={() => {
-                    void handlers.onTogglePreview(group.id, "custom", customization.url);
-                  }}
-                  previewLabel="Custom"
-                  variantLabel={group.label}
-                >
-                  <VariantWaveform
-                    isPlaying={isPlayingCustom}
-                    label={`${group.label} custom`}
-                    progress={isPlayingCustom ? previewProgress : 0}
-                    url={customization.url}
-                  />
-                </VariantPreviewRow>
-              ) : null}
-            </div>
-
-            <div className="variant-actions">
-              <VariantActionButton
-                className={cx("variant-action-button--primary", isRecording && "variant-action-button--recording")}
-                icon={<ActionIcon kind={isRecording ? "stop" : "record"} />}
-                onClick={() => {
-                  void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
-                }}
-                type="button"
-              >
-                {isRecording ? "Stop recording" : "Record"}
-              </VariantActionButton>
-
-              <VariantActionButton
-                className="variant-action-button--secondary"
-                icon={<ActionIcon kind="upload" />}
-                onClick={() => handlers.onPickFile(group.id)}
-                type="button"
-              >
-                Upload audio
-              </VariantActionButton>
-
-              <span aria-hidden="true" className="variant-actions-separator" />
-
-              <VariantActionButton
-                className="variant-action-button--secondary"
-                disabled={!customization}
-                icon={<ActionIcon kind="apply" />}
-                onClick={() => {
-                  if (customization) {
-                    handlers.onApplyCustomizationToEvent(eventDefinition, customization);
-                  }
-                }}
-                type="button"
-              >
-                Apply to event
-              </VariantActionButton>
-
-              <VariantActionButton
-                className={cx("variant-action-button--secondary", isMuted && "is-active")}
-                icon={<ActionIcon kind={isMuted ? "unmute" : "mute"} />}
-                onClick={() => handlers.onToggleMuteForGroup(group.variants)}
-                type="button"
-              >
-                {isMuted ? "Unmute in pack" : "Mute in pack"}
-              </VariantActionButton>
-
-              <VariantActionButton
-                className="variant-action-button--secondary"
-                disabled={!customization && !isMuted}
-                icon={<ActionIcon kind="reset" />}
-                onClick={() => handlers.onResetGroupedSound(group.variants)}
-                type="button"
-              >
-                Reset changes
-              </VariantActionButton>
-            </div>
-          </div>
+    <div className={cx("variant-card", isMuted && "is-muted", isPlayingAny && "is-playing")}>
+      <div className="variant-card__header">
+        <strong>{group.label}</strong>
+        <div className="variant-meta">
+          {pitchSummary ? <span className="variant-info-chip">{pitchSummary}</span> : null}
+          {isMuted ? <span className="muted-chip">Muted in pack</span> : null}
         </div>
+      </div>
+
+      <div className="variant-card__tracks">
+        <div className="variant-card__waveforms">
+          <div className="variant-card__track">
+            <button
+              aria-label={`${isPlayingOriginal ? "Stop" : "Play"} original ${group.label}`}
+              className={cx("variant-track-play", isPlayingOriginal && "is-playing")}
+              disabled={!sampleVariant.url}
+              onClick={() => {
+                void handlers.onTogglePreview(group.id, "original", sampleVariant.url);
+              }}
+              type="button"
+            >
+              <ActionIcon kind={isPlayingOriginal ? "stop" : "play"} />
+            </button>
+            {customization ? <span className="variant-track-label">Original</span> : null}
+            <VariantWaveform
+              isPlaying={isPlayingOriginal}
+              label={`${group.label} original`}
+              progress={isPlayingOriginal ? previewProgress : 0}
+              url={sampleVariant.url}
+            />
+          </div>
+
+          {customization ? (
+            <div className="variant-card__track variant-card__track--custom">
+              <button
+                aria-label={`${isPlayingCustom ? "Stop" : "Play"} custom ${group.label}`}
+                className={cx("variant-track-play", isPlayingCustom && "is-playing")}
+                disabled={!customization.url}
+                onClick={() => {
+                  void handlers.onTogglePreview(group.id, "custom", customization.url);
+                }}
+                type="button"
+              >
+                <ActionIcon kind={isPlayingCustom ? "stop" : "play"} />
+              </button>
+              <span className="variant-track-label variant-track-label--custom">Custom</span>
+              <VariantWaveform
+                isPlaying={isPlayingCustom}
+                label={`${group.label} custom`}
+                progress={isPlayingCustom ? previewProgress : 0}
+                url={customization.url}
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="variant-track-buttons">
+          <VariantActionButton
+            className={cx("variant-action-button--primary", isRecording && "variant-action-button--recording")}
+            icon={<ActionIcon kind={isRecording ? "stop" : "record"} />}
+            onClick={() => {
+              void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
+            }}
+            type="button"
+          >
+            {isRecording ? "Stop" : "Record"}
+          </VariantActionButton>
+
+          <VariantActionButton
+            className="variant-action-button--secondary"
+            icon={<ActionIcon kind="upload" />}
+            onClick={() => handlers.onPickFile(group.id)}
+            type="button"
+          >
+            Upload
+          </VariantActionButton>
+        </div>
+      </div>
+
+      <div className="variant-card__actions">
+        <VariantActionButton
+          className="variant-action-button--secondary variant-action-button--sm"
+          disabled={!customization}
+          icon={<ActionIcon kind="apply" />}
+          onClick={() => {
+            if (customization) {
+              handlers.onApplyCustomizationToEvent(eventDefinition, customization);
+            }
+          }}
+          type="button"
+        >
+          Apply to Event
+        </VariantActionButton>
+
+        <VariantActionButton
+          className={cx("variant-action-button--secondary variant-action-button--sm", isMuted && "is-active")}
+          icon={<ActionIcon kind={isMuted ? "unmute" : "mute"} />}
+          onClick={() => handlers.onToggleMuteForGroup(group.variants)}
+          type="button"
+        >
+          {isMuted ? "Unmute in Pack" : "Mute in Pack"}
+        </VariantActionButton>
+
+        <VariantActionButton
+          className="variant-action-button--secondary variant-action-button--sm"
+          disabled={!customization && !isMuted}
+          icon={<ActionIcon kind="reset" />}
+          onClick={() => handlers.onResetGroupedSound(group.variants)}
+          type="button"
+        >
+          Reset Changes
+        </VariantActionButton>
       </div>
 
       <input
@@ -1039,40 +1046,6 @@ function RemoveMobModal({
   );
 }
 
-function VariantPreviewRow({
-  children,
-  disabled,
-  isPlaying,
-  onToggle,
-  previewLabel,
-  variantLabel,
-}: {
-  children: ReactNode;
-  disabled: boolean;
-  isPlaying: boolean;
-  onToggle: () => void;
-  previewLabel: string;
-  variantLabel: string;
-}) {
-  return (
-    <div className={cx("variant-waveform-row", isPlaying && "is-playing")}>
-      <span className="variant-waveform-source">{previewLabel}</span>
-      <button
-        aria-label={`${isPlaying ? "Stop" : "Play"} ${previewLabel.toLowerCase()} preview for ${variantLabel}`}
-        className={cx("variant-waveform-button", isPlaying && "is-active")}
-        disabled={disabled}
-        onClick={onToggle}
-        type="button"
-      >
-        <span aria-hidden="true" className="variant-waveform-button__icon">
-          <ActionIcon kind={isPlaying ? "stop" : "play"} />
-        </span>
-        <span>{isPlaying ? "Stop" : "Play"}</span>
-      </button>
-      {children}
-    </div>
-  );
-}
 
 function VariantWaveform({
   isPlaying,
