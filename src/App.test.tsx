@@ -151,7 +151,14 @@ const TEST_DATASET: MobSoundsDataset = {
 };
 
 function getVariantRow(label: RegExp | string) {
-  const rowLabel = screen.getByText(label);
+  const rowLabel = screen
+    .getAllByText(label)
+    .find((element) => element.tagName === "STRONG" && element.closest(".variant-row"));
+
+  expect(rowLabel).toBeTruthy();
+  if (!rowLabel) {
+    throw new Error(`Could not find variant row label for ${String(label)}`);
+  }
   const row = rowLabel.closest(".variant-row") as HTMLElement | null;
   expect(row).not.toBeNull();
   return row!;
