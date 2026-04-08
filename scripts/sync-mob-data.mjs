@@ -9,7 +9,7 @@ const datahubRoot = resolve(process.env.MOB_DUB_DATAHUB_ROOT ?? join(projectRoot
 const datasetsRoot = join(datahubRoot, "workspace", "datasets");
 const statePath = join(datahubRoot, "workspace", "state.json");
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
-const remoteImageBaseUrl = "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs";
+const localImageBasePath = "/images/mobs";
 const OMITTED_MOB_IDS = new Set(["giant"]);
 
 const requestedVersion = process.argv[2];
@@ -42,7 +42,7 @@ async function main() {
       return {
         ...mob,
         ...releaseMetadata,
-        imagePath: `${remoteImageBaseUrl}/${targetFileName}`,
+        imagePath: `${localImageBasePath}/${targetFileName}`,
       };
     }),
   );
@@ -60,7 +60,7 @@ async function main() {
   );
 
   console.log(`Synced ${version} mob sound data from ${sourcePath} to ${outputPath}`);
-  console.log(`Validated ${enrichedMobs.length} mob image references against ${remoteImageBaseUrl}`);
+  console.log(`Validated ${enrichedMobs.length} mob image references against ${localImageBasePath}`);
 }
 
 function withInheritedMobSounds(mobDataset) {
@@ -181,13 +181,13 @@ async function resolveImageFileName(mobId) {
   );
 
   for (const fileName of candidates) {
-    if ((await imageExistsLocally(fileName)) || (await imageExistsRemotely(fileName))) {
+    if (await imageExistsLocally(fileName)) {
       return fileName;
     }
   }
 
   throw new Error(
-    `Missing mob image for ${mobId}: expected one of ${candidates.join(", ")} in ${remoteImageBaseUrl}.`,
+    `Missing mob image for ${mobId}: expected one of ${candidates.join(", ")} in ${localImageBasePath}.`,
   );
 }
 
@@ -195,15 +195,6 @@ async function imageExistsLocally(fileName) {
   try {
     await access(join(projectRoot, "public", "images", "mobs", fileName));
     return true;
-  } catch {
-    return false;
-  }
-}
-
-async function imageExistsRemotely(fileName) {
-  try {
-    const response = await fetch(`${remoteImageBaseUrl}/${fileName}`, { method: "HEAD" });
-    return response.ok;
   } catch {
     return false;
   }

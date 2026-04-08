@@ -2,6 +2,7 @@ import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEff
 import type { CSSProperties, MutableRefObject } from "react";
 import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob, getResourcePackFileName } from "./export";
+import { getMobImagePath } from "./mobImagePath";
 import { MobModelPreview } from "./mobModelPreview";
 import { publicUrl } from "./publicUrl";
 import { getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
@@ -656,7 +657,6 @@ function MobCard({
           <MobArtwork mob={mob} model={model} size="card" />
           <div className="mob-card-heading">
             <h3>{mob.displayName}</h3>
-            <p className="mob-card-subtitle">Manage how this mob sounds in your pack.</p>
           </div>
         </div>
         <button className="ghost-button danger-button mob-card-remove-button" onClick={() => onRemove(mob)} type="button">
@@ -1240,8 +1240,10 @@ function MobArtwork({
   model?: MobModelDefinition;
   size: "card" | "list";
 }) {
-  if (mob.imagePath && !usesStaticModelPreview(mob.localId)) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(mob.imagePath)} />;
+  const imagePath = getMobImagePath(mob);
+
+  if (imagePath && !usesStaticModelPreview(mob.localId)) {
+    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(imagePath)} />;
   }
 
   return <MobModelPreview mob={mob} model={model} size={size} />;

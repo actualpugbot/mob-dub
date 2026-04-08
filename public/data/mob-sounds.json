@@ -331,7 +331,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/allay.png"
+      "imagePath": "/images/mobs/allay.png"
     },
     {
       "category": "Creature",
@@ -1089,7 +1089,7 @@
       "introducedVersion": "1.20.5",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/armadillo.png"
+      "imagePath": "/images/mobs/armadillo.png"
     },
     {
       "category": "Axolotls",
@@ -1538,7 +1538,7 @@
       "introducedVersion": "1.17",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/axolotl.png"
+      "imagePath": "/images/mobs/axolotl.png"
     },
     {
       "category": "Ambient",
@@ -1727,7 +1727,7 @@
       "introducedVersion": "1.4.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/bat.png"
+      "imagePath": "/images/mobs/bat.png"
     },
     {
       "category": "Creature",
@@ -2092,7 +2092,7 @@
       "introducedVersion": "1.15",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/bee.png"
+      "imagePath": "/images/mobs/bee.png"
     },
     {
       "category": "Monster",
@@ -2282,7 +2282,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/blaze.png"
+      "imagePath": "/images/mobs/blaze.png"
     },
     {
       "category": "Monster",
@@ -2511,7 +2511,7 @@
       "introducedVersion": "1.21",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/bogged.png"
+      "imagePath": "/images/mobs/bogged.png"
     },
     {
       "category": "Monster",
@@ -3100,7 +3100,7 @@
       "introducedVersion": "1.21",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/breeze.png"
+      "imagePath": "/images/mobs/breeze.png"
     },
     {
       "category": "Creature",
@@ -3807,7 +3807,7 @@
       "introducedVersion": "1.20",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/camel.png"
+      "imagePath": "/images/mobs/camel.png"
     },
     {
       "category": "Monster",
@@ -4514,7 +4514,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/camel_husk.png"
+      "imagePath": "/images/mobs/camel_husk.png"
     },
     {
       "category": "Creature",
@@ -4936,7 +4936,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/cat.png"
+      "imagePath": "/images/mobs/cat.png"
     },
     {
       "category": "Monster",
@@ -5146,7 +5146,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/cave_spider.png"
+      "imagePath": "/images/mobs/cave_spider.png"
     },
     {
       "category": "Creature",
@@ -5323,7 +5323,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/chicken.png"
+      "imagePath": "/images/mobs/chicken.png"
     },
     {
       "category": "Water Ambient",
@@ -5518,7 +5518,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/cod.png"
+      "imagePath": "/images/mobs/cod.png"
     },
     {
       "category": "Creature",
@@ -5786,7 +5786,7 @@
       "introducedVersion": "Alpha",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/cow.png"
+      "imagePath": "/images/mobs/cow.png"
     },
     {
       "category": "Monster",
@@ -6272,7 +6272,7 @@
       "introducedVersion": "1.21.4",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/creaking.png"
+      "imagePath": "/images/mobs/creaking.png"
     },
     {
       "category": "Monster",
@@ -6385,7 +6385,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/creeper.png"
+      "imagePath": "/images/mobs/creeper.png"
     },
     {
       "category": "Water Creature",
@@ -7034,7 +7034,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/dolphin.png"
+      "imagePath": "/images/mobs/dolphin.png"
     },
     {
       "category": "Creature",
@@ -7301,7 +7301,7 @@
       "introducedVersion": "1.6.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/donkey.png"
+      "imagePath": "/images/mobs/donkey.png"
     },
     {
       "category": "Monster",
@@ -7775,7 +7775,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/drowned.png"
+      "imagePath": "/images/mobs/drowned.png"
     },
     {
       "category": "Monster",
@@ -8139,7 +8139,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/elder_guardian.png"
+      "imagePath": "/images/mobs/elder_guardian.png"
     },
     {
       "category": "Monster",
@@ -8452,7 +8452,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/ender_dragon.png"
+      "imagePath": "/images/mobs/ender_dragon.png"
     },
     {
       "category": "Monster",
@@ -8726,7 +8726,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/enderman.png"
+      "imagePath": "/images/mobs/enderman.png"
     },
     {
       "category": "Monster",
@@ -8923,7 +8923,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/endermite.png"
+      "imagePath": "/images/mobs/endermite.png"
     },
     {
       "category": "Monster",
@@ -9209,7 +9209,7 @@
       "introducedVersion": "1.11",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/evoker.png"
+      "imagePath": "/images/mobs/evoker.png"
     },
     {
       "category": "Creature",
@@ -9855,7 +9855,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/fox.png"
+      "imagePath": "/images/mobs/fox.png"
     },
     {
       "category": "Creature",
@@ -10465,7 +10465,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/frog.png"
+      "imagePath": "/images/mobs/frog.png"
     },
     {
       "category": "Monster",
@@ -10725,7 +10725,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/ghast.png"
+      "imagePath": "/images/mobs/ghast.png"
     },
     {
       "category": "Underground Water Creature",
@@ -10961,7 +10961,7 @@
       "introducedVersion": "1.17",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/glow_squid.png"
+      "imagePath": "/images/mobs/glow_squid.png"
     },
     {
       "category": "Creature",
@@ -12217,7 +12217,7 @@
       "introducedVersion": "1.17",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/goat.png"
+      "imagePath": "/images/mobs/goat.png"
     },
     {
       "category": "Monster",
@@ -12581,7 +12581,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/guardian.png"
+      "imagePath": "/images/mobs/guardian.png"
     },
     {
       "category": "Creature",
@@ -12983,7 +12983,7 @@
       "introducedVersion": "1.21.6",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/happy_ghast.png"
+      "imagePath": "/images/mobs/happy_ghast.png"
     },
     {
       "category": "Monster",
@@ -13568,7 +13568,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/hoglin.png"
+      "imagePath": "/images/mobs/hoglin.png"
     },
     {
       "category": "Creature",
@@ -14144,7 +14144,7 @@
       "introducedVersion": "1.6.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/horse.png"
+      "imagePath": "/images/mobs/horse.png"
     },
     {
       "category": "Monster",
@@ -14373,7 +14373,7 @@
       "introducedVersion": "1.10",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/husk.png"
+      "imagePath": "/images/mobs/husk.png"
     },
     {
       "category": "Monster",
@@ -14627,7 +14627,7 @@
       "introducedVersion": "1.12",
       "isRecent": false,
       "releaseStatus": "unreleased",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/illusioner.png"
+      "imagePath": "/images/mobs/illusioner.png"
     },
     {
       "category": "Misc",
@@ -14875,7 +14875,7 @@
       "introducedVersion": "1.2.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/iron_golem.png"
+      "imagePath": "/images/mobs/iron_golem.png"
     },
     {
       "category": "Creature",
@@ -15245,7 +15245,7 @@
       "introducedVersion": "1.11",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/llama.png"
+      "imagePath": "/images/mobs/llama.png"
     },
     {
       "category": "Monster",
@@ -15707,7 +15707,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/magma_cube.png"
+      "imagePath": "/images/mobs/magma_cube.png"
     },
     {
       "category": "Creature",
@@ -16434,7 +16434,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/mooshroom.png"
+      "imagePath": "/images/mobs/mooshroom.png"
     },
     {
       "category": "Creature",
@@ -16701,7 +16701,7 @@
       "introducedVersion": "1.6.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/mule.png"
+      "imagePath": "/images/mobs/mule.png"
     },
     {
       "category": "Water Creature",
@@ -17471,7 +17471,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/nautilus.png"
+      "imagePath": "/images/mobs/nautilus.png"
     },
     {
       "category": "Creature",
@@ -17636,7 +17636,7 @@
       "introducedVersion": "1.2.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/ocelot.png"
+      "imagePath": "/images/mobs/ocelot.png"
     },
     {
       "category": "Creature",
@@ -18525,7 +18525,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/panda.png"
+      "imagePath": "/images/mobs/panda.png"
     },
     {
       "category": "Monster",
@@ -18735,7 +18735,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/parched.png"
+      "imagePath": "/images/mobs/parched.png"
     },
     {
       "category": "Creature",
@@ -21796,7 +21796,7 @@
       "introducedVersion": "1.12",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/parrot.png"
+      "imagePath": "/images/mobs/parrot.png"
     },
     {
       "category": "Monster",
@@ -22148,7 +22148,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/phantom.png"
+      "imagePath": "/images/mobs/phantom.png"
     },
     {
       "category": "Creature",
@@ -22396,7 +22396,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/pig.png"
+      "imagePath": "/images/mobs/pig.png"
     },
     {
       "category": "Monster",
@@ -22993,7 +22993,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/piglin.png"
+      "imagePath": "/images/mobs/piglin.png"
     },
     {
       "category": "Monster",
@@ -23410,7 +23410,7 @@
       "introducedVersion": "1.16.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/piglin_brute.png"
+      "imagePath": "/images/mobs/piglin_brute.png"
     },
     {
       "category": "Monster",
@@ -23633,7 +23633,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/pillager.png"
+      "imagePath": "/images/mobs/pillager.png"
     },
     {
       "category": "Creature",
@@ -23985,7 +23985,7 @@
       "introducedVersion": "1.10",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/polar_bear.png"
+      "imagePath": "/images/mobs/polar_bear.png"
     },
     {
       "category": "Water Ambient",
@@ -24220,7 +24220,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/pufferfish.png"
+      "imagePath": "/images/mobs/pufferfish.png"
     },
     {
       "category": "Creature",
@@ -24488,7 +24488,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/rabbit.png"
+      "imagePath": "/images/mobs/rabbit.png"
     },
     {
       "category": "Monster",
@@ -24973,7 +24973,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/ravager.png"
+      "imagePath": "/images/mobs/ravager.png"
     },
     {
       "category": "Water Ambient",
@@ -25168,7 +25168,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/salmon.png"
+      "imagePath": "/images/mobs/salmon.png"
     },
     {
       "category": "Creature",
@@ -25410,7 +25410,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/sheep.png"
+      "imagePath": "/images/mobs/sheep.png"
     },
     {
       "category": "Monster",
@@ -25943,7 +25943,7 @@
       "introducedVersion": "1.9",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/shulker.png"
+      "imagePath": "/images/mobs/shulker.png"
     },
     {
       "category": "Monster",
@@ -26140,7 +26140,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/silverfish.png"
+      "imagePath": "/images/mobs/silverfish.png"
     },
     {
       "category": "Monster",
@@ -26401,7 +26401,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/skeleton.png"
+      "imagePath": "/images/mobs/skeleton.png"
     },
     {
       "category": "Creature",
@@ -26882,7 +26882,7 @@
       "introducedVersion": "1.6.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/skeleton_horse.png"
+      "imagePath": "/images/mobs/skeleton_horse.png"
     },
     {
       "category": "Monster",
@@ -27447,7 +27447,7 @@
       "introducedVersion": "Alpha",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/slime.png"
+      "imagePath": "/images/mobs/slime.png"
     },
     {
       "category": "Creature",
@@ -28251,7 +28251,7 @@
       "introducedVersion": "1.20",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/sniffer.png"
+      "imagePath": "/images/mobs/sniffer.png"
     },
     {
       "category": "Misc",
@@ -28400,7 +28400,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/snow_golem.png"
+      "imagePath": "/images/mobs/snow_golem.png"
     },
     {
       "category": "Monster",
@@ -28610,7 +28610,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/spider.png"
+      "imagePath": "/images/mobs/spider.png"
     },
     {
       "category": "Water Creature",
@@ -28846,7 +28846,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/squid.png"
+      "imagePath": "/images/mobs/squid.png"
     },
     {
       "category": "Monster",
@@ -29069,7 +29069,7 @@
       "introducedVersion": "1.10",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/stray.png"
+      "imagePath": "/images/mobs/stray.png"
     },
     {
       "category": "Creature",
@@ -29646,7 +29646,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/strider.png"
+      "imagePath": "/images/mobs/strider.png"
     },
     {
       "category": "Creature",
@@ -29921,7 +29921,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/tadpole.png"
+      "imagePath": "/images/mobs/tadpole.png"
     },
     {
       "category": "Creature",
@@ -30291,7 +30291,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/trader_llama.png"
+      "imagePath": "/images/mobs/trader_llama.png"
     },
     {
       "category": "Water Ambient",
@@ -30486,7 +30486,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/tropical_fish.png"
+      "imagePath": "/images/mobs/tropical_fish.png"
     },
     {
       "category": "Creature",
@@ -31108,7 +31108,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/turtle.png"
+      "imagePath": "/images/mobs/turtle.png"
     },
     {
       "category": "Monster",
@@ -31292,7 +31292,7 @@
       "introducedVersion": "1.11",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/vex.png"
+      "imagePath": "/images/mobs/vex.png"
     },
     {
       "category": "Misc",
@@ -32222,7 +32222,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/villager.png"
+      "imagePath": "/images/mobs/villager.png"
     },
     {
       "category": "Monster",
@@ -32419,7 +32419,7 @@
       "introducedVersion": "1.11",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/vindicator.png"
+      "imagePath": "/images/mobs/vindicator.png"
     },
     {
       "category": "Creature",
@@ -32925,7 +32925,7 @@
       "introducedVersion": "1.14",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/wandering_trader.png"
+      "imagePath": "/images/mobs/wandering_trader.png"
     },
     {
       "category": "Monster",
@@ -34167,7 +34167,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/warden.png"
+      "imagePath": "/images/mobs/warden.png"
     },
     {
       "category": "Monster",
@@ -34506,7 +34506,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/witch.png"
+      "imagePath": "/images/mobs/witch.png"
     },
     {
       "category": "Monster",
@@ -34715,7 +34715,7 @@
       "introducedVersion": "1.4.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/wither.png"
+      "imagePath": "/images/mobs/wither.png"
     },
     {
       "category": "Monster",
@@ -34925,7 +34925,7 @@
       "introducedVersion": "1.4.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/wither_skeleton.png"
+      "imagePath": "/images/mobs/wither_skeleton.png"
     },
     {
       "category": "Creature",
@@ -35224,7 +35224,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/wolf.png"
+      "imagePath": "/images/mobs/wolf.png"
     },
     {
       "category": "Monster",
@@ -35602,7 +35602,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zoglin.png"
+      "imagePath": "/images/mobs/zoglin.png"
     },
     {
       "category": "Monster",
@@ -36030,7 +36030,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zombie.png"
+      "imagePath": "/images/mobs/zombie.png"
     },
     {
       "category": "Monster",
@@ -36259,7 +36259,7 @@
       "introducedVersion": "1.6.1",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zombie_horse.png"
+      "imagePath": "/images/mobs/zombie_horse.png"
     },
     {
       "category": "Monster",
@@ -36959,7 +36959,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zombie_nautilus.png"
+      "imagePath": "/images/mobs/zombie_nautilus.png"
     },
     {
       "category": "Monster",
@@ -37181,7 +37181,7 @@
       "introducedVersion": "1.4.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zombie_villager.png"
+      "imagePath": "/images/mobs/zombie_villager.png"
     },
     {
       "category": "Monster",
@@ -37365,7 +37365,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "https://raw.githubusercontent.com/actualpugbot/mob-voice-over/main/public/assets/mobs/zombified_piglin.png"
+      "imagePath": "/images/mobs/zombified_piglin.png"
     }
   ],
   "resourcePack": {

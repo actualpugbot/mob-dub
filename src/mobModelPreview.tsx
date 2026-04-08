@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { getMobImagePath } from "./mobImagePath";
 import { publicUrl } from "./publicUrl";
 import type { MobDefinition, MobModelCube, MobModelDefinition, MobModelPart } from "./types";
 
@@ -28,9 +29,9 @@ const PREVIEW_PADDING: Record<PreviewSize, number> = {
   list: 8,
 };
 
-const VIEW_YAW = -Math.PI / 4.4;
+const VIEW_YAW = Math.PI / 4.4;
 const VIEW_PITCH = -Math.PI / 6.8;
-const FACE_LIGHT = normalizeVector({ x: -0.4, y: 0.8, z: -1 });
+const FACE_LIGHT = normalizeVector({ x: 0.4, y: 0.8, z: -1 });
 const IDENTITY_MATRIX: Matrix4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 const textureCache = new Map<string, Promise<HTMLImageElement>>();
@@ -47,15 +48,16 @@ export function MobModelPreview({
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [renderFailed, setRenderFailed] = useState(false);
+  const imagePath = getMobImagePath(mob);
 
   useEffect(() => {
     setRenderFailed(false);
-  }, [mob.imagePath, mob.localId, model, size]);
+  }, [imagePath, mob.localId, model, size]);
 
   useEffect(() => {
     let active = true;
 
-    if (!model || !mob.imagePath || renderFailed) {
+    if (!model || !imagePath || renderFailed) {
       return () => {
         active = false;
       };
@@ -69,7 +71,7 @@ export function MobModelPreview({
     }
 
     const cacheKey = buildPreviewCacheKey(mob.localId, size);
-    renderPreview(cacheKey, canvas, mob.imagePath, model, size)
+    renderPreview(cacheKey, canvas, imagePath, model, size)
       .catch(() => {
         if (active) {
           setRenderFailed(true);
@@ -79,18 +81,18 @@ export function MobModelPreview({
     return () => {
       active = false;
     };
-  }, [mob.imagePath, mob.localId, model, renderFailed, size]);
+  }, [imagePath, mob.localId, model, renderFailed, size]);
 
-  if (!model || !mob.imagePath || renderFailed) {
-    return <FallbackPreview mob={mob} size={size} />;
+  if (!model || !imagePath || renderFailed) {
+    return <FallbackPreview imagePath={imagePath} mob={mob} size={size} />;
   }
 
   return <canvas aria-hidden="true" className={`mob-preview mob-preview--${size}`} ref={canvasRef} />;
 }
 
-function FallbackPreview({ mob, size }: { mob: MobDefinition; size: PreviewSize }) {
-  if (mob.imagePath) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(mob.imagePath)} />;
+function FallbackPreview({ imagePath, mob, size }: { imagePath?: string; mob: MobDefinition; size: PreviewSize }) {
+  if (imagePath) {
+    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(imagePath)} />;
   }
 
   return (
