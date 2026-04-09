@@ -984,17 +984,18 @@ function VariantGroupRow({
           </button>
         </div>
 
-        <button
-          className="variant-reset-button"
-          disabled={!customization && !isMuted}
-          onClick={() => handlers.onResetGroupedSound(group.variants)}
-          type="button"
-        >
-          <span aria-hidden="true" className="variant-reset-button__icon">
-            <ActionIcon kind="reset" />
-          </span>
-          <span>Reset Changes</span>
-        </button>
+        {customization ? (
+          <button
+            className="variant-reset-button"
+            onClick={() => handlers.onResetGroupedSound(group.variants)}
+            type="button"
+          >
+            <span aria-hidden="true" className="variant-reset-button__icon">
+              <ActionIcon kind="reset" />
+            </span>
+            <span>Reset Changes</span>
+          </button>
+        ) : null}
       </section>
 
       <input

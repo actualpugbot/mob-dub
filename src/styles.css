@@ -897,11 +897,15 @@ h3 {
   gap: 10px 12px;
 }
 
+.variant-card__headline strong,
+.variant-card__section-copy h4 {
+  font-size: 1.08rem;
+  font-weight: 710;
+  letter-spacing: -0.03em;
+}
+
 .variant-card__headline strong {
-  font-size: 1.55rem;
-  font-weight: 680;
   line-height: 1;
-  letter-spacing: -0.04em;
   text-transform: none;
 }
 
@@ -920,8 +924,8 @@ h3 {
 }
 
 .variant-card__track--custom {
-  padding-top: 10px;
-  border-top: 1px solid rgba(153, 190, 214, 0.1);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .variant-card__track-control {
@@ -1142,9 +1146,6 @@ h3 {
 
 .variant-card__section-copy h4 {
   margin: 0;
-  font-size: 1.08rem;
-  font-weight: 710;
-  letter-spacing: -0.03em;
 }
 
 .variant-card__replace-actions {
@@ -1443,8 +1444,9 @@ h3 {
     padding: 16px;
   }
 
-  .variant-card__headline strong {
-    font-size: 1.28rem;
+  .variant-card__headline strong,
+  .variant-card__section-copy h4 {
+    font-size: 1.08rem;
   }
 
   .variant-waveform-row {
