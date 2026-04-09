@@ -37,11 +37,9 @@ type MobModelsResponse = { mobs?: Record<string, MobModelDefinition> };
 type FileInputRefMap = MutableRefObject<Record<string, HTMLInputElement | null>>;
 type CardRefMap = MutableRefObject<Record<string, HTMLElement | null>>;
 type VariantEditorHandlers = {
-  onApplyCustomizationToEvent: (eventDefinition: MobSoundEvent, customization: CustomVariantSound) => void;
   onFileSelected: (variants: MobSoundVariant[], file?: File) => void;
   onPickFile: (groupId: string) => void;
   onResetGroupedSound: (variants: MobSoundVariant[]) => void;
-  onToggleMuteForGroup: (variants: MobSoundVariant[]) => void;
   onTogglePreview: (groupId: string, source: PreviewSource, url?: string) => Promise<void>;
   onToggleRecording: (groupId: string, variants: MobSoundVariant[], mob: MobDefinition, label: string) => Promise<void>;
 };
@@ -356,23 +354,6 @@ export default function App() {
     [storeCustomizationGroup],
   );
 
-  const toggleMuteForGroup = useCallback((variants: MobSoundVariant[]) => {
-    const variantIds = getVariantIds(variants);
-    setMutedVariantIds((current) => toggleKeys(current, variantIds));
-  }, []);
-
-  const applyCustomizationToEvent = useCallback(
-    (eventDefinition: MobSoundEvent, customization: CustomVariantSound) => {
-      storeCustomizationGroup(getVariantIds(eventDefinition.variants), {
-        blob: customization.blob,
-        fileName: customization.fileName,
-        kind: customization.kind,
-        mimeType: customization.mimeType,
-      });
-    },
-    [storeCustomizationGroup],
-  );
-
   const handleExport = useCallback(async () => {
     if (!canCreateResourcePack || !dataset) {
       return;
@@ -409,15 +390,13 @@ export default function App() {
 
   const editorHandlers = useMemo<VariantEditorHandlers>(
     () => ({
-      onApplyCustomizationToEvent: applyCustomizationToEvent,
       onFileSelected: handleFileSelected,
       onPickFile: handlePickFile,
       onResetGroupedSound: resetGroupedSound,
-      onToggleMuteForGroup: toggleMuteForGroup,
       onTogglePreview: togglePreview,
       onToggleRecording: toggleRecording,
     }),
-    [applyCustomizationToEvent, handleFileSelected, handlePickFile, resetGroupedSound, toggleMuteForGroup, togglePreview, toggleRecording],
+    [handleFileSelected, handlePickFile, resetGroupedSound, togglePreview, toggleRecording],
   );
 
   return (
@@ -746,7 +725,6 @@ function EventCard({
         {groupedVariants.map((group) => (
           <VariantGroupRow
             customizations={customizations}
-            eventDefinition={eventDefinition}
             fileInputRefs={fileInputRefs}
             group={group}
             handlers={handlers}
@@ -881,21 +859,8 @@ function getSoundFileLabel(path: string) {
   return path.split("/").pop() ?? path;
 }
 
-function isCustomizationAppliedToEvent(
-  eventDefinition: MobSoundEvent,
-  customizations: Record<string, CustomVariantSound>,
-  customization: CustomVariantSound | null,
-) {
-  if (!customization) {
-    return false;
-  }
-
-  return eventDefinition.variants.every((variant) => customizations[variant.id]?.blob === customization.blob);
-}
-
 function VariantGroupRow({
   customizations,
-  eventDefinition,
   fileInputRefs,
   group,
   handlers,
@@ -906,7 +871,6 @@ function VariantGroupRow({
   recordingGroupId,
 }: {
   customizations: Record<string, CustomVariantSound>;
-  eventDefinition: MobSoundEvent;
   fileInputRefs: FileInputRefMap;
   group: ReturnType<typeof groupVariantsBySoundPath>[number];
   handlers: VariantEditorHandlers;
@@ -923,8 +887,6 @@ function VariantGroupRow({
   const isPlayingOriginal = playingPreview?.groupId === group.id && playingPreview.source === "original";
   const isPlayingCustom = playingPreview?.groupId === group.id && playingPreview.source === "custom";
   const isPlayingAny = isPlayingOriginal || isPlayingCustom;
-  const hasEventOverrides = eventDefinition.variants.length > group.variants.length;
-  const isAppliedToEvent = isCustomizationAppliedToEvent(eventDefinition, customizations, customization);
   const replacementSourceFile = customization ? customization.fileName : getSoundFileLabel(sampleVariant.assetPath);
 
   return (
@@ -936,31 +898,28 @@ function VariantGroupRow({
               <strong>{group.label}</strong>
             </div>
           </div>
-          {isMuted ? (
-            <div className="variant-meta">
-              <span className="muted-chip">Muted in pack</span>
-            </div>
-          ) : null}
         </div>
 
         <div className="variant-card__waveforms">
           <div className="variant-card__track variant-waveform-row">
-            <button
-              aria-label={`${isPlayingOriginal ? "Stop" : "Play"} original preview for ${group.label}`}
-              className={cx("variant-track-play", isPlayingOriginal && "is-playing")}
-              disabled={!sampleVariant.url}
-              onClick={() => {
-                void handlers.onTogglePreview(group.id, "original", sampleVariant.url);
-              }}
-              type="button"
-            >
-              <ActionIcon kind={isPlayingOriginal ? "stop" : "play"} />
-            </button>
+            <div className="variant-card__track-control">
+              <button
+                aria-label={`${isPlayingOriginal ? "Stop" : "Play"} original preview for ${group.label}`}
+                className={cx("variant-track-play", isPlayingOriginal && "is-playing")}
+                disabled={!sampleVariant.url}
+                onClick={() => {
+                  void handlers.onTogglePreview(group.id, "original", sampleVariant.url);
+                }}
+                type="button"
+              >
+                <ActionIcon kind={isPlayingOriginal ? "stop" : "play"} />
+              </button>
+              <span className="variant-track-label">Original</span>
+            </div>
             <div className="variant-card__track-main">
-              <div className="variant-waveform-source">
-                <span className="variant-track-label">Original</span>
-                <span className="variant-track-file">{getSoundFileLabel(sampleVariant.assetPath)}</span>
-              </div>
+              <span className="variant-track-file" title={getSoundFileLabel(sampleVariant.assetPath)}>
+                {getSoundFileLabel(sampleVariant.assetPath)}
+              </span>
               <VariantWaveform
                 isPlaying={isPlayingOriginal}
                 label={`${group.label} original`}
@@ -972,22 +931,24 @@ function VariantGroupRow({
 
           {customization ? (
             <div className="variant-card__track variant-card__track--custom variant-waveform-row">
-              <button
-                aria-label={`${isPlayingCustom ? "Stop" : "Play"} custom preview for ${group.label}`}
-                className={cx("variant-track-play", isPlayingCustom && "is-playing")}
-                disabled={!customization.url}
-                onClick={() => {
-                  void handlers.onTogglePreview(group.id, "custom", customization.url);
-                }}
-                type="button"
-              >
-                <ActionIcon kind={isPlayingCustom ? "stop" : "play"} />
-              </button>
+              <div className="variant-card__track-control">
+                <button
+                  aria-label={`${isPlayingCustom ? "Stop" : "Play"} custom preview for ${group.label}`}
+                  className={cx("variant-track-play", isPlayingCustom && "is-playing")}
+                  disabled={!customization.url}
+                  onClick={() => {
+                    void handlers.onTogglePreview(group.id, "custom", customization.url);
+                  }}
+                  type="button"
+                >
+                  <ActionIcon kind={isPlayingCustom ? "stop" : "play"} />
+                </button>
+                <span className="variant-track-label variant-track-label--custom">Custom</span>
+              </div>
               <div className="variant-card__track-main">
-                <div className="variant-waveform-source">
-                  <span className="variant-track-label variant-track-label--custom">Custom</span>
-                  <span className="variant-track-file">{replacementSourceFile}</span>
-                </div>
+                <span className="variant-track-file" title={replacementSourceFile}>
+                  {replacementSourceFile}
+                </span>
                 <VariantWaveform
                   isPlaying={isPlayingCustom}
                   label={`${group.label} custom`}
@@ -1032,44 +993,6 @@ function VariantGroupRow({
             <span className="variant-option-button__body">
               <strong>Upload</strong>
             </span>
-          </button>
-        </div>
-      </section>
-
-      <section className="variant-card__advanced">
-        <div className="variant-card__section-copy variant-card__section-copy--compact">
-          <h4>Advanced</h4>
-        </div>
-
-        <div className="variant-card__advanced-actions">
-          <button className={cx("variant-toggle-button", isMuted && "is-active")} onClick={() => handlers.onToggleMuteForGroup(group.variants)} type="button">
-            <span aria-hidden="true" className="variant-toggle-button__icon">
-              <ActionIcon kind={isMuted ? "unmute" : "mute"} />
-            </span>
-            <span className="variant-toggle-button__body">
-              <strong>Mute in Pack</strong>
-            </span>
-            <span aria-hidden="true" className="variant-toggle-button__control" />
-          </button>
-
-          <button
-            aria-label={isAppliedToEvent ? "Applied to Event" : "Apply to Event"}
-            className={cx("variant-toggle-button", "variant-toggle-button--accent", isAppliedToEvent && "is-active")}
-            disabled={!customization || !hasEventOverrides}
-            onClick={() => {
-              if (customization) {
-                handlers.onApplyCustomizationToEvent(eventDefinition, customization);
-              }
-            }}
-            type="button"
-          >
-            <span aria-hidden="true" className="variant-toggle-button__icon">
-              <ActionIcon kind="target" />
-            </span>
-            <span className="variant-toggle-button__body">
-              <strong>Override All</strong>
-            </span>
-            <span aria-hidden="true" className="variant-toggle-button__control" />
           </button>
         </div>
 
@@ -1812,19 +1735,4 @@ function removeKeys<T>(record: Record<string, T>, keys: string[]) {
   }
 
   return changed ? next : record;
-}
-
-function toggleKeys(record: Record<string, boolean>, keys: string[]) {
-  const shouldAdd = !keys.some((key) => record[key]);
-  const next = { ...record };
-
-  for (const key of keys) {
-    if (shouldAdd) {
-      next[key] = true;
-    } else {
-      delete next[key];
-    }
-  }
-
-  return next;
 }
