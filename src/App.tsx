@@ -672,14 +672,6 @@ function MobCard({
         </div>
       ) : null}
 
-      <div className="mob-card-tip">
-        <span aria-hidden="true" className="mob-card-tip__icon">
-          <ActionIcon kind="tip" />
-        </span>
-        <p>
-          <strong>Tip:</strong> "Override All" copies the current replacement to every grouped sound inside the same event.
-        </p>
-      </div>
     </article>
   );
 }
@@ -744,7 +736,7 @@ function EventCard({
 function ActionIcon({
   kind,
 }: {
-  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset" | "info" | "target" | "tip" | "trash";
+  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset" | "info" | "target" | "trash";
 }) {
   switch (kind) {
     case "play":
@@ -832,15 +824,6 @@ function ActionIcon({
         </svg>
       );
 
-    case "tip":
-      return (
-        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
-          <path d="M7.5 13.5C7.7 12.4 6 11.6 6 8.8C6 6.15 7.79 4 10 4C12.21 4 14 6.15 14 8.8C14 11.6 12.3 12.4 12.5 13.5" />
-          <path d="M8 15.5H12" />
-          <path d="M8.7 17.25H11.3" />
-        </svg>
-      );
-
     case "trash":
       return (
         <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
@@ -914,12 +897,15 @@ function VariantGroupRow({
               >
                 <ActionIcon kind={isPlayingOriginal ? "stop" : "play"} />
               </button>
-              <span className="variant-track-label">Original</span>
+              <span
+                className="variant-track-label"
+                data-track-title={getSoundFileLabel(sampleVariant.assetPath)}
+                title={getSoundFileLabel(sampleVariant.assetPath)}
+              >
+                Original
+              </span>
             </div>
             <div className="variant-card__track-main">
-              <span className="variant-track-file" title={getSoundFileLabel(sampleVariant.assetPath)}>
-                {getSoundFileLabel(sampleVariant.assetPath)}
-              </span>
               <VariantWaveform
                 isPlaying={isPlayingOriginal}
                 label={`${group.label} original`}
@@ -943,12 +929,15 @@ function VariantGroupRow({
                 >
                   <ActionIcon kind={isPlayingCustom ? "stop" : "play"} />
                 </button>
-                <span className="variant-track-label variant-track-label--custom">Custom</span>
+                <span
+                  className="variant-track-label variant-track-label--custom"
+                  data-track-title={replacementSourceFile}
+                  title={replacementSourceFile}
+                >
+                  Custom
+                </span>
               </div>
               <div className="variant-card__track-main">
-                <span className="variant-track-file" title={replacementSourceFile}>
-                  {replacementSourceFile}
-                </span>
                 <VariantWaveform
                   isPlaying={isPlayingCustom}
                   label={`${group.label} custom`}
@@ -977,9 +966,7 @@ function VariantGroupRow({
             <span aria-hidden="true" className="variant-option-button__icon">
               <ActionIcon kind={isRecording ? "stop" : "record"} />
             </span>
-            <span className="variant-option-button__body">
-              <strong>{isRecording ? "Stop" : "Record"}</strong>
-            </span>
+            <span className="variant-option-button__body">{isRecording ? "Stop" : "Record"}</span>
           </button>
 
           <button
@@ -990,9 +977,7 @@ function VariantGroupRow({
             <span aria-hidden="true" className="variant-option-button__icon">
               <ActionIcon kind="upload" />
             </span>
-            <span className="variant-option-button__body">
-              <strong>Upload</strong>
-            </span>
+            <span className="variant-option-button__body">Upload</span>
           </button>
         </div>
 
