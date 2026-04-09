@@ -700,18 +700,21 @@ function EventCard({
   recordingGroupId: string | null;
 }) {
   const groupedVariants = useMemo(() => groupVariantsBySoundPath(eventDefinition), [eventDefinition]);
+  const shouldShowEventTitle = isMobExpanded;
 
   return (
-    <section className="event-card">
-      <header className="event-header">
-        <div className="event-copy">
-          <div className="event-title">
-            <strong>{eventLabel(eventDefinition.id)}</strong>
-            {isMobExpanded ? <small>{eventDefinition.id}</small> : null}
+    <section aria-label={eventLabel(eventDefinition.id)} className="event-card">
+      {shouldShowEventTitle ? (
+        <header className="event-header">
+          <div className="event-copy">
+            <div className="event-title">
+              <strong>{eventLabel(eventDefinition.id)}</strong>
+              <small>{eventDefinition.id}</small>
+            </div>
+            {eventDefinition.subtitle ? <p className="event-subtitle">{eventDefinition.subtitle}</p> : null}
           </div>
-          {eventDefinition.subtitle ? <p className="event-subtitle">{eventDefinition.subtitle}</p> : null}
-        </div>
-      </header>
+        </header>
+      ) : null}
 
       <div className="variant-list">
         {groupedVariants.map((group) => (
