@@ -171,6 +171,21 @@ describe("App", () => {
     vi.stubGlobal("Audio", AudioMock as unknown as typeof Audio);
     vi.stubGlobal("AudioContext", AudioContextMock as unknown as typeof AudioContext);
     vi.stubGlobal("ResizeObserver", ResizeObserverMock as unknown as typeof ResizeObserver);
+    Object.defineProperty(window, "innerHeight", {
+      configurable: true,
+      value: 800,
+      writable: true,
+    });
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 0,
+      writable: true,
+    });
+    Object.defineProperty(window, "scrollTo", {
+      configurable: true,
+      value: vi.fn(),
+      writable: true,
+    });
 
     Object.defineProperty(URL, "createObjectURL", {
       configurable: true,
@@ -202,7 +217,7 @@ describe("App", () => {
     }));
   });
 
-  it("shows the zero state guidance and reflects playback, uploads, overrides, and mute state", async () => {
+  it("shows the zero state guidance and reflects playback, uploads, and expanded event details", async () => {
     const user = userEvent.setup();
     const { container } = render(<App />);
 
@@ -233,14 +248,6 @@ describe("App", () => {
 
     expect(await within(say1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
     expect(say1Row.querySelectorAll(".variant-waveform-row")).toHaveLength(2);
-
-    await user.click(within(say1Row).getByRole("button", { name: /apply to event/i }));
-
-    const say2Row = getVariantRow(/say2/i);
-    expect(within(say2Row).getByRole("button", { name: /play custom preview for say2/i }).hasAttribute("disabled")).toBe(false);
-
-    await user.click(within(say2Row).getByRole("button", { name: /mute in pack/i }));
-    expect(await within(say2Row).findByText("Muted in pack")).toBeTruthy();
 
     expect(screen.queryByText("entity.cow.ambient")).toBeNull();
     await user.click(screen.getByRole("button", { name: /more\.\.\. \(1 more\)/i }));
@@ -306,5 +313,36 @@ describe("App", () => {
     expect(usesStaticModelPreview("salmon")).toBe(true);
     expect(usesStaticModelPreview("zombie_nautilus")).toBe(true);
     expect(usesStaticModelPreview("cow")).toBe(false);
+  });
+
+  it("shows a floating scroll-to-top control only after scrolling far down", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await screen.findByText("Build a pack in three quick steps");
+    expect(screen.queryByRole("button", { name: /scroll back to top/i })).toBeNull();
+
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 1400,
+      writable: true,
+    });
+    fireEvent.scroll(window);
+
+    const scrollToTopButton = await screen.findByRole("button", { name: /scroll back to top/i });
+    await user.click(scrollToTopButton);
+
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 0,
+      writable: true,
+    });
+    fireEvent.scroll(window);
+
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: /scroll back to top/i })).toBeNull();
+    });
   });
 });

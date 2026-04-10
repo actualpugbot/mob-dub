@@ -28,6 +28,7 @@ const VARIANT_WAVEFORM_BAR_COUNT = 64;
 const EXPORT_READY_FLASH_DURATION_MS = 1400;
 const DEFAULT_RECORDING_MIME_TYPE = "audio/webm";
 const DEFAULT_FILE_MIME_TYPE = "application/octet-stream";
+const SCROLL_TO_TOP_REVEAL_OFFSET_PX = 900;
 
 type MobFilter = "all" | "classic" | "recent";
 type PreviewSource = "custom" | "original";
@@ -398,6 +399,11 @@ export default function App() {
     }),
     [handleFileSelected, handlePickFile, resetGroupedSound, togglePreview, toggleRecording],
   );
+  const showScrollToTop = useScrollToTopVisibility();
+
+  const handleScrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="shell">
@@ -466,6 +472,20 @@ export default function App() {
       </main>
 
       <p className="sr-only">Modified sounds: {customizedVariantCount}</p>
+
+      {showScrollToTop ? (
+        <button
+          aria-label="Scroll back to top"
+          className="scroll-to-top-button"
+          onClick={handleScrollToTop}
+          type="button"
+        >
+          <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+            <path d="M12 18V6" />
+            <path d="m6.75 11.25 5.25-5.25 5.25 5.25" />
+          </svg>
+        </button>
+      ) : null}
 
       <RemoveMobModal mob={mobPendingRemoval} onCancel={() => setMobPendingRemoval(null)} onConfirm={confirmRemoveMob} />
     </div>
@@ -1220,6 +1240,29 @@ function useBrowserControlsHeight() {
   }, []);
 
   return { browserControlsHeight, browserControlsRef };
+}
+
+function useScrollToTopVisibility() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const updateVisibility = () => {
+      const revealOffset = Math.max(window.innerHeight * 1.5, SCROLL_TO_TOP_REVEAL_OFFSET_PX);
+      setIsVisible(window.scrollY > revealOffset);
+    };
+
+    updateVisibility();
+
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, []);
+
+  return isVisible;
 }
 
 function useExportReadyFlash(isReady: boolean) {
