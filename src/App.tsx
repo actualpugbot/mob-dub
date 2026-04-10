@@ -1,6 +1,6 @@
 import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, MutableRefObject } from "react";
-import { getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
+import { enhanceCustomAudioBlob, getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob, getResourcePackFileName } from "./export";
 import { getMobImagePath } from "./mobImagePath";
 import { MobModelPreview } from "./mobModelPreview";
@@ -172,6 +172,23 @@ export default function App() {
     });
   }, []);
 
+  const storeProcessedCustomizationGroup = useCallback(
+    async (variants: MobSoundVariant[], next: StoredCustomizationSeed) => {
+      const variantIds = getVariantIds(variants);
+
+      try {
+        const processed = await prepareCustomizationSeed(next, variants);
+        storeCustomizationGroup(variantIds, processed);
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error ? `Audio cleanup failed, so the original clip was kept: ${error.message}` : "Audio cleanup failed.",
+        );
+        storeCustomizationGroup(variantIds, next);
+      }
+    },
+    [setErrorMessage, storeCustomizationGroup],
+  );
+
   const clearCustomizationGroup = useCallback((variantIds: string[]) => {
     setCustomizations((current) => {
       let changed = false;
@@ -217,7 +234,7 @@ export default function App() {
   const { browserControlsHeight, browserControlsRef } = useBrowserControlsHeight();
   const { playingPreview, previewProgress, stopPreview, togglePreview } = useAudioPreview(setErrorMessage);
   const { recordingGroupId, toggleRecording } = useGroupRecorder({
-    onStoreGroup: storeCustomizationGroup,
+    onStoreGroup: storeProcessedCustomizationGroup,
     setErrorMessage,
   });
 
@@ -344,15 +361,16 @@ export default function App() {
         return;
       }
 
+      setErrorMessage(null);
       const blob = file.slice(0, file.size, file.type || DEFAULT_FILE_MIME_TYPE);
-      storeCustomizationGroup(getVariantIds(variants), {
+      void storeProcessedCustomizationGroup(variants, {
         blob,
         fileName: file.name,
         kind: "upload",
         mimeType: file.type || DEFAULT_FILE_MIME_TYPE,
       });
     },
-    [storeCustomizationGroup],
+    [setErrorMessage, storeProcessedCustomizationGroup],
   );
 
   const handleExport = useCallback(async () => {
@@ -1447,11 +1465,11 @@ function useGroupRecorder({
   onStoreGroup,
   setErrorMessage,
 }: {
-  onStoreGroup: (variantIds: string[], next: StoredCustomizationSeed) => void;
+  onStoreGroup: (variants: MobSoundVariant[], next: StoredCustomizationSeed) => Promise<void> | void;
   setErrorMessage: (message: string | null) => void;
 }) {
   const recorderRef = useRef<MediaRecorder | null>(null);
-  const recordingTargetRef = useRef<{ fileName: string; variantIds: string[] } | null>(null);
+  const recordingTargetRef = useRef<{ baseFileName: string; variants: MobSoundVariant[] } | null>(null);
   const recorderChunksRef = useRef<BlobPart[]>([]);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const [recordingGroupId, setRecordingGroupId] = useState<string | null>(null);
@@ -1488,8 +1506,8 @@ function useGroupRecorder({
 
         recorderChunksRef.current = [];
         recordingTargetRef.current = {
-          fileName: `${mob.localId}_${label.replace(/[^a-z0-9]+/gi, "_")}.ogg`,
-          variantIds: getVariantIds(variants),
+          baseFileName: `${mob.localId}_${label.replace(/[^a-z0-9]+/gi, "_")}`,
+          variants,
         };
 
         recorder.ondataavailable = (event) => {
@@ -1503,7 +1521,7 @@ function useGroupRecorder({
           setErrorMessage("Microphone recording failed.");
         };
 
-        recorder.onstop = () => {
+        recorder.onstop = async () => {
           const target = recordingTargetRef.current;
           setRecordingGroupId(null);
 
@@ -1515,12 +1533,17 @@ function useGroupRecorder({
             type: recorder.mimeType || preferredMimeType || DEFAULT_RECORDING_MIME_TYPE,
           });
 
-          onStoreGroup(target.variantIds, {
-            blob,
-            fileName: target.fileName,
-            kind: "recording",
-            mimeType: blob.type || recorder.mimeType || DEFAULT_RECORDING_MIME_TYPE,
-          });
+          try {
+            const mimeType = blob.type || recorder.mimeType || preferredMimeType || DEFAULT_RECORDING_MIME_TYPE;
+            await onStoreGroup(target.variants, {
+              blob,
+              fileName: withFileExtension(target.baseFileName, extensionForMimeType(mimeType)),
+              kind: "recording",
+              mimeType,
+            });
+          } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : "Microphone recording failed.");
+          }
         };
 
         recorderRef.current = recorder;
@@ -1767,4 +1790,53 @@ function removeKeys<T>(record: Record<string, T>, keys: string[]) {
   }
 
   return changed ? next : record;
+}
+
+async function prepareCustomizationSeed(seed: StoredCustomizationSeed, variants: MobSoundVariant[]): Promise<StoredCustomizationSeed> {
+  const processed = await enhanceCustomAudioBlob(seed.blob, {
+    referenceUrl: getReferenceVariantPreviewUrl(variants),
+  });
+  const mimeType = processed.blob.type || seed.mimeType;
+
+  return {
+    ...seed,
+    blob: processed.blob,
+    fileName: withFileExtension(seed.fileName, extensionForMimeType(mimeType)),
+    mimeType,
+  };
+}
+
+function getReferenceVariantPreviewUrl(variants: MobSoundVariant[]) {
+  return variants.find((variant) => variant.url)?.url;
+}
+
+function extensionForMimeType(mimeType: string) {
+  const normalizedMimeType = mimeType.toLowerCase();
+
+  if (normalizedMimeType.includes("ogg")) {
+    return "ogg";
+  }
+
+  if (normalizedMimeType.includes("wav")) {
+    return "wav";
+  }
+
+  if (normalizedMimeType.includes("webm")) {
+    return "webm";
+  }
+
+  if (normalizedMimeType.includes("mp4") || normalizedMimeType.includes("m4a") || normalizedMimeType.includes("aac")) {
+    return "m4a";
+  }
+
+  if (normalizedMimeType.includes("mpeg") || normalizedMimeType.includes("mp3")) {
+    return "mp3";
+  }
+
+  return "dat";
+}
+
+function withFileExtension(fileName: string, extension: string) {
+  const baseName = fileName.replace(/\.[^./\\]+$/, "");
+  return `${baseName}.${extension}`;
 }

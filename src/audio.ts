@@ -1,11 +1,20 @@
 const OGG_CANDIDATES = ["audio/ogg;codecs=opus", "audio/ogg"] as const;
 const DEFAULT_WAVEFORM_BAR_COUNT = 28;
+const DEAD_AIR_THRESHOLD = 0.008;
+const DEAD_AIR_FRAME_SECONDS = 0.01;
+const DEAD_AIR_PADDING_SECONDS = 0.025;
+const DEAD_AIR_MIN_TRIMMED_SECONDS = 0.12;
 const FFMPEG_LOAD_TIMEOUT_MS = 120_000;
 const FFMPEG_MASTER_FILTER =
   "highpass=f=80," +
   "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=3," +
   "loudnorm=I=-18:TP=-2:LRA=8," +
   "alimiter=limit=-1.5dB";
+const MAX_REFERENCE_MATCH_GAIN = 6;
+const MIN_REFERENCE_MATCH_GAIN = 0.25;
+const MIN_REFERENCE_RMS = 1e-5;
+const MIN_SIGNIFICANT_GAIN_DELTA = 0.015;
+const TARGET_MAX_PEAK = 0.98;
 const FFMPEG_PROVIDERS = [
   {
     coreBase: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm",
@@ -35,6 +44,7 @@ const FFMPEG_PROVIDERS = [
 
 const waveformCache = new Map<string, number[]>();
 const waveformRequestCache = new Map<string, Promise<number[]>>();
+const referenceLevelCache = new Map<string, Promise<AudioLevelAnalysis>>();
 
 let analysisAudioContext: AudioContext | null = null;
 let ffmpegRuntimePromise: Promise<FfmpegRuntime> | null = null;
@@ -48,6 +58,35 @@ interface EnsureOggBlobOptions {
   onProgress?: ProgressCallback;
   sourceId?: string;
   sourceName?: string;
+}
+
+interface EnhanceCustomAudioBlobOptions {
+  onProgress?: ProgressCallback;
+  referenceUrl?: string;
+}
+
+interface AudioLevelAnalysis {
+  peak: number;
+  rms: number;
+}
+
+interface AudioTrimRange {
+  durationSec: number;
+  endFrame: number;
+  startFrame: number;
+  trimmedEndSec: number;
+  trimmedStartSec: number;
+  wasTrimmed: boolean;
+}
+
+export interface EnhancedCustomAudioBlob {
+  appliedGain: number;
+  blob: Blob;
+  durationSec: number;
+  matchedReferenceLevel: boolean;
+  trimmedEndSec: number;
+  trimmedStartSec: number;
+  wasTrimmed: boolean;
 }
 
 interface FfmpegModule {
@@ -135,6 +174,71 @@ export async function ensureOggBlob(blob: Blob, options: EnsureOggBlobOptions = 
   return transcodeBlobToOgg(blob, options);
 }
 
+export async function enhanceCustomAudioBlob(
+  blob: Blob,
+  options: EnhanceCustomAudioBlobOptions = {},
+): Promise<EnhancedCustomAudioBlob> {
+  if (!blob.size) {
+    return {
+      appliedGain: 1,
+      blob,
+      durationSec: 0,
+      matchedReferenceLevel: false,
+      trimmedEndSec: 0,
+      trimmedStartSec: 0,
+      wasTrimmed: false,
+    };
+  }
+
+  const audioContext = getAnalysisAudioContext();
+  if (!audioContext) {
+    return {
+      appliedGain: 1,
+      blob,
+      durationSec: 0,
+      matchedReferenceLevel: false,
+      trimmedEndSec: 0,
+      trimmedStartSec: 0,
+      wasTrimmed: false,
+    };
+  }
+
+  options.onProgress?.("Cleaning up audio...");
+  const audioBuffer = await decodeBlob(audioContext, blob);
+  const monoSamples = mixAudioBufferToMono(audioBuffer);
+  const trimRange = resolveTrimRange(monoSamples, audioBuffer.sampleRate);
+  const sourceLevels = analyzeSampleWindow(monoSamples, trimRange.startFrame, trimRange.endFrame);
+  const referenceLevels = options.referenceUrl ? await getReferenceAudioLevels(options.referenceUrl).catch(() => null) : null;
+  const appliedGain = resolveReferenceMatchGain(sourceLevels, referenceLevels);
+  const matchedReferenceLevel = Math.abs(appliedGain - 1) >= MIN_SIGNIFICANT_GAIN_DELTA;
+
+  if (!trimRange.wasTrimmed && !matchedReferenceLevel) {
+    return {
+      appliedGain: 1,
+      blob,
+      durationSec: trimRange.durationSec,
+      matchedReferenceLevel: false,
+      trimmedEndSec: 0,
+      trimmedStartSec: 0,
+      wasTrimmed: false,
+    };
+  }
+
+  return {
+    appliedGain,
+    blob: encodeWavFromAudioBuffer(audioBuffer, {
+      endFrame: trimRange.endFrame,
+      gain: appliedGain,
+      startFrame: trimRange.startFrame,
+    }),
+    durationSec: trimRange.durationSec,
+    matchedReferenceLevel,
+    trimmedEndSec: trimRange.trimmedEndSec,
+    trimmedStartSec: trimRange.trimmedStartSec,
+    wasTrimmed: trimRange.wasTrimmed,
+  };
+}
+
 async function transcodeBlobToOgg(blob: Blob, options: EnsureOggBlobOptions): Promise<Blob> {
   const { ffmpeg, fetchFile } = await getFfmpegRuntime(options.onProgress);
   const safeId = sanitizeFfmpegId(options.sourceId ?? options.sourceName ?? `clip_${nextConversionId + 1}`);
@@ -181,7 +285,7 @@ async function transcodeBlobToOgg(blob: Blob, options: EnsureOggBlobOptions): Pr
 }
 
 async function decodeBlob(audioContext: AudioContext, blob: Blob): Promise<AudioBuffer> {
-  const arrayBuffer = await blob.arrayBuffer();
+  const arrayBuffer = await blobToArrayBuffer(blob);
   return audioContext.decodeAudioData(arrayBuffer.slice(0));
 }
 
@@ -233,6 +337,39 @@ function buildWaveformBars(audioBuffer: AudioBuffer, barCount: number): number[]
   return bars.map((value) => Math.max(12, Math.round((value / maxRms) * 100)));
 }
 
+async function getReferenceAudioLevels(url: string): Promise<AudioLevelAnalysis> {
+  const cached = referenceLevelCache.get(url);
+  if (cached) {
+    return cached;
+  }
+
+  const request = (async () => {
+    const audioContext = getAnalysisAudioContext();
+    if (!audioContext) {
+      throw new Error("Audio analysis is unavailable.");
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Could not load original audio preview (${response.status}).`);
+    }
+
+    const audioBuffer = await decodeBlob(audioContext, await response.blob());
+    const monoSamples = mixAudioBufferToMono(audioBuffer);
+    const trimRange = resolveTrimRange(monoSamples, audioBuffer.sampleRate);
+    return analyzeSampleWindow(monoSamples, trimRange.startFrame, trimRange.endFrame);
+  })();
+
+  referenceLevelCache.set(url, request);
+
+  try {
+    return await request;
+  } catch (error) {
+    referenceLevelCache.delete(url);
+    throw error;
+  }
+}
+
 function mixAudioBufferToMono(audioBuffer: AudioBuffer): Float32Array {
   const channelCount = Math.max(1, audioBuffer.numberOfChannels || 1);
   const monoSamples = new Float32Array(audioBuffer.length || 0);
@@ -245,6 +382,174 @@ function mixAudioBufferToMono(audioBuffer: AudioBuffer): Float32Array {
   }
 
   return monoSamples;
+}
+
+function resolveTrimRange(samples: Float32Array, sampleRate: number): AudioTrimRange {
+  const safeSampleRate = Math.max(1, Number(sampleRate || 44_100));
+  const totalFrames = samples.length;
+  const fullRange = createDefaultTrimRange(totalFrames, safeSampleRate);
+  if (!totalFrames) {
+    return fullRange;
+  }
+
+  const frameSize = Math.max(1, Math.floor(safeSampleRate * DEAD_AIR_FRAME_SECONDS));
+  const paddingFrames = Math.max(0, Math.floor(safeSampleRate * DEAD_AIR_PADDING_SECONDS));
+  let firstSoundFrame = -1;
+  let lastSoundFrameExclusive = -1;
+
+  for (let frameStart = 0; frameStart < totalFrames; frameStart += frameSize) {
+    const frameEnd = Math.min(totalFrames, frameStart + frameSize);
+    let peak = 0;
+
+    for (let sampleIndex = frameStart; sampleIndex < frameEnd; sampleIndex += 1) {
+      peak = Math.max(peak, Math.abs(samples[sampleIndex] ?? 0));
+    }
+
+    if (peak >= DEAD_AIR_THRESHOLD) {
+      if (firstSoundFrame < 0) {
+        firstSoundFrame = frameStart;
+      }
+      lastSoundFrameExclusive = frameEnd;
+    }
+  }
+
+  if (firstSoundFrame < 0 || lastSoundFrameExclusive <= firstSoundFrame) {
+    return fullRange;
+  }
+
+  const startFrame = Math.max(0, firstSoundFrame - paddingFrames);
+  const endFrame = Math.min(totalFrames, lastSoundFrameExclusive + paddingFrames);
+  const durationSec = (endFrame - startFrame) / safeSampleRate;
+
+  if ((startFrame <= 0 && endFrame >= totalFrames) || durationSec < DEAD_AIR_MIN_TRIMMED_SECONDS) {
+    return fullRange;
+  }
+
+  return {
+    durationSec,
+    endFrame,
+    startFrame,
+    trimmedEndSec: (totalFrames - endFrame) / safeSampleRate,
+    trimmedStartSec: startFrame / safeSampleRate,
+    wasTrimmed: true,
+  };
+}
+
+function createDefaultTrimRange(totalFrames: number, sampleRate: number): AudioTrimRange {
+  return {
+    durationSec: totalFrames / Math.max(1, sampleRate),
+    endFrame: totalFrames,
+    startFrame: 0,
+    trimmedEndSec: 0,
+    trimmedStartSec: 0,
+    wasTrimmed: false,
+  };
+}
+
+function analyzeSampleWindow(samples: Float32Array, startFrame = 0, endFrame = samples.length): AudioLevelAnalysis {
+  const safeStart = Math.max(0, Math.min(samples.length, startFrame));
+  const safeEnd = Math.max(safeStart, Math.min(samples.length, endFrame));
+  let energy = 0;
+  let peak = 0;
+
+  for (let sampleIndex = safeStart; sampleIndex < safeEnd; sampleIndex += 1) {
+    const sample = samples[sampleIndex] ?? 0;
+    const magnitude = Math.abs(sample);
+    energy += sample * sample;
+    if (magnitude > peak) {
+      peak = magnitude;
+    }
+  }
+
+  const frameCount = Math.max(0, safeEnd - safeStart);
+  return {
+    peak,
+    rms: frameCount ? Math.sqrt(energy / frameCount) : 0,
+  };
+}
+
+function resolveReferenceMatchGain(source: AudioLevelAnalysis, reference: AudioLevelAnalysis | null) {
+  if (!reference || reference.rms <= MIN_REFERENCE_RMS || source.rms <= MIN_REFERENCE_RMS) {
+    return 1;
+  }
+
+  const desiredGain = clamp(reference.rms / source.rms, MIN_REFERENCE_MATCH_GAIN, MAX_REFERENCE_MATCH_GAIN);
+  if (!Number.isFinite(desiredGain) || desiredGain <= 0) {
+    return 1;
+  }
+
+  const peakLimitedGain = source.peak > 0 ? Math.min(desiredGain, TARGET_MAX_PEAK / source.peak) : desiredGain;
+  return Math.max(0, peakLimitedGain);
+}
+
+function encodeWavFromAudioBuffer(
+  audioBuffer: AudioBuffer,
+  options: {
+    endFrame?: number;
+    gain?: number;
+    startFrame?: number;
+  } = {},
+) {
+  const totalFrames = audioBuffer.length || 0;
+  const channelCount = Math.max(1, audioBuffer.numberOfChannels || 1);
+  const safeStartFrame = Math.max(0, Math.min(totalFrames, options.startFrame ?? 0));
+  const requestedEndFrame = options.endFrame ?? totalFrames;
+  const safeEndFrame = Math.max(safeStartFrame, Math.min(totalFrames, requestedEndFrame));
+  const frameCount = Math.max(0, safeEndFrame - safeStartFrame);
+  const sampleRate = Math.max(1, Math.round(audioBuffer.sampleRate || 44_100));
+  const bytesPerSample = 2;
+  const blockAlign = channelCount * bytesPerSample;
+  const dataBytes = frameCount * blockAlign;
+  const arrayBuffer = new ArrayBuffer(44 + dataBytes);
+  const view = new DataView(arrayBuffer);
+  const gain = Number.isFinite(options.gain) ? Math.max(0, options.gain ?? 1) : 1;
+  let offset = 0;
+
+  const writeAscii = (value: string) => {
+    for (let index = 0; index < value.length; index += 1) {
+      view.setUint8(offset, value.charCodeAt(index));
+      offset += 1;
+    }
+  };
+  const writeUint16 = (value: number) => {
+    view.setUint16(offset, value, true);
+    offset += 2;
+  };
+  const writeUint32 = (value: number) => {
+    view.setUint32(offset, value, true);
+    offset += 4;
+  };
+
+  writeAscii("RIFF");
+  writeUint32(36 + dataBytes);
+  writeAscii("WAVE");
+  writeAscii("fmt ");
+  writeUint32(16);
+  writeUint16(1);
+  writeUint16(channelCount);
+  writeUint32(sampleRate);
+  writeUint32(sampleRate * blockAlign);
+  writeUint16(blockAlign);
+  writeUint16(16);
+  writeAscii("data");
+  writeUint32(dataBytes);
+
+  const channels = Array.from({ length: channelCount }, (_, channelIndex) => audioBuffer.getChannelData(channelIndex));
+  for (let frameIndex = safeStartFrame; frameIndex < safeEndFrame; frameIndex += 1) {
+    for (let channelIndex = 0; channelIndex < channelCount; channelIndex += 1) {
+      const inputSample = (channels[channelIndex]?.[frameIndex] ?? 0) * gain;
+      const clampedSample = clamp(inputSample, -1, 1);
+      const pcmValue = clampedSample < 0 ? Math.round(clampedSample * 0x8000) : Math.round(clampedSample * 0x7fff);
+      view.setInt16(offset, pcmValue, true);
+      offset += 2;
+    }
+  }
+
+  return new Blob([arrayBuffer], { type: "audio/wav" });
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
 }
 
 async function getFfmpegRuntime(progress?: ProgressCallback): Promise<FfmpegRuntime> {
@@ -337,6 +642,14 @@ async function fetchText(url: string) {
   return response.text();
 }
 
+async function blobToArrayBuffer(blob: Blob) {
+  if (typeof blob.arrayBuffer === "function") {
+    return blob.arrayBuffer();
+  }
+
+  return new Response(blob).arrayBuffer();
+}
+
 function toUint8Array(data: ArrayBuffer | Uint8Array | number[]) {
   if (data instanceof Uint8Array) {
     return data;
@@ -376,9 +689,14 @@ function guessInputExtension(value: string) {
 }
 
 function isOggLike(blob: Blob, mimeTypeHint?: string, sourceName?: string) {
-  return [blob.type, mimeTypeHint, sourceName].some((value) => {
+  const normalizedMimeTypes = [blob.type, mimeTypeHint].map((value) => String(value ?? "").toLowerCase()).filter(Boolean);
+  if (normalizedMimeTypes.length) {
+    return normalizedMimeTypes.some((value) => value.includes("audio/ogg") || value.includes("application/ogg"));
+  }
+
+  return [sourceName].some((value) => {
     const normalized = String(value ?? "").toLowerCase();
-    return normalized.includes("audio/ogg") || normalized.endsWith(".ogg");
+    return normalized.endsWith(".ogg");
   });
 }
 
@@ -387,7 +705,11 @@ function sanitizeFfmpegId(value: string) {
 }
 
 export function __setFfmpegRuntimeLoaderForTests(loader: ((progress?: ProgressCallback) => Promise<FfmpegRuntime>) | null) {
+  analysisAudioContext = null;
   ffmpegRuntimeLoader = loader ?? loadFfmpegRuntime;
   ffmpegRuntimePromise = null;
   nextConversionId = 0;
+  referenceLevelCache.clear();
+  waveformCache.clear();
+  waveformRequestCache.clear();
 }
