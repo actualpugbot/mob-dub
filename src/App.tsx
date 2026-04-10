@@ -461,7 +461,10 @@ export default function App() {
           onClick={handleExport}
           type="button"
         >
-          {isExporting ? "Building Pack..." : "Create Resource Pack"}
+          <span aria-hidden="true" className="export-button__icon">
+            <ActionIcon kind="plus" />
+          </span>
+          <span>{isExporting ? "Building Pack..." : "Create Resource Pack"}</span>
         </button>
       </div>
 
@@ -813,7 +816,6 @@ function EventCard({
           <div className="event-copy">
             <div className="event-title">
               <strong>{eventLabel(eventDefinition.id)}</strong>
-              <small>{eventDefinition.id}</small>
             </div>
             {eventDefinition.subtitle ? <p className="event-subtitle">{eventDefinition.subtitle}</p> : null}
           </div>
@@ -843,7 +845,7 @@ function EventCard({
 function ActionIcon({
   kind,
 }: {
-  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset" | "info" | "target" | "trash";
+  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset" | "info" | "target" | "trash" | "plus";
 }) {
   switch (kind) {
     case "play":
@@ -940,6 +942,14 @@ function ActionIcon({
           <path d="M10 8.5V14" />
           <path d="M13 8.5V14" />
           <path d="M6 16H14L14.8 6.5H5.2L6 16Z" />
+        </svg>
+      );
+
+    case "plus":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+          <path d="M10 4.5V15.5" />
+          <path d="M4.5 10H15.5" />
         </svg>
       );
   }
