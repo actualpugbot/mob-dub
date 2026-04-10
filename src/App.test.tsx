@@ -65,7 +65,7 @@ const TEST_DATASET: MobSoundsDataset = {
       displayName: "Cow",
       id: "minecraft:cow",
       imagePath: "/images/mobs/cow.png",
-      introducedVersion: "Alpha",
+      introducedVersion: "Classic",
       isRecent: false,
       localId: "cow",
       mobCategory: "creature",
@@ -143,6 +143,43 @@ const TEST_DATASET: MobSoundsDataset = {
       soundVariantCount: 4,
       translationKey: "entity.minecraft.cow",
     },
+    {
+      category: "passive",
+      displayName: "Pig",
+      id: "minecraft:pig",
+      imagePath: "/images/mobs/pig.png",
+      introducedVersion: "Classic",
+      isRecent: false,
+      localId: "pig",
+      mobCategory: "creature",
+      releaseStatus: "released",
+      soundEventCount: 1,
+      soundEvents: [
+        {
+          id: "entity.pig.ambient",
+          subtitle: "Pig oinks",
+          subtitleKey: "subtitles.entity.pig.ambient",
+          variants: [
+            {
+              assetPath: "minecraft/sounds/mob/pig/say1.ogg",
+              hash: "e",
+              id: "entity.pig.ambient#1",
+              pitch: 1,
+              preload: false,
+              size: 1,
+              soundPath: "mob/pig/say1",
+              stream: false,
+              url: "https://example.com/pig-say1.ogg",
+              volume: 1,
+              weight: 1,
+            },
+          ],
+        },
+      ],
+      soundId: "pig",
+      soundVariantCount: 1,
+      translationKey: "entity.minecraft.pig",
+    },
   ],
   resourcePack: {
     packFormat: 84,
@@ -162,6 +199,20 @@ function getVariantRow(label: RegExp | string) {
   const row = rowLabel.closest(".variant-row") as HTMLElement | null;
   expect(row).not.toBeNull();
   return row!;
+}
+
+function rect(top: number, height = 420) {
+  return {
+    bottom: top + height,
+    height,
+    left: 0,
+    right: 0,
+    toJSON: () => ({}),
+    top,
+    width: 0,
+    x: 0,
+    y: top,
+  };
 }
 
 describe("App", () => {
@@ -344,5 +395,64 @@ describe("App", () => {
     await waitFor(() => {
       expect(screen.queryByRole("button", { name: /scroll back to top/i })).toBeNull();
     });
+  });
+
+  it("moves between selected mob cards from the floating controls", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /^cow$/i }));
+    await user.click(screen.getByRole("button", { name: /^pig$/i }));
+
+    expect(await screen.findByRole("heading", { name: "Cow" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Pig" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /scroll to previous mob card/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /scroll to next mob card/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /scroll back to top/i })).toBeTruthy();
+
+    const mobCards = Array.from(container.querySelectorAll<HTMLElement>(".mob-card"));
+    expect(mobCards).toHaveLength(2);
+
+    const cowScrollIntoView = vi.fn();
+    const pigScrollIntoView = vi.fn();
+    Object.defineProperty(mobCards[0], "scrollIntoView", {
+      configurable: true,
+      value: cowScrollIntoView,
+    });
+    Object.defineProperty(mobCards[1], "scrollIntoView", {
+      configurable: true,
+      value: pigScrollIntoView,
+    });
+
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 1400,
+      writable: true,
+    });
+    fireEvent.scroll(window);
+
+    Object.defineProperty(mobCards[0], "getBoundingClientRect", {
+      configurable: true,
+      value: () => rect(80),
+    });
+    Object.defineProperty(mobCards[1], "getBoundingClientRect", {
+      configurable: true,
+      value: () => rect(860),
+    });
+
+    await user.click(await screen.findByRole("button", { name: /scroll to next mob card/i }));
+    expect(pigScrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+
+    Object.defineProperty(mobCards[0], "getBoundingClientRect", {
+      configurable: true,
+      value: () => rect(-760),
+    });
+    Object.defineProperty(mobCards[1], "getBoundingClientRect", {
+      configurable: true,
+      value: () => rect(120),
+    });
+
+    await user.click(screen.getByRole("button", { name: /scroll to previous mob card/i }));
+    expect(cowScrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
   });
 });

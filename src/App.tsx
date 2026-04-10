@@ -29,8 +29,11 @@ const EXPORT_READY_FLASH_DURATION_MS = 1400;
 const DEFAULT_RECORDING_MIME_TYPE = "audio/webm";
 const DEFAULT_FILE_MIME_TYPE = "application/octet-stream";
 const SCROLL_TO_TOP_REVEAL_OFFSET_PX = 900;
+const MOB_CARD_NAVIGATION_ANCHOR_RATIO = 0.25;
+const MOB_CARD_NAVIGATION_ANCHOR_MAX_PX = 160;
 
 type MobFilter = "all" | "classic" | "recent";
+type MobCardNavigationDirection = "previous" | "next";
 type PreviewSource = "custom" | "original";
 type PlayingPreview = { groupId: string; source: PreviewSource; url: string };
 type StoredCustomizationSeed = Omit<CustomVariantSound, "url">;
@@ -418,10 +421,34 @@ export default function App() {
     [handleFileSelected, handlePickFile, resetGroupedSound, togglePreview, toggleRecording],
   );
   const showScrollToTop = useScrollToTopVisibility();
+  const showMobCardNavigation = selectedMobs.length > 1;
+  const showScrollNavigation = showScrollToTop || showMobCardNavigation;
 
   const handleScrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const handleScrollToMobCard = useCallback(
+    (direction: MobCardNavigationDirection) => {
+      const cardElements = selectedMobs
+        .map((mob) => cardRefs.current[mob.id])
+        .filter((element): element is HTMLElement => Boolean(element));
+
+      if (cardElements.length === 0) {
+        return;
+      }
+
+      const anchorOffset = Math.min(window.innerHeight * MOB_CARD_NAVIGATION_ANCHOR_RATIO, MOB_CARD_NAVIGATION_ANCHOR_MAX_PX);
+      const currentCardIndex = cardElements.reduce((currentIndex, element, index) => {
+        return element.getBoundingClientRect().top <= anchorOffset ? index : currentIndex;
+      }, -1);
+      const targetCardIndex =
+        direction === "next" ? Math.min(currentCardIndex + 1, cardElements.length - 1) : Math.max(currentCardIndex - 1, 0);
+
+      cardElements[targetCardIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [selectedMobs],
+  );
 
   return (
     <div className="shell">
@@ -491,22 +518,61 @@ export default function App() {
 
       <p className="sr-only">Modified sounds: {customizedVariantCount}</p>
 
-      {showScrollToTop ? (
-        <button
-          aria-label="Scroll back to top"
-          className="scroll-to-top-button"
-          onClick={handleScrollToTop}
-          type="button"
-        >
-          <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
-            <path d="M12 18V6" />
-            <path d="m6.75 11.25 5.25-5.25 5.25 5.25" />
-          </svg>
-        </button>
+      {showScrollNavigation ? (
+        <nav aria-label="Scroll navigation" className="scroll-navigation-controls">
+          {showMobCardNavigation ? (
+            <button
+              aria-label="Scroll to previous mob card"
+              className="scroll-navigation-button"
+              onClick={() => handleScrollToMobCard("previous")}
+              type="button"
+            >
+              <ScrollNavigationIcon kind="previous" />
+            </button>
+          ) : null}
+          {showMobCardNavigation ? (
+            <button
+              aria-label="Scroll to next mob card"
+              className="scroll-navigation-button"
+              onClick={() => handleScrollToMobCard("next")}
+              type="button"
+            >
+              <ScrollNavigationIcon kind="next" />
+            </button>
+          ) : null}
+          <button aria-label="Scroll back to top" className="scroll-navigation-button" onClick={handleScrollToTop} type="button">
+            <ScrollNavigationIcon kind="top" />
+          </button>
+        </nav>
       ) : null}
 
       <RemoveMobModal mob={mobPendingRemoval} onCancel={() => setMobPendingRemoval(null)} onConfirm={confirmRemoveMob} />
     </div>
+  );
+}
+
+function ScrollNavigationIcon({ kind }: { kind: "previous" | "next" | "top" }) {
+  if (kind === "top") {
+    return (
+      <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+        <path d="M12 18V6" />
+        <path d="m6.75 11.25 5.25-5.25 5.25 5.25" />
+      </svg>
+    );
+  }
+
+  if (kind === "previous") {
+    return (
+      <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+        <path d="m7 14 5-5 5 5" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+      <path d="m7 10 5 5 5-5" />
+    </svg>
   );
 }
 
