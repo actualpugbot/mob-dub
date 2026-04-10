@@ -689,7 +689,10 @@ h3 {
 
 .empty-state-steps li {
   position: relative;
-  padding: 2px 0 2px 34px;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 2px 0 2px 44px;
   color: #e3edf4;
   font-size: 1rem;
   font-weight: 600;
@@ -702,16 +705,17 @@ h3 {
   counter-increment: empty-state-step;
   position: absolute;
   left: 0;
-  top: 0.15em;
+  top: 50%;
+  transform: translateY(-50%);
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   border: 1px solid rgba(84, 224, 179, 0.48);
   border-radius: var(--radius-pill);
   background: rgba(84, 224, 179, 0.14);
   color: #94f1d0;
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -1505,7 +1509,7 @@ h3 {
   }
 
   .empty-state-steps li {
-    padding-left: 34px;
+    padding-left: 44px;
     text-align: left;
   }
 
