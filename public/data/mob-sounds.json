@@ -1,5 +1,3076 @@
 {
-  "generatedAt": "2026-04-03T23:09:04.580Z",
+  "generatedAt": "2026-04-12T19:16:40.670Z",
+  "minecraftWiki": {
+    "categories": [
+      {
+        "coverage": "exact",
+        "displayName": "Allay",
+        "id": "allay",
+        "mappedMobDisplayNames": [
+          "Allay"
+        ],
+        "mappedMobIds": [
+          "allay"
+        ],
+        "matchedFileCount": 21,
+        "matchType": "direct",
+        "title": "Category:Allay sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AAllay_sounds",
+        "wikiFileCount": 21
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Armadillo",
+        "id": "armadillo",
+        "mappedMobDisplayNames": [
+          "Armadillo"
+        ],
+        "mappedMobIds": [
+          "armadillo"
+        ],
+        "matchedFileCount": 41,
+        "matchType": "direct",
+        "title": "Category:Armadillo sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/armadillo/brush_armadillo1",
+          "mob/armadillo/brush_armadillo2",
+          "mob/armadillo/peek",
+          "mob/armadillo/unroll_start"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Armadillo brush1.ogg",
+          "Armadillo brush2.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AArmadillo_sounds",
+        "wikiFileCount": 43
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Axolotl",
+        "id": "axolotl",
+        "mappedMobDisplayNames": [
+          "Axolotl"
+        ],
+        "mappedMobIds": [
+          "axolotl"
+        ],
+        "matchedFileCount": 20,
+        "matchType": "direct",
+        "title": "Category:Axolotl sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/fish/swim5",
+          "entity/fish/swim6",
+          "entity/fish/swim7",
+          "mob/dolphin/splash1",
+          "mob/dolphin/splash2",
+          "mob/dolphin/splash3",
+          "mob/dolphin/swim1",
+          "mob/dolphin/swim2",
+          "mob/dolphin/swim3",
+          "mob/dolphin/swim4"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AAxolotl_sounds",
+        "wikiFileCount": 20
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Bat",
+        "id": "bat",
+        "mappedMobDisplayNames": [
+          "Bat"
+        ],
+        "mappedMobIds": [
+          "bat"
+        ],
+        "matchedFileCount": 11,
+        "matchType": "direct",
+        "title": "Category:Bat sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ABat_sounds",
+        "wikiFileCount": 11
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Bee",
+        "id": "bee",
+        "mappedMobDisplayNames": [
+          "Bee"
+        ],
+        "mappedMobIds": [
+          "bee"
+        ],
+        "matchedFileCount": 18,
+        "matchType": "direct",
+        "title": "Category:Bee sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ABee_sounds",
+        "wikiFileCount": 18
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Blaze",
+        "id": "blaze",
+        "mappedMobDisplayNames": [
+          "Blaze"
+        ],
+        "mappedMobIds": [
+          "blaze"
+        ],
+        "matchedFileCount": 5,
+        "matchType": "direct",
+        "title": "Category:Blaze sounds",
+        "unmatchedLocalSoundPaths": [
+          "fire/fire",
+          "mob/blaze/breathe1",
+          "mob/blaze/breathe2",
+          "mob/blaze/breathe3",
+          "mob/blaze/breathe4",
+          "mob/ghast/fireball4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Blaze idle1.ogg",
+          "Blaze idle2.ogg",
+          "Blaze idle3.ogg",
+          "Blaze idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ABlaze_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Bogged",
+        "id": "bogged",
+        "mappedMobDisplayNames": [
+          "Bogged"
+        ],
+        "mappedMobIds": [
+          "bogged"
+        ],
+        "matchedFileCount": 13,
+        "matchType": "direct",
+        "title": "Category:Bogged sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/sheep/shear"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ABogged_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Breeze",
+        "id": "breeze",
+        "mappedMobDisplayNames": [
+          "Breeze"
+        ],
+        "mappedMobIds": [
+          "breeze"
+        ],
+        "matchedFileCount": 34,
+        "matchType": "direct",
+        "title": "Category:Breeze sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Breeze whirl1 BE1.wav",
+          "Breeze whirl2 BE1.wav",
+          "Breeze whirl3 BE1.wav",
+          "Breeze whirl4 BE1.wav",
+          "Breeze whirl5 BE1.wav"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ABreeze_sounds",
+        "wikiFileCount": 39
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Camel",
+        "id": "camel",
+        "mappedMobDisplayNames": [
+          "Camel"
+        ],
+        "mappedMobIds": [
+          "camel"
+        ],
+        "matchedFileCount": 46,
+        "matchType": "direct",
+        "title": "Category:Camel sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/camel/dash_ready1",
+          "mob/horse/leather"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Camel dash ready.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACamel_sounds",
+        "wikiFileCount": 47
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Camel Husk",
+        "id": "camel_husk",
+        "mappedMobDisplayNames": [
+          "Camel Husk"
+        ],
+        "mappedMobIds": [
+          "camel_husk"
+        ],
+        "matchedFileCount": 47,
+        "matchType": "direct",
+        "title": "Category:Camel Husk sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/horse/leather"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ACamel_Husk_sounds",
+        "wikiFileCount": 47
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Cat",
+        "id": "cat",
+        "mappedMobDisplayNames": [
+          "Cat"
+        ],
+        "mappedMobIds": [
+          "cat"
+        ],
+        "matchedFileCount": 17,
+        "matchType": "direct",
+        "title": "Category:Cat sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/cat/hitt1",
+          "mob/cat/hitt2",
+          "mob/cat/hitt3",
+          "mob/cat/meow1",
+          "mob/cat/meow2",
+          "mob/cat/meow3",
+          "mob/cat/meow4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Cat baby ambient1.ogg",
+          "Cat baby ambient2.ogg",
+          "Cat baby ambient3.ogg",
+          "Cat baby ambient4.ogg",
+          "Cat baby ambient5.ogg",
+          "Cat baby ambient6.ogg",
+          "Cat baby ambient7.ogg",
+          "Cat baby death.ogg",
+          "Cat baby hurt1.ogg",
+          "Cat baby hurt2.ogg",
+          "Cat baby hurt3.ogg",
+          "Cat hurt1.ogg",
+          "Cat hurt2.ogg",
+          "Cat hurt3.ogg",
+          "Cat royal ambient1.ogg",
+          "Cat royal ambient2.ogg",
+          "Cat royal ambient3.ogg",
+          "Cat royal ambient4.ogg",
+          "Cat royal ambient5.ogg",
+          "Cat royal ambient6.ogg",
+          "Cat royal death.ogg",
+          "Cat royal hurt1.ogg",
+          "Cat royal hurt2.ogg",
+          "Cat royal hurt3.ogg",
+          "Stray cat idle1.ogg",
+          "Stray cat idle2.ogg",
+          "Stray cat idle3.ogg",
+          "Stray cat idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACat_sounds",
+        "wikiFileCount": 45
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Chicken",
+        "id": "chicken",
+        "mappedMobDisplayNames": [
+          "Chicken"
+        ],
+        "mappedMobIds": [
+          "chicken"
+        ],
+        "matchedFileCount": 8,
+        "matchType": "direct",
+        "title": "Category:Chicken sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Chicken baby ambient1.ogg",
+          "Chicken baby ambient2.ogg",
+          "Chicken baby death.ogg",
+          "Chicken baby hurt1.ogg",
+          "Chicken baby hurt2.ogg",
+          "Chicken baby hurt3.ogg",
+          "Chicken baby hurt4.ogg",
+          "Chicken baby step.ogg",
+          "Chicken picky ambient1.ogg",
+          "Chicken picky ambient2.ogg",
+          "Chicken picky ambient3.ogg",
+          "Chicken picky ambient4.ogg",
+          "Chicken picky ambient5.ogg",
+          "Chicken picky ambient6.ogg",
+          "Chicken picky ambient7.ogg",
+          "Chicken picky ambient8.ogg",
+          "Chicken picky death JE1.ogg",
+          "Chicken picky death.ogg",
+          "Chicken picky hurt1.ogg",
+          "Chicken picky hurt2.ogg",
+          "Chicken picky hurt3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AChicken_sounds",
+        "wikiFileCount": 29
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Copper golem",
+        "id": "copper_golem",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Copper golem sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Copper golem become statue1.wav",
+          "Copper golem become statue2.wav",
+          "Copper golem become statue3.wav",
+          "Copper golem become statue4.wav",
+          "Copper golem oxidized death.wav",
+          "Copper golem oxidized hurt1.wav",
+          "Copper golem oxidized hurt2.wav",
+          "Copper golem oxidized hurt3.wav",
+          "Copper golem oxidized hurt4.wav",
+          "Copper golem oxidized look1.wav",
+          "Copper golem oxidized look2.wav",
+          "Copper golem oxidized look3.wav",
+          "Copper golem oxidized look4.wav",
+          "Copper golem oxidized look5.wav",
+          "Copper golem oxidized look6.wav",
+          "Copper golem oxidized look7.wav",
+          "Copper golem oxidized spin1.wav",
+          "Copper golem oxidized spin2.wav",
+          "Copper golem oxidized spin3.wav",
+          "Copper golem oxidized spin4.wav",
+          "Copper golem oxidized spin5.wav",
+          "Copper golem oxidized spin6.wav",
+          "Copper golem oxidized spin7.wav",
+          "Copper golem oxidized step1.wav",
+          "Copper golem oxidized step2.wav",
+          "Copper golem oxidized step3.wav",
+          "Copper golem oxidized step4.wav",
+          "Copper golem oxidized step5.wav",
+          "Copper golem oxidized step6.wav",
+          "Copper golem oxidized step7.wav",
+          "Copper golem oxidized step8.wav",
+          "Copper golem oxidized step9.wav",
+          "Copper golem put item fail.wav",
+          "Copper golem put item.wav",
+          "Copper golem regular death.wav",
+          "Copper golem regular hurt1.wav",
+          "Copper golem regular hurt2.wav",
+          "Copper golem regular hurt3.wav",
+          "Copper golem regular hurt4.wav",
+          "Copper golem regular look1.wav",
+          "Copper golem regular look2.wav",
+          "Copper golem regular look3.wav",
+          "Copper golem regular look4.wav",
+          "Copper golem regular look5.wav",
+          "Copper golem regular look6.wav",
+          "Copper golem regular look7.wav",
+          "Copper golem regular spawn.wav",
+          "Copper golem regular spin1.wav",
+          "Copper golem regular spin2.wav",
+          "Copper golem regular spin3.wav",
+          "Copper golem regular spin4.wav",
+          "Copper golem regular spin5.wav",
+          "Copper golem regular spin6.wav",
+          "Copper golem regular spin7.wav",
+          "Copper golem regular step1.wav",
+          "Copper golem regular step2.wav",
+          "Copper golem regular step3.wav",
+          "Copper golem regular step4.wav",
+          "Copper golem regular step5.wav",
+          "Copper golem regular step6.wav",
+          "Copper golem regular step7.wav",
+          "Copper golem regular step8.wav",
+          "Copper golem regular step9.wav",
+          "Copper golem take item fail.wav",
+          "Copper golem take item.wav",
+          "Copper golem weathered death.wav",
+          "Copper golem weathered hurt1.wav",
+          "Copper golem weathered hurt2.wav",
+          "Copper golem weathered hurt3.wav",
+          "Copper golem weathered hurt4.wav",
+          "Copper golem weathered look1.wav",
+          "Copper golem weathered look2.wav",
+          "Copper golem weathered look3.wav",
+          "Copper golem weathered look4.wav",
+          "Copper golem weathered look5.wav",
+          "Copper golem weathered look6.wav",
+          "Copper golem weathered look7.wav",
+          "Copper golem weathered spin1.wav",
+          "Copper golem weathered spin2.wav",
+          "Copper golem weathered spin3.wav",
+          "Copper golem weathered spin4.wav",
+          "Copper golem weathered spin5.wav",
+          "Copper golem weathered spin6.wav",
+          "Copper golem weathered spin7.wav",
+          "Copper golem weathered step1.wav",
+          "Copper golem weathered step2.wav",
+          "Copper golem weathered step3.wav",
+          "Copper golem weathered step4.wav",
+          "Copper golem weathered step5.wav",
+          "Copper golem weathered step6.wav",
+          "Copper golem weathered step7.wav",
+          "Copper golem weathered step8.wav",
+          "Copper golem weathered step9.wav"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACopper_golem_sounds",
+        "wikiFileCount": 93
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Cow",
+        "id": "cow",
+        "mappedMobDisplayNames": [
+          "Cow"
+        ],
+        "mappedMobIds": [
+          "cow"
+        ],
+        "matchedFileCount": 14,
+        "matchType": "direct",
+        "title": "Category:Cow sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Cow moody ambient1.ogg",
+          "Cow moody ambient2.ogg",
+          "Cow moody ambient3.ogg",
+          "Cow moody ambient4.ogg",
+          "Cow moody ambient5.ogg",
+          "Cow moody ambient6.ogg",
+          "Cow moody ambient7.ogg",
+          "Cow moody ambient8.ogg",
+          "Cow moody ambient9.ogg",
+          "Cow moody death1 JE1.ogg",
+          "Cow moody death1.ogg",
+          "Cow moody death2 JE1.ogg",
+          "Cow moody death2.ogg",
+          "Cow moody hit1.ogg",
+          "Cow moody hit2.ogg",
+          "Cow moody hit3.ogg",
+          "Cow moody hit4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACow_sounds",
+        "wikiFileCount": 31
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Creaking",
+        "id": "creaking",
+        "mappedMobDisplayNames": [
+          "Creaking"
+        ],
+        "mappedMobIds": [
+          "creaking"
+        ],
+        "matchedFileCount": 0,
+        "matchType": "direct",
+        "title": "Category:Creaking sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/creaking/creaking_activate",
+          "mob/creaking/creaking_attack1",
+          "mob/creaking/creaking_attack2",
+          "mob/creaking/creaking_attack3",
+          "mob/creaking/creaking_attack4",
+          "mob/creaking/creaking_deactivate",
+          "mob/creaking/creaking_death",
+          "mob/creaking/creaking_freeze1",
+          "mob/creaking/creaking_freeze2",
+          "mob/creaking/creaking_freeze3",
+          "mob/creaking/creaking_freeze4",
+          "mob/creaking/creaking_idle1",
+          "mob/creaking/creaking_idle2",
+          "mob/creaking/creaking_idle3",
+          "mob/creaking/creaking_idle4",
+          "mob/creaking/creaking_idle5",
+          "mob/creaking/creaking_idle6",
+          "mob/creaking/creaking_spawn",
+          "mob/creaking/creaking_step1",
+          "mob/creaking/creaking_step2",
+          "mob/creaking/creaking_step3",
+          "mob/creaking/creaking_step4",
+          "mob/creaking/creaking_step5",
+          "mob/creaking/creaking_sway1",
+          "mob/creaking/creaking_sway2",
+          "mob/creaking/creaking_sway3",
+          "mob/creaking/creaking_sway4",
+          "mob/creaking/creaking_twitch",
+          "mob/creaking/creaking_unfreeze1",
+          "mob/creaking/creaking_unfreeze2",
+          "mob/creaking/creaking_unfreeze3"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Creaking activate.ogg",
+          "Creaking attack.ogg",
+          "Creaking attack1 JE1.ogg",
+          "Creaking attack1 JE2.ogg",
+          "Creaking attack2 JE1.ogg",
+          "Creaking attack2 JE2.ogg",
+          "Creaking attack3 JE1.ogg",
+          "Creaking attack3 JE2.ogg",
+          "Creaking attack4 JE1.ogg",
+          "Creaking attack4 JE2.ogg",
+          "Creaking deactivate.ogg",
+          "Creaking death JE2.ogg",
+          "Creaking death.ogg",
+          "Creaking freeze1.ogg",
+          "Creaking freeze2.ogg",
+          "Creaking freeze3.ogg",
+          "Creaking freeze4.ogg",
+          "Creaking idle1.ogg",
+          "Creaking idle2.ogg",
+          "Creaking idle3.ogg",
+          "Creaking idle4.ogg",
+          "Creaking idle5.ogg",
+          "Creaking idle6.ogg",
+          "Creaking spawn.ogg",
+          "Creaking step1.ogg",
+          "Creaking step2.ogg",
+          "Creaking step3.ogg",
+          "Creaking step4.ogg",
+          "Creaking step5.ogg",
+          "Creaking sway.ogg",
+          "Creaking sway1.ogg",
+          "Creaking sway2.ogg",
+          "Creaking sway3.ogg",
+          "Creaking sway4.ogg",
+          "Creaking twitch.ogg",
+          "Creaking unfreeze1.ogg",
+          "Creaking unfreeze2.ogg",
+          "Creaking unfreeze3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACreaking_sounds",
+        "wikiFileCount": 38
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Creeper",
+        "id": "creeper",
+        "mappedMobDisplayNames": [
+          "Creeper"
+        ],
+        "mappedMobIds": [
+          "creeper"
+        ],
+        "matchedFileCount": 3,
+        "matchType": "direct",
+        "title": "Category:Creeper sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/creeper/say1",
+          "mob/creeper/say2",
+          "mob/creeper/say3",
+          "mob/creeper/say4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Creeper hurt1.ogg",
+          "Creeper hurt2.ogg",
+          "Creeper hurt3.ogg",
+          "Creeper hurt4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ACreeper_sounds",
+        "wikiFileCount": 7
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Dolphin",
+        "id": "dolphin",
+        "mappedMobDisplayNames": [
+          "Dolphin"
+        ],
+        "mappedMobIds": [
+          "dolphin"
+        ],
+        "matchedFileCount": 31,
+        "matchType": "direct",
+        "title": "Category:Dolphin sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/fish/swim5",
+          "entity/fish/swim6",
+          "entity/fish/swim7",
+          "mob/dolphin/idle_water1",
+          "mob/dolphin/idle_water10",
+          "mob/dolphin/idle_water2",
+          "mob/dolphin/idle_water3",
+          "mob/dolphin/idle_water4",
+          "mob/dolphin/idle_water5",
+          "mob/dolphin/idle_water6",
+          "mob/dolphin/idle_water7",
+          "mob/dolphin/idle_water8",
+          "mob/dolphin/idle_water9"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Dolphin water idle1.ogg",
+          "Dolphin water idle10.ogg",
+          "Dolphin water idle2.ogg",
+          "Dolphin water idle3.ogg",
+          "Dolphin water idle4.ogg",
+          "Dolphin water idle5.ogg",
+          "Dolphin water idle6.ogg",
+          "Dolphin water idle7.ogg",
+          "Dolphin water idle8.ogg",
+          "Dolphin water idle9.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ADolphin_sounds",
+        "wikiFileCount": 41
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Donkey",
+        "id": "donkey",
+        "mappedMobDisplayNames": [
+          "Donkey"
+        ],
+        "mappedMobIds": [
+          "donkey"
+        ],
+        "matchedFileCount": 9,
+        "matchType": "direct",
+        "title": "Category:Donkey sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/chicken/plop",
+          "mob/horse/eat1",
+          "mob/horse/eat2",
+          "mob/horse/eat3",
+          "mob/horse/eat4",
+          "mob/horse/eat5",
+          "mob/horse/jump"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ADonkey_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Drowned",
+        "id": "drowned",
+        "mappedMobDisplayNames": [
+          "Drowned"
+        ],
+        "mappedMobIds": [
+          "drowned"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Drowned sounds",
+        "unmatchedLocalSoundPaths": [
+          "item/trident/throw1",
+          "item/trident/throw2",
+          "liquid/swim1",
+          "liquid/swim2",
+          "liquid/swim3",
+          "liquid/swim4",
+          "liquid/swim5"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Drowned water death1.ogg",
+          "Drowned water death2.ogg",
+          "Drowned water hurt1.ogg",
+          "Drowned water hurt2.ogg",
+          "Drowned water hurt3.ogg",
+          "Drowned water idle1.ogg",
+          "Drowned water idle2.ogg",
+          "Drowned water idle3.ogg",
+          "Drowned water idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ADrowned_sounds",
+        "wikiFileCount": 24
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Ender dragon",
+        "id": "ender_dragon",
+        "mappedMobDisplayNames": [
+          "Ender Dragon"
+        ],
+        "mappedMobIds": [
+          "ender_dragon"
+        ],
+        "matchedFileCount": 4,
+        "matchType": "direct",
+        "title": "Category:Ender dragon sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/enderdragon/end",
+          "mob/enderdragon/growl1",
+          "mob/enderdragon/growl2",
+          "mob/enderdragon/growl3",
+          "mob/enderdragon/growl4",
+          "mob/enderdragon/wings1",
+          "mob/enderdragon/wings2",
+          "mob/enderdragon/wings3",
+          "mob/enderdragon/wings4",
+          "mob/enderdragon/wings5",
+          "mob/enderdragon/wings6",
+          "mob/ghast/fireball4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Ender dragon death.ogg",
+          "Ender dragon flap1.ogg",
+          "Ender dragon flap2.ogg",
+          "Ender dragon flap3.ogg",
+          "Ender dragon flap4.ogg",
+          "Ender dragon flap5.ogg",
+          "Ender dragon flap6.ogg",
+          "Ender dragon idle1.ogg",
+          "Ender dragon idle2.ogg",
+          "Ender dragon idle3.ogg",
+          "Ender dragon idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AEnder_dragon_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Enderman",
+        "id": "enderman",
+        "mappedMobDisplayNames": [
+          "Enderman"
+        ],
+        "mappedMobIds": [
+          "enderman"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Enderman sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/endermen/portal",
+          "mob/endermen/portal2"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AEnderman_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Evoker",
+        "id": "evoker",
+        "mappedMobDisplayNames": [
+          "Evoker"
+        ],
+        "mappedMobIds": [
+          "evoker"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Evoker sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Evoker fangs.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AEvoker_sounds",
+        "wikiFileCount": 16
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Fish",
+        "id": "fish",
+        "mappedMobDisplayNames": [
+          "Cod",
+          "Salmon",
+          "Tropical Fish"
+        ],
+        "mappedMobIds": [
+          "cod",
+          "salmon",
+          "tropical_fish"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "grouped",
+        "title": "Category:Fish sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AFish_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Fox",
+        "id": "fox",
+        "mappedMobDisplayNames": [
+          "Fox"
+        ],
+        "mappedMobIds": [
+          "fox"
+        ],
+        "matchedFileCount": 41,
+        "matchType": "direct",
+        "title": "Category:Fox sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/endermen/portal",
+          "mob/endermen/portal2"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AFox_sounds",
+        "wikiFileCount": 41
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Frog",
+        "id": "frog",
+        "mappedMobDisplayNames": [
+          "Frog"
+        ],
+        "mappedMobIds": [
+          "frog"
+        ],
+        "matchedFileCount": 34,
+        "matchType": "direct",
+        "title": "Category:Frog sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AFrog_sounds",
+        "wikiFileCount": 34
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Generic mob",
+        "id": "generic_mob",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Generic mob sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Burp.ogg",
+          "Critical attack1.ogg",
+          "Critical attack2.ogg",
+          "Critical attack3.ogg",
+          "Drink honey1.ogg",
+          "Drink honey2.ogg",
+          "Drink honey3.ogg",
+          "Drink.ogg",
+          "Eat1.ogg",
+          "Eat2.ogg",
+          "Eat3.ogg",
+          "Fall damage big.ogg",
+          "Fall damage small.ogg",
+          "Knockback attack1.ogg",
+          "Knockback attack2.ogg",
+          "Knockback attack3.ogg",
+          "Knockback attack4.ogg",
+          "Player breathe.ogg",
+          "Player hurt drowning1.ogg",
+          "Player hurt drowning2.ogg",
+          "Player hurt drowning3.ogg",
+          "Player hurt drowning4.ogg",
+          "Player hurt fire1.ogg",
+          "Player hurt fire2.ogg",
+          "Player hurt fire3.ogg",
+          "Player hurt freeze1.ogg",
+          "Player hurt freeze2.ogg",
+          "Player hurt freeze3.ogg",
+          "Player hurt freeze4.ogg",
+          "Player hurt freeze5.ogg",
+          "Player hurt sweet berry bush1.ogg",
+          "Player hurt sweet berry bush2.ogg",
+          "Player hurt1.ogg",
+          "Player hurt2.ogg",
+          "Player hurt3.ogg",
+          "Random levelup.ogg",
+          "Strong attack1.ogg",
+          "Strong attack2.ogg",
+          "Strong attack3.ogg",
+          "Strong attack4.ogg",
+          "Strong attack5.ogg",
+          "Strong attack6.ogg",
+          "Sweep attack1.ogg",
+          "Sweep attack2.ogg",
+          "Sweep attack3.ogg",
+          "Sweep attack4.ogg",
+          "Sweep attack5.ogg",
+          "Sweep attack6.ogg",
+          "Sweep attack7.ogg",
+          "Swim1.ogg",
+          "Swim10.ogg",
+          "Swim11.ogg",
+          "Swim12.ogg",
+          "Swim13.ogg",
+          "Swim14.ogg",
+          "Swim15.ogg",
+          "Swim16.ogg",
+          "Swim17.ogg",
+          "Swim18.ogg",
+          "Swim2.ogg",
+          "Swim3.ogg",
+          "Swim4.ogg",
+          "Swim5.ogg",
+          "Swim6.ogg",
+          "Swim7.ogg",
+          "Swim8.ogg",
+          "Swim9.ogg",
+          "Water Splash Old.ogg",
+          "Water heavy splash.ogg",
+          "Water splash1.ogg",
+          "Water splash2.ogg",
+          "Weak attack1.ogg",
+          "Weak attack2.ogg",
+          "Weak attack3.ogg",
+          "Weak attack4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AGeneric_mob_sounds",
+        "wikiFileCount": 75
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Ghast",
+        "id": "ghast",
+        "mappedMobDisplayNames": [
+          "Ghast"
+        ],
+        "mappedMobIds": [
+          "ghast"
+        ],
+        "matchedFileCount": 4,
+        "matchType": "direct",
+        "title": "Category:Ghast sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/ghast/moan1",
+          "mob/ghast/moan2",
+          "mob/ghast/moan3",
+          "mob/ghast/moan4",
+          "mob/ghast/moan5",
+          "mob/ghast/moan6",
+          "mob/ghast/moan7",
+          "mob/ghast/scream1",
+          "mob/ghast/scream2",
+          "mob/ghast/scream3",
+          "mob/ghast/scream4",
+          "mob/ghast/scream5"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Ghast hurt1.ogg",
+          "Ghast hurt2.ogg",
+          "Ghast hurt3.ogg",
+          "Ghast hurt4.ogg",
+          "Ghast hurt5.ogg",
+          "Ghast idle1.ogg",
+          "Ghast idle2.ogg",
+          "Ghast idle3.ogg",
+          "Ghast idle4.ogg",
+          "Ghast idle5.ogg",
+          "Ghast idle6.ogg",
+          "Ghast idle7.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AGhast_sounds",
+        "wikiFileCount": 16
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Glow squid",
+        "id": "glow_squid",
+        "mappedMobDisplayNames": [
+          "Glow Squid"
+        ],
+        "mappedMobIds": [
+          "glow_squid"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Glow squid sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AGlow_squid_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Goat",
+        "id": "goat",
+        "mappedMobDisplayNames": [
+          "Goat"
+        ],
+        "mappedMobIds": [
+          "goat"
+        ],
+        "matchedFileCount": 63,
+        "matchType": "direct",
+        "title": "Category:Goat sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/mooshroom/milk1",
+          "mob/mooshroom/milk2",
+          "mob/mooshroom/milk3"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Goat impact3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AGoat_sounds",
+        "wikiFileCount": 64
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Guardian",
+        "id": "guardian",
+        "mappedMobDisplayNames": [
+          "Elder Guardian",
+          "Guardian"
+        ],
+        "mappedMobIds": [
+          "elder_guardian",
+          "guardian"
+        ],
+        "matchedFileCount": 24,
+        "matchType": "grouped",
+        "title": "Category:Guardian sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/guardian/guardian_death",
+          "mob/guardian/guardian_hit1",
+          "mob/guardian/guardian_hit2",
+          "mob/guardian/guardian_hit3",
+          "mob/guardian/guardian_hit4",
+          "mob/guardian/guardian_idle1",
+          "mob/guardian/guardian_idle2",
+          "mob/guardian/guardian_idle3",
+          "mob/guardian/guardian_idle4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Guardian death.ogg",
+          "Guardian hurt1.ogg",
+          "Guardian hurt2.ogg",
+          "Guardian hurt3.ogg",
+          "Guardian hurt4.ogg",
+          "Guardian idle1.ogg",
+          "Guardian idle2.ogg",
+          "Guardian idle3.ogg",
+          "Guardian idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AGuardian_sounds",
+        "wikiFileCount": 33
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Hoglin",
+        "id": "hoglin",
+        "mappedMobDisplayNames": [
+          "Hoglin"
+        ],
+        "mappedMobIds": [
+          "hoglin"
+        ],
+        "matchedFileCount": 37,
+        "matchType": "direct",
+        "title": "Category:Hoglin sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Hoglin howl1.wav",
+          "Hoglin howl2.wav",
+          "Hoglin howl3.wav",
+          "Hoglin howl4.wav",
+          "Hoglin howl5.wav"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AHoglin_sounds",
+        "wikiFileCount": 42
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Horse",
+        "id": "horse",
+        "mappedMobDisplayNames": [
+          "Horse"
+        ],
+        "mappedMobIds": [
+          "horse"
+        ],
+        "matchedFileCount": 23,
+        "matchType": "direct",
+        "title": "Category:Horse sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/horse/angry1",
+          "mob/horse/leather",
+          "mob/horse/soft1",
+          "mob/horse/soft2",
+          "mob/horse/soft3",
+          "mob/horse/soft4",
+          "mob/horse/soft5",
+          "mob/horse/soft6",
+          "mob/horse/wood1",
+          "mob/horse/wood2",
+          "mob/horse/wood3",
+          "mob/horse/wood4",
+          "mob/horse/wood5",
+          "mob/horse/wood6"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Horse angry.ogg",
+          "Horse baby ambient1.ogg",
+          "Horse baby ambient2.ogg",
+          "Horse baby ambient3.ogg",
+          "Horse baby ambient4.ogg",
+          "Horse baby ambient5.ogg",
+          "Horse baby ambient7.ogg",
+          "Horse baby ambient8.ogg",
+          "Horse baby ambient9.ogg",
+          "Horse baby angry.ogg",
+          "Horse baby death.ogg",
+          "Horse baby eat1.ogg",
+          "Horse baby eat2.ogg",
+          "Horse baby eat3.ogg",
+          "Horse baby eat4.ogg",
+          "Horse baby eat5.ogg",
+          "Horse baby fall.ogg",
+          "Horse baby hurt1.ogg",
+          "Horse baby hurt2.ogg",
+          "Horse baby hurt3.ogg",
+          "Horse baby land.ogg",
+          "Horse baby step1.ogg",
+          "Horse baby step2.ogg",
+          "Horse baby step3.ogg",
+          "Horse baby step4.ogg",
+          "Horse baby step5.ogg",
+          "Horse baby step6.ogg",
+          "Horse step wood1.ogg",
+          "Horse step wood2.ogg",
+          "Horse step wood3.ogg",
+          "Horse step wood4.ogg",
+          "Horse step wood5.ogg",
+          "Horse step wood6.ogg",
+          "Horse step1.ogg",
+          "Horse step2.ogg",
+          "Horse step3.ogg",
+          "Horse step4.ogg",
+          "Horse step5.ogg",
+          "Horse step6.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AHorse_sounds",
+        "wikiFileCount": 62
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Husk",
+        "id": "husk",
+        "mappedMobDisplayNames": [
+          "Husk"
+        ],
+        "mappedMobIds": [
+          "husk"
+        ],
+        "matchedFileCount": 12,
+        "matchType": "direct",
+        "title": "Category:Husk sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/husk/convert1",
+          "mob/husk/convert2"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Husk convert to zombie1.ogg",
+          "Husk convert to zombie2.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AHusk_sounds",
+        "wikiFileCount": 14
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Illusioner",
+        "id": "illusioner",
+        "mappedMobDisplayNames": [
+          "Illusioner"
+        ],
+        "mappedMobIds": [
+          "illusioner"
+        ],
+        "matchedFileCount": 13,
+        "matchType": "direct",
+        "title": "Category:Illusioner sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/evocation_illager/cast1",
+          "mob/evocation_illager/cast2"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AIllusioner_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Iron golem",
+        "id": "iron_golem",
+        "mappedMobDisplayNames": [
+          "Iron Golem"
+        ],
+        "mappedMobIds": [
+          "iron_golem"
+        ],
+        "matchedFileCount": 9,
+        "matchType": "direct",
+        "title": "Category:Iron golem sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/irongolem/walk1",
+          "mob/irongolem/walk2",
+          "mob/irongolem/walk3",
+          "mob/irongolem/walk4"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Iron golem step1.ogg",
+          "Iron golem step2.ogg",
+          "Iron golem step3.ogg",
+          "Iron golem step4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AIron_golem_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Llama",
+        "id": "llama",
+        "mappedMobDisplayNames": [
+          "Llama"
+        ],
+        "mappedMobIds": [
+          "llama"
+        ],
+        "matchedFileCount": 21,
+        "matchType": "direct",
+        "title": "Category:Llama sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/chicken/plop",
+          "mob/llama/angry1"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Llama angry.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ALlama_sounds",
+        "wikiFileCount": 22
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Magma cube",
+        "id": "magma_cube",
+        "mappedMobDisplayNames": [
+          "Magma Cube"
+        ],
+        "mappedMobIds": [
+          "magma_cube"
+        ],
+        "matchedFileCount": 13,
+        "matchType": "direct",
+        "title": "Category:Magma cube sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AMagma_cube_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Mega spud",
+        "id": "mega_spud",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Mega spud sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Mega Spud big1.ogg",
+          "Mega Spud big2.ogg",
+          "Mega Spud big3.ogg",
+          "Mega Spud big4.ogg",
+          "Mega Spud boss spawn.ogg",
+          "Mega Spud death.ogg",
+          "Mega Spud fireball.ogg",
+          "Mega Spud hit1 pitch.ogg",
+          "Mega Spud hit2 pitch.ogg",
+          "Mega Spud hurt1.ogg",
+          "Mega Spud hurt2.ogg",
+          "Mega Spud hurt3.ogg",
+          "Mega Spud hurt4.ogg",
+          "Mega Spud idle1.ogg",
+          "Mega Spud idle2.ogg",
+          "Mega Spud idle3.ogg",
+          "Mega Spud idle4.ogg",
+          "Mega Spud mega spud.ogg",
+          "Mega Spud summon.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AMega_spud_sounds",
+        "wikiFileCount": 19
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Mooshroom",
+        "id": "mooshroom",
+        "mappedMobDisplayNames": [
+          "Mooshroom"
+        ],
+        "mappedMobIds": [
+          "mooshroom"
+        ],
+        "matchedFileCount": 9,
+        "matchType": "direct",
+        "title": "Category:Mooshroom sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/sheep/shear"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AMooshroom_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Nautilus",
+        "id": "nautilus",
+        "mappedMobDisplayNames": [
+          "Nautilus"
+        ],
+        "mappedMobIds": [
+          "nautilus"
+        ],
+        "matchedFileCount": 60,
+        "matchType": "direct",
+        "title": "Category:Nautilus sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/nautilus/ride"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Baby nautilus ambient land1.ogg",
+          "Baby nautilus ambient land2.ogg",
+          "Baby nautilus ambient land3.ogg",
+          "Baby nautilus ambient land4.ogg",
+          "Baby nautilus ambient1.ogg",
+          "Baby nautilus ambient2.ogg",
+          "Baby nautilus ambient3.ogg",
+          "Baby nautilus ambient4.ogg",
+          "Baby nautilus ambient5.ogg",
+          "Baby nautilus ambient6.ogg",
+          "Baby nautilus ambient7.ogg",
+          "Baby nautilus death land.ogg",
+          "Baby nautilus death.ogg",
+          "Baby nautilus eat1.ogg",
+          "Baby nautilus eat2.ogg",
+          "Baby nautilus hurt land1.ogg",
+          "Baby nautilus hurt land2.ogg",
+          "Baby nautilus hurt land3.ogg",
+          "Baby nautilus hurt land4.ogg",
+          "Baby nautilus hurt1.ogg",
+          "Baby nautilus hurt2.ogg",
+          "Baby nautilus hurt3.ogg",
+          "Baby nautilus hurt4.ogg",
+          "Nautilus riding.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ANautilus_sounds",
+        "wikiFileCount": 84
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Ocelot",
+        "id": "ocelot",
+        "mappedMobDisplayNames": [
+          "Ocelot"
+        ],
+        "mappedMobIds": [
+          "ocelot"
+        ],
+        "matchedFileCount": 7,
+        "matchType": "direct",
+        "title": "Category:Ocelot sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/cat/hitt1",
+          "mob/cat/hitt2",
+          "mob/cat/hitt3"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AOcelot_sounds",
+        "wikiFileCount": 7
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Panda",
+        "id": "panda",
+        "mappedMobDisplayNames": [
+          "Panda"
+        ],
+        "mappedMobIds": [
+          "panda"
+        ],
+        "matchedFileCount": 43,
+        "matchType": "direct",
+        "title": "Category:Panda sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/panda/aggressive/aggressive1",
+          "mob/panda/aggressive/aggressive2",
+          "mob/panda/aggressive/aggressive3",
+          "mob/panda/aggressive/aggressive4",
+          "mob/panda/cant_breed1",
+          "mob/panda/cant_breed2",
+          "mob/panda/cant_breed3",
+          "mob/panda/cant_breed4",
+          "mob/panda/cant_breed5",
+          "mob/panda/worried/worried2",
+          "mob/panda/worried/worried3",
+          "mob/panda/worried/worried4",
+          "mob/panda/worried/worried5",
+          "mob/panda/worried/worried6"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Aggressive panda idle1.ogg",
+          "Aggressive panda idle2.ogg",
+          "Aggressive panda idle3.ogg",
+          "Aggressive panda idle4.ogg",
+          "Panda bleat1.ogg",
+          "Panda bleat2.ogg",
+          "Panda bleat3.ogg",
+          "Panda bleat4.ogg",
+          "Panda bleat5.ogg",
+          "Worried panda idle1.ogg",
+          "Worried panda idle2.ogg",
+          "Worried panda idle3.ogg",
+          "Worried panda idle4.ogg",
+          "Worried panda idle5.ogg",
+          "Worried panda idle6.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3APanda_sounds",
+        "wikiFileCount": 58
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Parched",
+        "id": "parched",
+        "mappedMobDisplayNames": [
+          "Parched"
+        ],
+        "mappedMobIds": [
+          "parched"
+        ],
+        "matchedFileCount": 13,
+        "matchType": "direct",
+        "title": "Category:Parched sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AParched_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Parrot",
+        "id": "parrot",
+        "mappedMobDisplayNames": [
+          "Parrot"
+        ],
+        "mappedMobIds": [
+          "parrot"
+        ],
+        "matchedFileCount": 28,
+        "matchType": "direct",
+        "title": "Category:Parrot sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/shulker/ambient1",
+          "entity/shulker/ambient2",
+          "entity/shulker/ambient3",
+          "entity/shulker/ambient4",
+          "entity/shulker/ambient5",
+          "entity/shulker/ambient6",
+          "entity/shulker/ambient7",
+          "entity/witch/ambient1",
+          "entity/witch/ambient2",
+          "entity/witch/ambient3",
+          "entity/witch/ambient4",
+          "entity/witch/ambient5",
+          "mob/blaze/breathe1",
+          "mob/blaze/breathe2",
+          "mob/blaze/breathe3",
+          "mob/blaze/breathe4",
+          "mob/bogged/ambient1",
+          "mob/bogged/ambient2",
+          "mob/bogged/ambient3",
+          "mob/bogged/ambient4",
+          "mob/camel_husk/ambient1",
+          "mob/camel_husk/ambient2",
+          "mob/camel_husk/ambient3",
+          "mob/camel_husk/ambient4",
+          "mob/camel_husk/ambient5",
+          "mob/camel_husk/ambient6",
+          "mob/camel_husk/ambient7",
+          "mob/camel_husk/ambient8",
+          "mob/creaking/parrot_imitate_creaking",
+          "mob/enderdragon/growl1",
+          "mob/enderdragon/growl2",
+          "mob/enderdragon/growl3",
+          "mob/enderdragon/growl4",
+          "mob/evocation_illager/cast1",
+          "mob/evocation_illager/cast2",
+          "mob/ghast/moan1",
+          "mob/ghast/moan2",
+          "mob/ghast/moan3",
+          "mob/ghast/moan4",
+          "mob/ghast/moan5",
+          "mob/ghast/moan6",
+          "mob/ghast/moan7",
+          "mob/guardian/guardian_idle1",
+          "mob/guardian/guardian_idle2",
+          "mob/guardian/guardian_idle3",
+          "mob/guardian/guardian_idle4",
+          "mob/guardian/land_idle1",
+          "mob/guardian/land_idle2",
+          "mob/guardian/land_idle3",
+          "mob/guardian/land_idle4",
+          "mob/hoglin/idle10",
+          "mob/hoglin/idle11",
+          "mob/hoglin/idle7",
+          "mob/hoglin/idle8",
+          "mob/hoglin/idle9",
+          "mob/magmacube/big1",
+          "mob/magmacube/big2",
+          "mob/magmacube/big3",
+          "mob/magmacube/big4",
+          "mob/parched/ambient1",
+          "mob/parched/ambient2",
+          "mob/parched/ambient3",
+          "mob/parched/ambient4",
+          "mob/piglin_brute/idle7",
+          "mob/piglin_brute/idle8",
+          "mob/piglin_brute/idle9",
+          "mob/ravager/idle7",
+          "mob/ravager/idle8",
+          "mob/slime/big1",
+          "mob/slime/big2",
+          "mob/slime/big3",
+          "mob/slime/big4",
+          "mob/warden/tendril_clicks_1",
+          "mob/warden/tendril_clicks_2",
+          "mob/warden/tendril_clicks_3",
+          "mob/warden/tendril_clicks_4",
+          "mob/warden/tendril_clicks_5",
+          "mob/warden/tendril_clicks_6",
+          "mob/zombie_nautilus/ambient1",
+          "mob/zombie_nautilus/ambient2",
+          "mob/zombie_nautilus/ambient3",
+          "mob/zombie_nautilus/ambient4",
+          "mob/zombie_nautilus/ambient5",
+          "random/fuse"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AParrot_sounds",
+        "wikiFileCount": 28
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Phantom",
+        "id": "phantom",
+        "mappedMobDisplayNames": [
+          "Phantom"
+        ],
+        "mappedMobIds": [
+          "phantom"
+        ],
+        "matchedFileCount": 23,
+        "matchType": "direct",
+        "title": "Category:Phantom sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3APhantom_sounds",
+        "wikiFileCount": 23
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Pig",
+        "id": "pig",
+        "mappedMobDisplayNames": [
+          "Pig"
+        ],
+        "mappedMobIds": [
+          "pig"
+        ],
+        "matchedFileCount": 11,
+        "matchType": "direct",
+        "title": "Category:Pig sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/horse/leather"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Pig baby ambient1.ogg",
+          "Pig baby ambient2.ogg",
+          "Pig baby ambient3.ogg",
+          "Pig baby ambient4.ogg",
+          "Pig baby ambient5.ogg",
+          "Pig baby ambient6.ogg",
+          "Pig baby death.ogg",
+          "Pig baby eat1.ogg",
+          "Pig baby eat2.ogg",
+          "Pig baby hit1.ogg",
+          "Pig baby hit2.ogg",
+          "Pig baby hit3.ogg",
+          "Pig baby step1.ogg",
+          "Pig baby step2.ogg",
+          "Pig baby step3.ogg",
+          "Pig baby step4.ogg",
+          "Pig baby step5.ogg",
+          "Pig big ambient1.ogg",
+          "Pig big ambient10.ogg",
+          "Pig big ambient2.ogg",
+          "Pig big ambient3.ogg",
+          "Pig big ambient4.ogg",
+          "Pig big ambient5.ogg",
+          "Pig big ambient6.ogg",
+          "Pig big ambient7 JE1.ogg",
+          "Pig big ambient7.ogg",
+          "Pig big ambient8 JE1.ogg",
+          "Pig big ambient8.ogg",
+          "Pig big ambient9.ogg",
+          "Pig big death JE1.ogg",
+          "Pig big death.ogg",
+          "Pig big eat1.ogg",
+          "Pig big eat2.ogg",
+          "Pig big hit1.ogg",
+          "Pig big hit2.ogg",
+          "Pig big hit3.ogg",
+          "Pig boost1.wav",
+          "Pig boost2.wav",
+          "Pig boost3.wav",
+          "Pig boost4.wav",
+          "Pig boost5.wav",
+          "Pig mini ambient1.ogg",
+          "Pig mini ambient2.ogg",
+          "Pig mini ambient3.ogg",
+          "Pig mini ambient4 JE1.ogg",
+          "Pig mini ambient4.ogg",
+          "Pig mini ambient5.ogg",
+          "Pig mini ambient6.ogg",
+          "Pig mini death JE1.ogg",
+          "Pig mini death.ogg",
+          "Pig mini eat1.ogg",
+          "Pig mini eat2.ogg",
+          "Pig mini hurt1.ogg",
+          "Pig mini hurt2.ogg",
+          "Pig mini hurt3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3APig_sounds",
+        "wikiFileCount": 66
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Piglin",
+        "id": "piglin",
+        "mappedMobDisplayNames": [
+          "Piglin"
+        ],
+        "mappedMobIds": [
+          "piglin"
+        ],
+        "matchedFileCount": 38,
+        "matchType": "direct",
+        "title": "Category:Piglin sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3APiglin_sounds",
+        "wikiFileCount": 38
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Piglin brute",
+        "id": "piglin_brute",
+        "mappedMobDisplayNames": [
+          "Piglin Brute"
+        ],
+        "mappedMobIds": [
+          "piglin_brute"
+        ],
+        "matchedFileCount": 26,
+        "matchType": "direct",
+        "title": "Category:Piglin brute sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/piglin/converted1",
+          "mob/piglin/converted2"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3APiglin_brute_sounds",
+        "wikiFileCount": 26
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Pillager",
+        "id": "pillager",
+        "mappedMobDisplayNames": [
+          "Pillager"
+        ],
+        "mappedMobIds": [
+          "pillager"
+        ],
+        "matchedFileCount": 14,
+        "matchType": "direct",
+        "title": "Category:Pillager sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3APillager_sounds",
+        "wikiFileCount": 14
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Plaguewhale slab",
+        "id": "plaguewhale_slab",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Plaguewhale slab sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Plaguewhale Slab death.ogg",
+          "Plaguewhale Slab hit1.ogg",
+          "Plaguewhale Slab hit2.ogg",
+          "Plaguewhale Slab hit3.ogg",
+          "Plaguewhale Slab hit4.ogg",
+          "Plaguewhale Slab idle1.ogg",
+          "Plaguewhale Slab idle2.ogg",
+          "Plaguewhale Slab idle3.ogg",
+          "Plaguewhale Slab idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3APlaguewhale_slab_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Poisonous potato zombie",
+        "id": "poisonous_potato_zombie",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Poisonous potato zombie sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Poisonous Potato Zombie death.ogg",
+          "Poisonous Potato Zombie hurt1.ogg",
+          "Poisonous Potato Zombie hurt2.ogg",
+          "Poisonous Potato Zombie infect.ogg",
+          "Poisonous Potato Zombie metal1.ogg",
+          "Poisonous Potato Zombie metal2.ogg",
+          "Poisonous Potato Zombie metal3.ogg",
+          "Poisonous Potato Zombie remedy.ogg",
+          "Poisonous Potato Zombie say1.ogg",
+          "Poisonous Potato Zombie say2.ogg",
+          "Poisonous Potato Zombie say3.ogg",
+          "Poisonous Potato Zombie step1.ogg",
+          "Poisonous Potato Zombie step2.ogg",
+          "Poisonous Potato Zombie step3.ogg",
+          "Poisonous Potato Zombie step4.ogg",
+          "Poisonous Potato Zombie step5.ogg",
+          "Poisonous Potato Zombie unfect.ogg",
+          "Poisonous Potato Zombie wood1.ogg",
+          "Poisonous Potato Zombie wood2.ogg",
+          "Poisonous Potato Zombie wood3.ogg",
+          "Poisonous Potato Zombie wood4.ogg",
+          "Poisonous Potato Zombie woodbreak.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3APoisonous_potato_zombie_sounds",
+        "wikiFileCount": 22
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Polar bear",
+        "id": "polar_bear",
+        "mappedMobDisplayNames": [
+          "Polar Bear"
+        ],
+        "mappedMobIds": [
+          "polar_bear"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Polar bear sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/polarbear/warning1",
+          "mob/polarbear/warning2",
+          "mob/polarbear/warning3"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Baby polar bear idle1.ogg",
+          "Baby polar bear idle2.ogg",
+          "Baby polar bear idle3.ogg",
+          "Baby polar bear idle4.ogg",
+          "Polar bear roar1.ogg",
+          "Polar bear roar2.ogg",
+          "Polar bear roar3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3APolar_bear_sounds",
+        "wikiFileCount": 22
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Pufferfish",
+        "id": "pufferfish",
+        "mappedMobDisplayNames": [
+          "Pufferfish"
+        ],
+        "mappedMobIds": [
+          "pufferfish"
+        ],
+        "matchedFileCount": 14,
+        "matchType": "direct",
+        "title": "Category:Pufferfish sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3APufferfish_sounds",
+        "wikiFileCount": 14
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Rabbit",
+        "id": "rabbit",
+        "mappedMobDisplayNames": [
+          "Rabbit"
+        ],
+        "mappedMobIds": [
+          "rabbit"
+        ],
+        "matchedFileCount": 16,
+        "matchType": "direct",
+        "title": "Category:Rabbit sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/rabbit/bunnymurder"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Rabbit death.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ARabbit_sounds",
+        "wikiFileCount": 17
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Ravager",
+        "id": "ravager",
+        "mappedMobDisplayNames": [
+          "Ravager"
+        ],
+        "mappedMobIds": [
+          "ravager"
+        ],
+        "matchedFileCount": 32,
+        "matchType": "direct",
+        "title": "Category:Ravager sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ARavager_sounds",
+        "wikiFileCount": 32
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Sheep",
+        "id": "sheep",
+        "mappedMobDisplayNames": [
+          "Sheep"
+        ],
+        "mappedMobIds": [
+          "sheep"
+        ],
+        "matchedFileCount": 5,
+        "matchType": "direct",
+        "title": "Category:Sheep sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/sheep/say1",
+          "mob/sheep/say2",
+          "mob/sheep/say3",
+          "mob/sheep/shear"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Sheep1.ogg",
+          "Sheep2.ogg",
+          "Sheep3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ASheep_sounds",
+        "wikiFileCount": 8
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Shulker",
+        "id": "shulker",
+        "mappedMobDisplayNames": [
+          "Shulker"
+        ],
+        "mappedMobIds": [
+          "shulker"
+        ],
+        "matchedFileCount": 22,
+        "matchType": "direct",
+        "title": "Category:Shulker sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/shulker/ambient1",
+          "entity/shulker/ambient2",
+          "entity/shulker/ambient3",
+          "entity/shulker/ambient4",
+          "entity/shulker/ambient5",
+          "entity/shulker/ambient6",
+          "entity/shulker/ambient7",
+          "entity/shulker/hurt_closed1",
+          "entity/shulker/hurt_closed2",
+          "entity/shulker/hurt_closed3",
+          "entity/shulker/hurt_closed4",
+          "entity/shulker/hurt_closed5",
+          "mob/endermen/portal",
+          "mob/endermen/portal2"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Shulker bullet hit1.ogg",
+          "Shulker bullet hit2.ogg",
+          "Shulker bullet hit3.ogg",
+          "Shulker bullet hit4.ogg",
+          "Shulker hurt close1.ogg",
+          "Shulker hurt close2.ogg",
+          "Shulker hurt close3.ogg",
+          "Shulker hurt close4.ogg",
+          "Shulker hurt close5.ogg",
+          "Shulker idle1.ogg",
+          "Shulker idle2.ogg",
+          "Shulker idle3.ogg",
+          "Shulker idle4.ogg",
+          "Shulker idle5.ogg",
+          "Shulker idle6.ogg",
+          "Shulker idle7.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AShulker_sounds",
+        "wikiFileCount": 38
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Silverfish",
+        "id": "silverfish",
+        "mappedMobDisplayNames": [
+          "Endermite",
+          "Silverfish"
+        ],
+        "mappedMobIds": [
+          "endermite",
+          "silverfish"
+        ],
+        "matchedFileCount": 12,
+        "matchType": "grouped",
+        "title": "Category:Silverfish sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ASilverfish_sounds",
+        "wikiFileCount": 12
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Skeleton",
+        "id": "skeleton",
+        "mappedMobDisplayNames": [
+          "Skeleton"
+        ],
+        "mappedMobIds": [
+          "skeleton"
+        ],
+        "matchedFileCount": 12,
+        "matchType": "direct",
+        "title": "Category:Skeleton sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/stray/convert1",
+          "mob/stray/convert2",
+          "mob/stray/convert3",
+          "random/bow"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ASkeleton_sounds",
+        "wikiFileCount": 12
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Skeleton horse",
+        "id": "skeleton_horse",
+        "mappedMobDisplayNames": [
+          "Skeleton Horse"
+        ],
+        "mappedMobIds": [
+          "skeleton_horse"
+        ],
+        "matchedFileCount": 8,
+        "matchType": "direct",
+        "title": "Category:Skeleton horse sounds",
+        "unmatchedLocalSoundPaths": [
+          "liquid/swim10",
+          "liquid/swim11",
+          "liquid/swim12",
+          "liquid/swim14",
+          "liquid/swim15",
+          "liquid/swim16",
+          "liquid/swim17",
+          "liquid/swim9",
+          "mob/horse/skeleton/water/gallop1",
+          "mob/horse/skeleton/water/gallop2",
+          "mob/horse/skeleton/water/gallop3",
+          "mob/horse/skeleton/water/gallop4",
+          "mob/horse/skeleton/water/idle4",
+          "mob/horse/skeleton/water/idle5",
+          "mob/horse/skeleton/water/jump",
+          "mob/horse/skeleton/water/soft1",
+          "mob/horse/skeleton/water/soft2",
+          "mob/horse/skeleton/water/soft3",
+          "mob/horse/skeleton/water/soft4",
+          "mob/horse/skeleton/water/soft5",
+          "mob/horse/skeleton/water/soft6"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Skeleton horse water gallop1.ogg",
+          "Skeleton horse water gallop2.ogg",
+          "Skeleton horse water gallop3.ogg",
+          "Skeleton horse water gallop4.ogg",
+          "Skeleton horse water idle1.ogg",
+          "Skeleton horse water idle2.ogg",
+          "Skeleton horse water idle3.ogg",
+          "Skeleton horse water idle4.ogg",
+          "Skeleton horse water idle5.ogg",
+          "Skeleton horse water jump.ogg",
+          "Skeleton horse water step1.ogg",
+          "Skeleton horse water step2.ogg",
+          "Skeleton horse water step3.ogg",
+          "Skeleton horse water step4.ogg",
+          "Skeleton horse water step5.ogg",
+          "Skeleton horse water step6.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ASkeleton_horse_sounds",
+        "wikiFileCount": 24
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Slime",
+        "id": "slime",
+        "mappedMobDisplayNames": [
+          "Slime"
+        ],
+        "mappedMobIds": [
+          "slime"
+        ],
+        "matchedFileCount": 11,
+        "matchType": "direct",
+        "title": "Category:Slime sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ASlime_sounds",
+        "wikiFileCount": 11
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Sniffer",
+        "id": "sniffer",
+        "mappedMobDisplayNames": [
+          "Sniffer"
+        ],
+        "mappedMobIds": [
+          "sniffer"
+        ],
+        "matchedFileCount": 44,
+        "matchType": "direct",
+        "title": "Category:Sniffer sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/sniffer/longdig1",
+          "mob/sniffer/longdig2",
+          "random/pop"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Sniffer dig1.ogg",
+          "Sniffer dig2.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ASniffer_sounds",
+        "wikiFileCount": 46
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Snow golem",
+        "id": "snow_golem",
+        "mappedMobDisplayNames": [
+          "Snow Golem"
+        ],
+        "mappedMobIds": [
+          "snow_golem"
+        ],
+        "matchedFileCount": 6,
+        "matchType": "direct",
+        "title": "Category:Snow golem sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/sheep/shear",
+          "random/bow"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ASnow_golem_sounds",
+        "wikiFileCount": 6
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Spider",
+        "id": "spider",
+        "mappedMobDisplayNames": [
+          "Spider"
+        ],
+        "mappedMobIds": [
+          "spider"
+        ],
+        "matchedFileCount": 9,
+        "matchType": "direct",
+        "title": "Category:Spider sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ASpider_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Squid",
+        "id": "squid",
+        "mappedMobDisplayNames": [
+          "Squid"
+        ],
+        "mappedMobIds": [
+          "squid"
+        ],
+        "matchedFileCount": 7,
+        "matchType": "direct",
+        "title": "Category:Squid sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/squid/ambient1",
+          "mob/squid/ambient2",
+          "mob/squid/ambient3",
+          "mob/squid/ambient4",
+          "mob/squid/ambient5",
+          "mob/squid/squirt1",
+          "mob/squid/squirt2",
+          "mob/squid/squirt3"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Squid idle1.ogg",
+          "Squid idle2.ogg",
+          "Squid idle3.ogg",
+          "Squid idle4.ogg",
+          "Squid idle5.ogg",
+          "Squid shoot1.ogg",
+          "Squid shoot2.ogg",
+          "Squid shoot3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ASquid_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Stray",
+        "id": "stray",
+        "mappedMobDisplayNames": [
+          "Stray"
+        ],
+        "mappedMobIds": [
+          "stray"
+        ],
+        "matchedFileCount": 14,
+        "matchType": "direct",
+        "title": "Category:Stray sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Stray convert1.ogg",
+          "Stray convert2.ogg",
+          "Stray convert3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AStray_sounds",
+        "wikiFileCount": 17
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Strider",
+        "id": "strider",
+        "mappedMobDisplayNames": [
+          "Strider"
+        ],
+        "mappedMobIds": [
+          "strider"
+        ],
+        "matchedFileCount": 38,
+        "matchType": "direct",
+        "title": "Category:Strider sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/horse/leather"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AStrider_sounds",
+        "wikiFileCount": 38
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Sulfur cube",
+        "id": "sulfur_cube",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Sulfur cube sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Sulfur cube ball bounce1.wav",
+          "Sulfur cube ball bounce2.wav",
+          "Sulfur cube ball bounce3.wav",
+          "Sulfur cube ball bounce4.wav",
+          "Sulfur cube ball bounce5.wav",
+          "Sulfur cube ball bounce6.wav",
+          "Sulfur cube ball bounce7.wav",
+          "Sulfur cube ball bounce8.wav",
+          "Sulfur cube ball hit1.wav",
+          "Sulfur cube ball hit2.wav",
+          "Sulfur cube ball hit3.wav",
+          "Sulfur cube ball hit4.wav",
+          "Sulfur cube ball kick1.wav",
+          "Sulfur cube ball kick2.wav",
+          "Sulfur cube ball kick3.wav",
+          "Sulfur cube ball kick4.wav",
+          "Sulfur cube death.wav",
+          "Sulfur cube hit1.wav",
+          "Sulfur cube hit2.wav",
+          "Sulfur cube hit3.wav",
+          "Sulfur cube hit4.wav",
+          "Sulfur cube jump1.wav",
+          "Sulfur cube jump10.wav",
+          "Sulfur cube jump11.wav",
+          "Sulfur cube jump2.wav",
+          "Sulfur cube jump3.wav",
+          "Sulfur cube jump4.wav",
+          "Sulfur cube jump5.wav",
+          "Sulfur cube jump6.wav",
+          "Sulfur cube jump7.wav",
+          "Sulfur cube jump8.wav",
+          "Sulfur cube jump9.wav",
+          "Sulfur cube small death.wav",
+          "Sulfur cube small hit1.wav",
+          "Sulfur cube small hit2.wav",
+          "Sulfur cube small hit3.wav",
+          "Sulfur cube small hit4.wav",
+          "Sulfur cube small jump1.wav",
+          "Sulfur cube small jump10.wav",
+          "Sulfur cube small jump2.wav",
+          "Sulfur cube small jump3.wav",
+          "Sulfur cube small jump4.wav",
+          "Sulfur cube small jump5.wav",
+          "Sulfur cube small jump6.wav",
+          "Sulfur cube small jump7.wav",
+          "Sulfur cube small jump8.wav",
+          "Sulfur cube small jump9.wav"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ASulfur_cube_sounds",
+        "wikiFileCount": 47
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Tadpole",
+        "id": "tadpole",
+        "mappedMobDisplayNames": [
+          "Tadpole"
+        ],
+        "mappedMobIds": [
+          "tadpole"
+        ],
+        "matchedFileCount": 6,
+        "matchType": "direct",
+        "title": "Category:Tadpole sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/fish/flop1",
+          "entity/fish/flop2",
+          "entity/fish/flop3",
+          "entity/fish/flop4",
+          "mob/frog/idle1",
+          "mob/frog/idle2",
+          "mob/frog/idle3",
+          "mob/frog/idle4",
+          "mob/frog/idle5",
+          "mob/frog/idle6",
+          "mob/frog/idle7",
+          "mob/frog/idle8"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3ATadpole_sounds",
+        "wikiFileCount": 6
+      },
+      {
+        "coverage": "wiki-only",
+        "displayName": "Toxifin slab",
+        "id": "toxifin_slab",
+        "mappedMobDisplayNames": [],
+        "mappedMobIds": [],
+        "matchedFileCount": 0,
+        "matchType": "wiki-only",
+        "title": "Category:Toxifin slab sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Toxifin Slab ambient1.ogg",
+          "Toxifin Slab ambient2.ogg",
+          "Toxifin Slab ambient3.ogg",
+          "Toxifin Slab ambient4.ogg",
+          "Toxifin Slab attack loop.ogg",
+          "Toxifin Slab death.ogg",
+          "Toxifin Slab flop1.ogg",
+          "Toxifin Slab flop2.ogg",
+          "Toxifin Slab flop3.ogg",
+          "Toxifin Slab flop4.ogg",
+          "Toxifin Slab hit1.ogg",
+          "Toxifin Slab hit2.ogg",
+          "Toxifin Slab hit3.ogg",
+          "Toxifin Slab hit4.ogg",
+          "Toxifin Slab land death.ogg",
+          "Toxifin Slab land hit1.ogg",
+          "Toxifin Slab land hit2.ogg",
+          "Toxifin Slab land hit3.ogg",
+          "Toxifin Slab land hit4.ogg",
+          "Toxifin Slab land idle1.ogg",
+          "Toxifin Slab land idle2.ogg",
+          "Toxifin Slab land idle3.ogg",
+          "Toxifin Slab land idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AToxifin_slab_sounds",
+        "wikiFileCount": 23
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Turtle",
+        "id": "turtle",
+        "mappedMobDisplayNames": [
+          "Turtle"
+        ],
+        "mappedMobIds": [
+          "turtle"
+        ],
+        "matchedFileCount": 23,
+        "matchType": "direct",
+        "title": "Category:Turtle sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/turtle/baby/egg_hatched1",
+          "mob/turtle/baby/egg_hatched2",
+          "mob/turtle/baby/egg_hatched3",
+          "mob/turtle/baby/shamble1",
+          "mob/turtle/baby/shamble2",
+          "mob/turtle/baby/shamble3",
+          "mob/turtle/baby/shamble4",
+          "mob/turtle/egg/drop_egg1",
+          "mob/turtle/egg/drop_egg2",
+          "mob/turtle/walk1",
+          "mob/turtle/walk2",
+          "mob/turtle/walk3",
+          "mob/turtle/walk4",
+          "mob/turtle/walk5"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Baby turtle death1.ogg",
+          "Baby turtle death2.ogg",
+          "Baby turtle hurt1.ogg",
+          "Baby turtle hurt2.ogg",
+          "Baby turtle step1.ogg",
+          "Baby turtle step2.ogg",
+          "Baby turtle step3.ogg",
+          "Baby turtle step4.ogg",
+          "Turtle egg hatch1.ogg",
+          "Turtle egg hatch2.ogg",
+          "Turtle egg hatch3.ogg",
+          "Turtle egg jump1.ogg",
+          "Turtle egg jump2.ogg",
+          "Turtle egg jump3.ogg",
+          "Turtle egg jump4.ogg",
+          "Turtle lay egg1.ogg",
+          "Turtle lay egg2.ogg",
+          "Turtle step1.ogg",
+          "Turtle step2.ogg",
+          "Turtle step3.ogg",
+          "Turtle step4.ogg",
+          "Turtle step5.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3ATurtle_sounds",
+        "wikiFileCount": 45
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Vex",
+        "id": "vex",
+        "mappedMobDisplayNames": [
+          "Vex"
+        ],
+        "mappedMobIds": [
+          "vex"
+        ],
+        "matchedFileCount": 11,
+        "matchType": "direct",
+        "title": "Category:Vex sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AVex_sounds",
+        "wikiFileCount": 11
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Villager",
+        "id": "villager",
+        "mappedMobDisplayNames": [
+          "Villager"
+        ],
+        "mappedMobIds": [
+          "villager"
+        ],
+        "matchedFileCount": 8,
+        "matchType": "direct",
+        "title": "Category:Villager sounds",
+        "unmatchedLocalSoundPaths": [
+          "block/barrel/open1",
+          "block/barrel/open2",
+          "block/blastfurnace/blastfurnace1",
+          "block/blastfurnace/blastfurnace2",
+          "block/blastfurnace/blastfurnace3",
+          "block/blastfurnace/blastfurnace4",
+          "block/blastfurnace/blastfurnace5",
+          "block/brewing_stand/brew1",
+          "block/brewing_stand/brew2",
+          "block/cauldron/dye1",
+          "block/cauldron/dye2",
+          "block/cauldron/dye3",
+          "block/composter/fill_success1",
+          "block/composter/fill_success2",
+          "block/composter/fill_success3",
+          "block/composter/fill_success4",
+          "block/fletching_table/fletching_table1",
+          "block/fletching_table/fletching_table2",
+          "block/grindstone/grindstone1",
+          "block/grindstone/grindstone2",
+          "block/grindstone/grindstone3",
+          "block/smithing_table/smithing_table1",
+          "block/smithing_table/smithing_table2",
+          "block/smithing_table/smithing_table3",
+          "block/smoker/smoker1",
+          "block/smoker/smoker2",
+          "block/smoker/smoker3",
+          "block/smoker/smoker4",
+          "block/smoker/smoker5",
+          "item/book/open_flip1",
+          "item/book/open_flip2",
+          "item/book/open_flip3",
+          "mob/villager/haggle1",
+          "mob/villager/haggle2",
+          "mob/villager/haggle3",
+          "mob/villager/no1",
+          "mob/villager/no2",
+          "mob/villager/no3",
+          "mob/villager/yes1",
+          "mob/villager/yes2",
+          "mob/villager/yes3",
+          "ui/cartography_table/drawmap1",
+          "ui/cartography_table/drawmap2",
+          "ui/cartography_table/drawmap3",
+          "ui/loom/take_result1",
+          "ui/loom/take_result2",
+          "ui/stonecutter/cut1",
+          "ui/stonecutter/cut2"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Villager accept1.ogg",
+          "Villager accept2.ogg",
+          "Villager accept3.ogg",
+          "Villager deny1.ogg",
+          "Villager deny2.ogg",
+          "Villager deny3.ogg",
+          "Villager trade1.ogg",
+          "Villager trade2.ogg",
+          "Villager trade3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AVillager_sounds",
+        "wikiFileCount": 17
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Vindicator",
+        "id": "vindicator",
+        "mappedMobDisplayNames": [
+          "Vindicator"
+        ],
+        "mappedMobIds": [
+          "vindicator"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Vindicator sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AVindicator_sounds",
+        "wikiFileCount": 15
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Wandering trader",
+        "id": "wandering_trader",
+        "mappedMobDisplayNames": [
+          "Wandering Trader"
+        ],
+        "mappedMobIds": [
+          "wandering_trader"
+        ],
+        "matchedFileCount": 16,
+        "matchType": "direct",
+        "title": "Category:Wandering trader sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/wandering_trader/disappeared1",
+          "mob/wandering_trader/disappeared2",
+          "mob/wandering_trader/haggle1",
+          "mob/wandering_trader/haggle2",
+          "mob/wandering_trader/haggle3",
+          "mob/wandering_trader/no1",
+          "mob/wandering_trader/no2",
+          "mob/wandering_trader/no3",
+          "mob/wandering_trader/no4",
+          "mob/wandering_trader/no5",
+          "mob/wandering_trader/reappeared1",
+          "mob/wandering_trader/reappeared2",
+          "mob/wandering_trader/yes1",
+          "mob/wandering_trader/yes2",
+          "mob/wandering_trader/yes3",
+          "mob/wandering_trader/yes4",
+          "random/drink"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Wandering trader accept1.ogg",
+          "Wandering trader accept2.ogg",
+          "Wandering trader accept3.ogg",
+          "Wandering trader accept4.ogg",
+          "Wandering trader deny1.ogg",
+          "Wandering trader deny2.ogg",
+          "Wandering trader deny3.ogg",
+          "Wandering trader deny4.ogg",
+          "Wandering trader deny5.ogg",
+          "Wandering trader disappear1.ogg",
+          "Wandering trader disappear2.ogg",
+          "Wandering trader reappear1.ogg",
+          "Wandering trader reappear2.ogg",
+          "Wandering trader trade1.ogg",
+          "Wandering trader trade2.ogg",
+          "Wandering trader trade3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AWandering_trader_sounds",
+        "wikiFileCount": 32
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Warden",
+        "id": "warden",
+        "mappedMobDisplayNames": [
+          "Warden"
+        ],
+        "mappedMobIds": [
+          "warden"
+        ],
+        "matchedFileCount": 10,
+        "matchType": "direct",
+        "title": "Category:Warden sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/warden/agitated_1",
+          "mob/warden/agitated_2",
+          "mob/warden/agitated_3",
+          "mob/warden/agitated_4",
+          "mob/warden/agitated_5",
+          "mob/warden/agitated_6",
+          "mob/warden/ambient_1",
+          "mob/warden/ambient_10",
+          "mob/warden/ambient_11",
+          "mob/warden/ambient_12",
+          "mob/warden/ambient_2",
+          "mob/warden/ambient_3",
+          "mob/warden/ambient_4",
+          "mob/warden/ambient_5",
+          "mob/warden/ambient_6",
+          "mob/warden/ambient_7",
+          "mob/warden/ambient_8",
+          "mob/warden/ambient_9",
+          "mob/warden/angry_1",
+          "mob/warden/angry_2",
+          "mob/warden/angry_3",
+          "mob/warden/angry_4",
+          "mob/warden/angry_5",
+          "mob/warden/angry_6",
+          "mob/warden/attack_impact_1",
+          "mob/warden/attack_impact_2",
+          "mob/warden/death_1",
+          "mob/warden/death_2",
+          "mob/warden/heartbeat_1",
+          "mob/warden/heartbeat_2",
+          "mob/warden/heartbeat_3",
+          "mob/warden/heartbeat_4",
+          "mob/warden/hurt_1",
+          "mob/warden/hurt_2",
+          "mob/warden/hurt_3",
+          "mob/warden/hurt_4",
+          "mob/warden/listening_1",
+          "mob/warden/listening_2",
+          "mob/warden/listening_3",
+          "mob/warden/listening_4",
+          "mob/warden/listening_5",
+          "mob/warden/listening_angry_1",
+          "mob/warden/listening_angry_2",
+          "mob/warden/listening_angry_3",
+          "mob/warden/listening_angry_4",
+          "mob/warden/listening_angry_5",
+          "mob/warden/nearby_close_1",
+          "mob/warden/nearby_close_2",
+          "mob/warden/nearby_close_3",
+          "mob/warden/nearby_close_4",
+          "mob/warden/nearby_closer_1",
+          "mob/warden/nearby_closer_2",
+          "mob/warden/nearby_closer_3",
+          "mob/warden/nearby_closest_1",
+          "mob/warden/nearby_closest_2",
+          "mob/warden/nearby_closest_3",
+          "mob/warden/roar_1",
+          "mob/warden/roar_2",
+          "mob/warden/roar_3",
+          "mob/warden/roar_4",
+          "mob/warden/roar_5",
+          "mob/warden/sniff_1",
+          "mob/warden/sniff_2",
+          "mob/warden/sniff_3",
+          "mob/warden/sniff_4",
+          "mob/warden/step_1",
+          "mob/warden/step_2",
+          "mob/warden/step_3",
+          "mob/warden/step_4",
+          "mob/warden/tendril_clicks_1",
+          "mob/warden/tendril_clicks_2",
+          "mob/warden/tendril_clicks_3",
+          "mob/warden/tendril_clicks_4",
+          "mob/warden/tendril_clicks_5",
+          "mob/warden/tendril_clicks_6"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Warden agitated1.ogg",
+          "Warden agitated2.ogg",
+          "Warden agitated3.ogg",
+          "Warden agitated4.ogg",
+          "Warden agitated5.ogg",
+          "Warden agitated6.ogg",
+          "Warden ambient1.ogg",
+          "Warden ambient10.ogg",
+          "Warden ambient11.ogg",
+          "Warden ambient12.ogg",
+          "Warden ambient2.ogg",
+          "Warden ambient3.ogg",
+          "Warden ambient4.ogg",
+          "Warden ambient5.ogg",
+          "Warden ambient6.ogg",
+          "Warden ambient7.ogg",
+          "Warden ambient8.ogg",
+          "Warden ambient9.ogg",
+          "Warden angry1.ogg",
+          "Warden angry2.ogg",
+          "Warden angry3.ogg",
+          "Warden angry4.ogg",
+          "Warden angry5.ogg",
+          "Warden angry6.ogg",
+          "Warden attack impact1.ogg",
+          "Warden attack impact2.ogg",
+          "Warden death1.ogg",
+          "Warden death2.ogg",
+          "Warden heartbeat1.ogg",
+          "Warden heartbeat2.ogg",
+          "Warden heartbeat3.ogg",
+          "Warden heartbeat4.ogg",
+          "Warden hurt1.ogg",
+          "Warden hurt2.ogg",
+          "Warden hurt3.ogg",
+          "Warden hurt4.ogg",
+          "Warden listening angry1.ogg",
+          "Warden listening angry2.ogg",
+          "Warden listening angry3.ogg",
+          "Warden listening angry4.ogg",
+          "Warden listening angry5.ogg",
+          "Warden listening1.ogg",
+          "Warden listening2.ogg",
+          "Warden listening3.ogg",
+          "Warden listening4.ogg",
+          "Warden listening5.ogg",
+          "Warden nearby close1.ogg",
+          "Warden nearby close2.ogg",
+          "Warden nearby close3.ogg",
+          "Warden nearby close4.ogg",
+          "Warden nearby closer1.ogg",
+          "Warden nearby closer2.ogg",
+          "Warden nearby closer3.ogg",
+          "Warden nearby closest1.ogg",
+          "Warden nearby closest2.ogg",
+          "Warden nearby closest3.ogg",
+          "Warden roar1.ogg",
+          "Warden roar2.ogg",
+          "Warden roar3.ogg",
+          "Warden roar4.ogg",
+          "Warden roar5.ogg",
+          "Warden sniff1.ogg",
+          "Warden sniff2.ogg",
+          "Warden sniff3.ogg",
+          "Warden sniff4.ogg",
+          "Warden step1.ogg",
+          "Warden step2.ogg",
+          "Warden step3.ogg",
+          "Warden step4.ogg",
+          "Warden tendril clicks1.ogg",
+          "Warden tendril clicks2.ogg",
+          "Warden tendril clicks3.ogg",
+          "Warden tendril clicks4.ogg",
+          "Warden tendril clicks5.ogg",
+          "Warden tendril clicks6.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AWarden_sounds",
+        "wikiFileCount": 85
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Witch",
+        "id": "witch",
+        "mappedMobDisplayNames": [
+          "Witch"
+        ],
+        "mappedMobIds": [
+          "witch"
+        ],
+        "matchedFileCount": 14,
+        "matchType": "direct",
+        "title": "Category:Witch sounds",
+        "unmatchedLocalSoundPaths": [
+          "entity/witch/ambient1",
+          "entity/witch/ambient2",
+          "entity/witch/ambient3",
+          "entity/witch/ambient4",
+          "entity/witch/ambient5"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Witch idle1.ogg",
+          "Witch idle2.ogg",
+          "Witch idle3.ogg",
+          "Witch idle4.ogg",
+          "Witch idle5.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AWitch_sounds",
+        "wikiFileCount": 19
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Wither",
+        "id": "wither",
+        "mappedMobDisplayNames": [
+          "Wither"
+        ],
+        "mappedMobIds": [
+          "wither"
+        ],
+        "matchedFileCount": 11,
+        "matchType": "direct",
+        "title": "Category:Wither sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/zombie/woodbreak"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AWither_sounds",
+        "wikiFileCount": 11
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Wither skeleton",
+        "id": "wither_skeleton",
+        "mappedMobDisplayNames": [
+          "Wither Skeleton"
+        ],
+        "mappedMobIds": [
+          "wither_skeleton"
+        ],
+        "matchedFileCount": 13,
+        "matchType": "direct",
+        "title": "Category:Wither skeleton sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AWither_skeleton_sounds",
+        "wikiFileCount": 13
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Wolf",
+        "id": "wolf",
+        "mappedMobDisplayNames": [
+          "Wolf"
+        ],
+        "mappedMobIds": [
+          "wolf"
+        ],
+        "matchedFileCount": 15,
+        "matchType": "direct",
+        "title": "Category:Wolf sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/wolf/classic/bark1",
+          "mob/wolf/classic/bark2",
+          "mob/wolf/classic/bark3"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Wolf baby ambient1.ogg",
+          "Wolf baby ambient2.ogg",
+          "Wolf baby ambient3.ogg",
+          "Wolf baby ambient4.ogg",
+          "Wolf baby ambient5.ogg",
+          "Wolf baby ambient6.ogg",
+          "Wolf baby ambient7.ogg",
+          "Wolf baby ambient8.ogg",
+          "Wolf baby angry1.ogg",
+          "Wolf baby angry2.ogg",
+          "Wolf baby angry3.ogg",
+          "Wolf baby angry4.ogg",
+          "Wolf baby death.ogg",
+          "Wolf baby hurt1.ogg",
+          "Wolf baby hurt2.ogg",
+          "Wolf baby hurt3.ogg",
+          "Wolf baby pant1.ogg",
+          "Wolf baby pant2.ogg",
+          "Wolf baby pant3.ogg",
+          "Wolf baby step1.ogg",
+          "Wolf baby step2.ogg",
+          "Wolf baby step3.ogg",
+          "Wolf baby step4.ogg",
+          "Wolf baby step5.ogg",
+          "Wolf baby whine1.ogg",
+          "Wolf baby whine2.ogg",
+          "Wolf howl1.ogg",
+          "Wolf howl2.ogg",
+          "Wolf idle1.ogg",
+          "Wolf idle2.ogg",
+          "Wolf idle3.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AWolf_sounds",
+        "wikiFileCount": 46
+      },
+      {
+        "coverage": "exact",
+        "displayName": "Zoglin",
+        "id": "zoglin",
+        "mappedMobDisplayNames": [
+          "Zoglin"
+        ],
+        "mappedMobIds": [
+          "zoglin"
+        ],
+        "matchedFileCount": 22,
+        "matchType": "direct",
+        "title": "Category:Zoglin sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AZoglin_sounds",
+        "wikiFileCount": 22
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Zombie",
+        "id": "zombie",
+        "mappedMobDisplayNames": [
+          "Zombie"
+        ],
+        "mappedMobIds": [
+          "zombie"
+        ],
+        "matchedFileCount": 12,
+        "matchType": "direct",
+        "title": "Category:Zombie sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/drowned/convert1",
+          "mob/drowned/convert2",
+          "mob/drowned/convert3",
+          "mob/turtle/egg/jump_egg1",
+          "mob/turtle/egg/jump_egg2",
+          "mob/turtle/egg/jump_egg3",
+          "mob/turtle/egg/jump_egg4",
+          "mob/zombie/metal1",
+          "mob/zombie/metal2",
+          "mob/zombie/metal3",
+          "mob/zombie/wood1",
+          "mob/zombie/wood2",
+          "mob/zombie/wood3",
+          "mob/zombie/wood4",
+          "mob/zombie/woodbreak"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Zombie breaks door.ogg",
+          "Zombie convert to drowned1.ogg",
+          "Zombie convert to drowned2.ogg",
+          "Zombie convert to drowned3.ogg",
+          "Zombie hit metal1.ogg",
+          "Zombie hit metal2.ogg",
+          "Zombie hit metal3.ogg",
+          "Zombie hit wood1.ogg",
+          "Zombie hit wood2.ogg",
+          "Zombie hit wood3.ogg",
+          "Zombie hit wood4.ogg",
+          "Zombie remedy.ogg",
+          "Zombie unfect.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AZombie_sounds",
+        "wikiFileCount": 25
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Zombie horse",
+        "id": "zombie_horse",
+        "mappedMobDisplayNames": [
+          "Zombie Horse"
+        ],
+        "mappedMobIds": [
+          "zombie_horse"
+        ],
+        "matchedFileCount": 9,
+        "matchType": "direct",
+        "title": "Category:Zombie horse sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/horse/eat1",
+          "mob/horse/eat2",
+          "mob/horse/eat3",
+          "mob/horse/eat4",
+          "mob/horse/eat5"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AZombie_horse_sounds",
+        "wikiFileCount": 9
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Zombie Nautilus",
+        "id": "zombie_nautilus",
+        "mappedMobDisplayNames": [
+          "Zombie Nautilus"
+        ],
+        "mappedMobIds": [
+          "zombie_nautilus"
+        ],
+        "matchedFileCount": 47,
+        "matchType": "direct",
+        "title": "Category:Zombie Nautilus sounds",
+        "unmatchedLocalSoundPaths": [],
+        "unmatchedWikiFileTitles": [
+          "Nautilus riding.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AZombie_Nautilus_sounds",
+        "wikiFileCount": 48
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Zombie villager",
+        "id": "zombie_villager",
+        "mappedMobDisplayNames": [
+          "Zombie Villager"
+        ],
+        "mappedMobIds": [
+          "zombie_villager"
+        ],
+        "matchedFileCount": 6,
+        "matchType": "direct",
+        "title": "Category:Zombie villager sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/zombie/remedy",
+          "mob/zombie/step1",
+          "mob/zombie/step2",
+          "mob/zombie/step3",
+          "mob/zombie/step4",
+          "mob/zombie/step5",
+          "mob/zombie/unfect"
+        ],
+        "unmatchedWikiFileTitles": [],
+        "url": "https://minecraft.wiki/w/Category%3AZombie_villager_sounds",
+        "wikiFileCount": 6
+      },
+      {
+        "coverage": "partial",
+        "displayName": "Zombified piglin",
+        "id": "zombified_piglin",
+        "mappedMobDisplayNames": [
+          "Zombified Piglin"
+        ],
+        "mappedMobIds": [
+          "zombified_piglin"
+        ],
+        "matchedFileCount": 0,
+        "matchType": "direct",
+        "title": "Category:Zombified piglin sounds",
+        "unmatchedLocalSoundPaths": [
+          "mob/zombified_piglin/zpig1",
+          "mob/zombified_piglin/zpig2",
+          "mob/zombified_piglin/zpig3",
+          "mob/zombified_piglin/zpig4",
+          "mob/zombified_piglin/zpigangry1",
+          "mob/zombified_piglin/zpigangry2",
+          "mob/zombified_piglin/zpigangry3",
+          "mob/zombified_piglin/zpigangry4",
+          "mob/zombified_piglin/zpigdeath",
+          "mob/zombified_piglin/zpighurt1",
+          "mob/zombified_piglin/zpighurt2"
+        ],
+        "unmatchedWikiFileTitles": [
+          "Zombie pigman angry1.ogg",
+          "Zombie pigman angry2.ogg",
+          "Zombie pigman angry3.ogg",
+          "Zombie pigman angry4.ogg",
+          "Zombie pigman death.ogg",
+          "Zombie pigman hurt1.ogg",
+          "Zombie pigman hurt2.ogg",
+          "Zombie pigman idle1.ogg",
+          "Zombie pigman idle2.ogg",
+          "Zombie pigman idle3.ogg",
+          "Zombie pigman idle4.ogg"
+        ],
+        "url": "https://minecraft.wiki/w/Category%3AZombified_piglin_sounds",
+        "wikiFileCount": 11
+      }
+    ],
+    "categoryCount": 86,
+    "exactCategoryCount": 20,
+    "fetchedAt": "2026-04-12T19:16:41.151Z",
+    "fileCount": 2331,
+    "localOnlyMobs": [
+      {
+        "displayName": "Cave Spider",
+        "id": "cave_spider",
+        "soundEventCount": 0,
+        "soundVariantCount": 0
+      },
+      {
+        "displayName": "Giant",
+        "id": "giant",
+        "soundEventCount": 0,
+        "soundVariantCount": 0
+      },
+      {
+        "displayName": "Happy Ghast",
+        "id": "happy_ghast",
+        "soundEventCount": 8,
+        "soundVariantCount": 26
+      },
+      {
+        "displayName": "Mule",
+        "id": "mule",
+        "soundEventCount": 7,
+        "soundVariantCount": 16
+      },
+      {
+        "displayName": "Trader Llama",
+        "id": "trader_llama",
+        "soundEventCount": 0,
+        "soundVariantCount": 0
+      }
+    ],
+    "matchedCategoryCount": 79,
+    "partialCategoryCount": 59,
+    "snapshotRelativePath": "sources/minecraft-wiki/mob-sounds-20260412T191641Z.json",
+    "source": "minecraft.wiki",
+    "unmatchedLocalMobIds": [
+      "cave_spider",
+      "giant",
+      "happy_ghast",
+      "mule",
+      "trader_llama"
+    ],
+    "unmatchedWikiCategoryIds": [
+      "copper_golem",
+      "generic_mob",
+      "mega_spud",
+      "plaguewhale_slab",
+      "poisonous_potato_zombie",
+      "sulfur_cube",
+      "toxifin_slab"
+    ],
+    "wikiOnlyCategoryCount": 7
+  },
   "mobs": [
     {
       "category": "Creature",
@@ -5335,7 +8406,100 @@
       "soundEvents": [
         {
           "id": "entity.cod.ambient",
-          "variants": []
+          "subtitleKey": "subtitles.entity.fish.swim",
+          "variants": [
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim1.ogg",
+              "hash": "6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "id": "entity.fish.swim#1",
+              "pitch": 1,
+              "preload": false,
+              "size": 10120,
+              "soundPath": "entity/fish/swim1",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/6b/6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim2.ogg",
+              "hash": "ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "id": "entity.fish.swim#2",
+              "pitch": 1,
+              "preload": false,
+              "size": 10079,
+              "soundPath": "entity/fish/swim2",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/ea/ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim3.ogg",
+              "hash": "1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "id": "entity.fish.swim#3",
+              "pitch": 1,
+              "preload": false,
+              "size": 10748,
+              "soundPath": "entity/fish/swim3",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/16/1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim4.ogg",
+              "hash": "92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "id": "entity.fish.swim#4",
+              "pitch": 1,
+              "preload": false,
+              "size": 8271,
+              "soundPath": "entity/fish/swim4",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/92/92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim5.ogg",
+              "hash": "c632fa24db616894c46b2011c2f214853924c4a1",
+              "id": "entity.fish.swim#5",
+              "pitch": 1,
+              "preload": false,
+              "size": 12687,
+              "soundPath": "entity/fish/swim5",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/c6/c632fa24db616894c46b2011c2f214853924c4a1",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim6.ogg",
+              "hash": "fb7b6292644e6255751b21196663ce864cc764bd",
+              "id": "entity.fish.swim#6",
+              "pitch": 1,
+              "preload": false,
+              "size": 15171,
+              "soundPath": "entity/fish/swim6",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/fb/fb7b6292644e6255751b21196663ce864cc764bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim7.ogg",
+              "hash": "027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "id": "entity.fish.swim#7",
+              "pitch": 1,
+              "preload": false,
+              "size": 13900,
+              "soundPath": "entity/fish/swim7",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/02/027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "volume": 1,
+              "weight": 1
+            }
+          ]
         },
         {
           "id": "entity.cod.death",
@@ -5513,7 +8677,7 @@
         }
       ],
       "soundId": "cod",
-      "soundVariantCount": 12,
+      "soundVariantCount": 19,
       "translationKey": "entity.minecraft.cod",
       "introducedVersion": "1.13",
       "isRecent": false,
@@ -24985,7 +28149,100 @@
       "soundEvents": [
         {
           "id": "entity.salmon.ambient",
-          "variants": []
+          "subtitleKey": "subtitles.entity.fish.swim",
+          "variants": [
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim1.ogg",
+              "hash": "6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "id": "entity.fish.swim#1",
+              "pitch": 1,
+              "preload": false,
+              "size": 10120,
+              "soundPath": "entity/fish/swim1",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/6b/6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim2.ogg",
+              "hash": "ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "id": "entity.fish.swim#2",
+              "pitch": 1,
+              "preload": false,
+              "size": 10079,
+              "soundPath": "entity/fish/swim2",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/ea/ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim3.ogg",
+              "hash": "1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "id": "entity.fish.swim#3",
+              "pitch": 1,
+              "preload": false,
+              "size": 10748,
+              "soundPath": "entity/fish/swim3",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/16/1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim4.ogg",
+              "hash": "92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "id": "entity.fish.swim#4",
+              "pitch": 1,
+              "preload": false,
+              "size": 8271,
+              "soundPath": "entity/fish/swim4",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/92/92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim5.ogg",
+              "hash": "c632fa24db616894c46b2011c2f214853924c4a1",
+              "id": "entity.fish.swim#5",
+              "pitch": 1,
+              "preload": false,
+              "size": 12687,
+              "soundPath": "entity/fish/swim5",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/c6/c632fa24db616894c46b2011c2f214853924c4a1",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim6.ogg",
+              "hash": "fb7b6292644e6255751b21196663ce864cc764bd",
+              "id": "entity.fish.swim#6",
+              "pitch": 1,
+              "preload": false,
+              "size": 15171,
+              "soundPath": "entity/fish/swim6",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/fb/fb7b6292644e6255751b21196663ce864cc764bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim7.ogg",
+              "hash": "027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "id": "entity.fish.swim#7",
+              "pitch": 1,
+              "preload": false,
+              "size": 13900,
+              "soundPath": "entity/fish/swim7",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/02/027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "volume": 1,
+              "weight": 1
+            }
+          ]
         },
         {
           "id": "entity.salmon.death",
@@ -25163,7 +28420,7 @@
         }
       ],
       "soundId": "salmon",
-      "soundVariantCount": 12,
+      "soundVariantCount": 19,
       "translationKey": "entity.minecraft.salmon",
       "introducedVersion": "1.13",
       "isRecent": false,
@@ -30303,7 +33560,100 @@
       "soundEvents": [
         {
           "id": "entity.tropical_fish.ambient",
-          "variants": []
+          "subtitleKey": "subtitles.entity.fish.swim",
+          "variants": [
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim1.ogg",
+              "hash": "6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "id": "entity.fish.swim#1",
+              "pitch": 1,
+              "preload": false,
+              "size": 10120,
+              "soundPath": "entity/fish/swim1",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/6b/6b7328aceb145af99f686cb4139d7b508e2fa0bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim2.ogg",
+              "hash": "ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "id": "entity.fish.swim#2",
+              "pitch": 1,
+              "preload": false,
+              "size": 10079,
+              "soundPath": "entity/fish/swim2",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/ea/ea829c0aeca04d62a2cfad9f1f7f306a63b55027",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim3.ogg",
+              "hash": "1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "id": "entity.fish.swim#3",
+              "pitch": 1,
+              "preload": false,
+              "size": 10748,
+              "soundPath": "entity/fish/swim3",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/16/1627e8a87dfc18acc7cd5492d55ded515fc59f9a",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim4.ogg",
+              "hash": "92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "id": "entity.fish.swim#4",
+              "pitch": 1,
+              "preload": false,
+              "size": 8271,
+              "soundPath": "entity/fish/swim4",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/92/92edd8965abfbca38d960fee86f5aeeb8f62f592",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim5.ogg",
+              "hash": "c632fa24db616894c46b2011c2f214853924c4a1",
+              "id": "entity.fish.swim#5",
+              "pitch": 1,
+              "preload": false,
+              "size": 12687,
+              "soundPath": "entity/fish/swim5",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/c6/c632fa24db616894c46b2011c2f214853924c4a1",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim6.ogg",
+              "hash": "fb7b6292644e6255751b21196663ce864cc764bd",
+              "id": "entity.fish.swim#6",
+              "pitch": 1,
+              "preload": false,
+              "size": 15171,
+              "soundPath": "entity/fish/swim6",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/fb/fb7b6292644e6255751b21196663ce864cc764bd",
+              "volume": 1,
+              "weight": 1
+            },
+            {
+              "assetPath": "minecraft/sounds/entity/fish/swim7.ogg",
+              "hash": "027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "id": "entity.fish.swim#7",
+              "pitch": 1,
+              "preload": false,
+              "size": 13900,
+              "soundPath": "entity/fish/swim7",
+              "stream": false,
+              "url": "https://resources.download.minecraft.net/02/027a4dd9a154b579f299743b00d185f4a5e9f7a0",
+              "volume": 1,
+              "weight": 1
+            }
+          ]
         },
         {
           "id": "entity.tropical_fish.death",
@@ -30481,7 +33831,7 @@
         }
       ],
       "soundId": "tropical_fish",
-      "soundVariantCount": 12,
+      "soundVariantCount": 19,
       "translationKey": "entity.minecraft.tropical_fish",
       "introducedVersion": "1.13",
       "isRecent": false,

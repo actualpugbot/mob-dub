@@ -519,6 +519,18 @@ export default function App() {
         </section>
       </main>
 
+      <footer className="footer">
+        <a
+          aria-label="Open ActualPug YouTube channel"
+          className="footer-vibe-link"
+          href="https://www.youtube.com/@actualpug"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Vibe coded with {"\u2665"} by ActualPug
+        </a>
+      </footer>
+
       <p className="sr-only">Modified sounds: {customizedVariantCount}</p>
 
       {showScrollNavigation ? (

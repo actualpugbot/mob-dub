@@ -357,6 +357,37 @@ h3 {
   gap: 32px;
 }
 
+.footer {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 0.7rem);
+  transform: translateX(-50%);
+  z-index: 6;
+  width: auto;
+  max-width: calc(100% - 1.5rem);
+  padding: 0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.footer-vibe-link,
+.footer-vibe-link:visited {
+  color: var(--muted);
+  text-decoration: none;
+  line-height: 1.15;
+  opacity: 0.78;
+  transition: opacity 0.2s ease;
+}
+
+.footer-vibe-link:hover,
+.footer-vibe-link:focus-visible {
+  opacity: 1;
+}
+
 .browser-panel {
   position: sticky;
   top: 20px;

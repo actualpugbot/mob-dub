@@ -1,13 +1,8 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { MOB_RELEASE_METADATA_BY_LOCAL_ID } from "./mob-release-metadata.mjs";
+import { projectRoot, resolveMobDatasetSource } from "./datahub-source.mjs";
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const projectRoot = resolve(scriptDir, "..");
-const datahubRoot = resolve(process.env.MOB_DUB_DATAHUB_ROOT ?? join(projectRoot, "..", "mc-datahub"));
-const datasetsRoot = join(datahubRoot, "workspace", "datasets");
-const statePath = join(datahubRoot, "workspace", "state.json");
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
 const localImageBasePath = "/images/mobs";
 const OMITTED_MOB_IDS = new Set(["giant"]);
@@ -15,12 +10,7 @@ const OMITTED_MOB_IDS = new Set(["giant"]);
 const requestedVersion = process.argv[2];
 
 async function main() {
-  const version = requestedVersion ?? (await resolveLatestProcessedVersion());
-  if (!version) {
-    throw new Error(`Could not determine a processed mc-datahub version from ${statePath}.`);
-  }
-
-  const sourcePath = join(datasetsRoot, version, "mob-sounds.json");
+  const { root: datahubRoot, sourcePath, statePath, version } = await resolveMobDatasetSource(requestedVersion);
   const mobDataset = JSON.parse(await readFile(sourcePath, "utf8"));
   const normalizedMobDataset = withManualMobCorrections(withInheritedMobSounds(mobDataset));
 
@@ -59,6 +49,8 @@ async function main() {
     ),
   );
 
+  console.log(`Using mob dataset source ${datahubRoot}`);
+  console.log(`Resolved ${version} from ${statePath}`);
   console.log(`Synced ${version} mob sound data from ${sourcePath} to ${outputPath}`);
   console.log(`Validated ${enrichedMobs.length} mob image references against ${localImageBasePath}`);
 }
@@ -161,18 +153,6 @@ function withUpdatedSoundEventCounts(mob, soundEvents) {
     soundEvents,
     soundVariantCount: soundEvents.reduce((total, eventDefinition) => total + eventDefinition.variants.length, 0),
   };
-}
-
-async function resolveLatestProcessedVersion() {
-  const state = JSON.parse(await readFile(statePath, "utf8"));
-  const processedVersions = Object.entries(state.processedVersions ?? {})
-    .map(([version, details]) => ({
-      version,
-      processedAt: new Date(details.processedAt ?? 0).getTime(),
-    }))
-    .sort((left, right) => right.processedAt - left.processedAt);
-
-  return processedVersions[0]?.version;
 }
 
 async function resolveImageFileName(mobId) {

@@ -1,12 +1,7 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { projectRoot, resolveModelSource } from "./datahub-source.mjs";
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const projectRoot = resolve(scriptDir, "..");
-const datahubRoot = resolve(process.env.MOB_DUB_DATAHUB_ROOT ?? join(projectRoot, "..", "mc-datahub"));
-const decompiledClientModelRoot = join(datahubRoot, "workspace", "versions", "26.1.1", "decompiled", "client", "net", "minecraft", "client", "model");
-const decompiledRendererRoot = join(datahubRoot, "workspace", "versions", "26.1.1", "decompiled", "client", "net", "minecraft", "client", "renderer", "entity");
 const outputPath = join(projectRoot, "public", "data", "mob-models.json");
 
 const STUB_CLASS_NAMES = new Set([
@@ -142,36 +137,93 @@ const MODEL_CLASS_FILE_OVERRIDES = {
 
 async function main() {
   const dataset = JSON.parse(await readFile(join(projectRoot, "public", "data", "mob-sounds.json"), "utf8"));
-  const rendererRegistry = await readFile(join(decompiledRendererRoot, "EntityRenderers.java"), "utf8");
-  const layerDefinitions = await readFile(join(datahubRoot, "workspace", "versions", "26.1.1", "decompiled", "client", "net", "minecraft", "client", "model", "geom", "LayerDefinitions.java"), "utf8");
-  const classLoader = createJavaStaticLoader();
-  const mobModels = {};
+  const existingMobModels = await readExistingMobModels();
+  const activeMobIds = new Set(dataset.mobs.map((mob) => mob.localId));
+  const mobModels = filterMobModels(existingMobModels, activeMobIds);
+
+  let modelSource = null;
+  try {
+    modelSource = await resolveModelSource({ preferredVersion: dataset.version });
+  } catch (error) {
+    console.warn(
+      `Could not resolve a decompiled model source for ${dataset.version}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+
+  if (!modelSource) {
+    await writeMobModels(mobModels);
+    console.log(`Retained ${Object.keys(mobModels).length} existing mob model previews in ${outputPath}`);
+    return;
+  }
+
+  console.log(`Using model source ${modelSource.root} (${modelSource.version})`);
+  const rendererRegistry = await readFile(modelSource.rendererRegistryPath, "utf8");
+  const layerDefinitions = await readFile(modelSource.layerDefinitionsPath, "utf8");
+  const classLoader = createJavaStaticLoader(modelSource.modelRoot);
+  const warnings = [];
 
   for (const mob of dataset.mobs) {
     let layerKey = "";
     let expression = "";
 
     try {
-      layerKey = await resolveLayerKey(mob.localId, rendererRegistry);
+      layerKey = await resolveLayerKey(mob.localId, rendererRegistry, modelSource.rendererRoot);
       expression = resolveLayerExpression(layerKey, layerDefinitions);
       const definition = await evaluateLayerExpression(expression, classLoader);
 
       mobModels[mob.localId] = serializeLayerDefinition(definition);
     } catch (error) {
-      throw new Error(
-        `Failed to generate ${mob.localId} (${layerKey || "unknown layer"}): ${error instanceof Error ? error.message : String(error)}${
-          expression ? `\nExpression: ${expression}` : ""
-        }`,
+      warnings.push(
+        `Failed to generate ${mob.localId} (${layerKey || "unknown layer"}): ${
+          error instanceof Error ? error.message : String(error)
+        }${expression ? ` | Expression: ${expression}` : ""}`,
       );
     }
   }
 
-  await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, JSON.stringify({ mobs: mobModels }, null, 2));
-  console.log(`Wrote mob model previews to ${outputPath}`);
+  await writeMobModels(mobModels);
+  console.log(`Wrote ${Object.keys(mobModels).length} mob model previews to ${outputPath}`);
+  logModelWarnings(warnings);
 }
 
-async function resolveLayerKey(localId, rendererRegistry) {
+async function readExistingMobModels() {
+  try {
+    const existing = JSON.parse(await readFile(outputPath, "utf8"));
+    return existing.mobs ?? {};
+  } catch {
+    return {};
+  }
+}
+
+function filterMobModels(mobModels, activeMobIds) {
+  return Object.fromEntries(
+    Object.entries(mobModels).filter(([mobId]) => activeMobIds.has(mobId)),
+  );
+}
+
+async function writeMobModels(mobModels) {
+  await mkdir(dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, JSON.stringify({ mobs: mobModels }, null, 2));
+}
+
+function logModelWarnings(warnings) {
+  if (warnings.length === 0) {
+    return;
+  }
+
+  console.warn(`Skipped ${warnings.length} mob model generation step(s):`);
+  for (const warning of warnings.slice(0, 10)) {
+    console.warn(`- ${warning}`);
+  }
+
+  if (warnings.length > 10) {
+    console.warn(`- ... ${warnings.length - 10} more`);
+  }
+}
+
+async function resolveLayerKey(localId, rendererRegistry, rendererRoot) {
   if (MODEL_LAYER_OVERRIDES[localId]) {
     return MODEL_LAYER_OVERRIDES[localId];
   }
@@ -189,7 +241,7 @@ async function resolveLayerKey(localId, rendererRegistry) {
     throw new Error(`Could not resolve a renderer class for ${localId}.`);
   }
 
-  const rendererSource = await readRendererSource(rendererClass);
+  const rendererSource = await readRendererSource(rendererClass, rendererRoot);
   const rendererLayer = selectPrimaryLayer([...rendererSource.matchAll(/ModelLayers\.([A-Z0-9_]+)/g)].map((match) => match[1]));
 
   if (!rendererLayer) {
@@ -244,16 +296,16 @@ function resolveLayerAlias(identifier, layerDefinitions) {
   return expandLayerExpression(localDefinitionMatch[1].trim(), layerDefinitions);
 }
 
-function createJavaStaticLoader() {
+function createJavaStaticLoader(modelRoot) {
   const fileCache = new Map();
   const moduleCache = new Map();
-  const modelFileIndexPromise = indexJavaFiles(decompiledClientModelRoot);
+  const modelFileIndexPromise = indexJavaFiles(modelRoot);
 
   return {
     async getSource(className) {
       const relativePath = await this.resolveRelativePath(className);
       if (!fileCache.has(relativePath)) {
-        fileCache.set(relativePath, readFile(join(decompiledClientModelRoot, relativePath), "utf8"));
+        fileCache.set(relativePath, readFile(join(modelRoot, relativePath), "utf8"));
       }
 
       return fileCache.get(relativePath);
@@ -274,7 +326,7 @@ function createJavaStaticLoader() {
 
       const relativePath = await this.resolveRelativePath(className);
       if (!fileCache.has(relativePath)) {
-        fileCache.set(relativePath, readFile(join(decompiledClientModelRoot, relativePath), "utf8"));
+        fileCache.set(relativePath, readFile(join(modelRoot, relativePath), "utf8"));
       }
 
       const cacheKey = `${className}:${[...new Set(requestedMembers)].sort().join(",")}`;
@@ -1027,8 +1079,8 @@ function extractRendererClassName(registerBlock) {
   return null;
 }
 
-async function readRendererSource(rendererClass) {
-  return readFile(join(decompiledRendererRoot, `${rendererClass}.java`), "utf8");
+async function readRendererSource(rendererClass, rendererRoot) {
+  return readFile(join(rendererRoot, `${rendererClass}.java`), "utf8");
 }
 
 function findRegisterBlock(rendererRegistry, entityType) {
