@@ -467,15 +467,15 @@ describe("App", () => {
     expect(await within(say1Row).findByRole("button", { name: "Re-record" })).toBeTruthy();
   });
 
-  it("uses static model previews for mobs whose local assets are texture atlases", () => {
-    expect(usesStaticModelPreview("camel_husk")).toBe(true);
-    expect(usesStaticModelPreview("cod")).toBe(true);
-    expect(usesStaticModelPreview("happy_ghast")).toBe(true);
-    expect(usesStaticModelPreview("illusioner")).toBe(true);
-    expect(usesStaticModelPreview("nautilus")).toBe(true);
-    expect(usesStaticModelPreview("pufferfish")).toBe(true);
-    expect(usesStaticModelPreview("salmon")).toBe(true);
-    expect(usesStaticModelPreview("zombie_nautilus")).toBe(true);
+  it("does not force static model previews for wiki-sourced mob renders", () => {
+    expect(usesStaticModelPreview("camel_husk")).toBe(false);
+    expect(usesStaticModelPreview("cod")).toBe(false);
+    expect(usesStaticModelPreview("happy_ghast")).toBe(false);
+    expect(usesStaticModelPreview("illusioner")).toBe(false);
+    expect(usesStaticModelPreview("nautilus")).toBe(false);
+    expect(usesStaticModelPreview("pufferfish")).toBe(false);
+    expect(usesStaticModelPreview("salmon")).toBe(false);
+    expect(usesStaticModelPreview("zombie_nautilus")).toBe(false);
     expect(usesStaticModelPreview("cow")).toBe(false);
   });
 

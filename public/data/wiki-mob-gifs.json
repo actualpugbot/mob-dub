@@ -1,0 +1,527 @@
+{
+  "downloadedAt": "2026-04-13T16:21:06.894Z",
+  "downloads": [
+    {
+      "displayName": "Allay",
+      "fileName": "Allay_JE2_BE2.gif",
+      "localId": "allay",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/allay.gif",
+      "pageTitle": "Allay",
+      "sourceUrl": "https://minecraft.wiki/images/Allay_JE2_BE2.gif"
+    },
+    {
+      "displayName": "Axolotl",
+      "fileName": "Axolotl_Idle_Floor_Underwater.gif",
+      "localId": "axolotl",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/axolotl.gif",
+      "pageTitle": "Axolotl",
+      "sourceUrl": "https://minecraft.wiki/images/Axolotl_Idle_Floor_Underwater.gif"
+    },
+    {
+      "displayName": "Bat",
+      "fileName": "Bat_JE4_BE3.gif",
+      "localId": "bat",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/bat.gif",
+      "pageTitle": "Bat",
+      "sourceUrl": "https://minecraft.wiki/images/Bat_JE4_BE3.gif"
+    },
+    {
+      "displayName": "Bee",
+      "fileName": "Bee_JE1.gif",
+      "localId": "bee",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/bee.gif",
+      "pageTitle": "Bee",
+      "sourceUrl": "https://minecraft.wiki/images/Bee_JE1.gif"
+    },
+    {
+      "displayName": "Blaze",
+      "fileName": "Blaze_JE2.gif",
+      "localId": "blaze",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/blaze.gif",
+      "pageTitle": "Blaze",
+      "sourceUrl": "https://minecraft.wiki/images/Blaze_JE2.gif"
+    },
+    {
+      "displayName": "Camel",
+      "fileName": "Camel_Idle.gif",
+      "localId": "camel",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/camel.gif",
+      "pageTitle": "Camel",
+      "sourceUrl": "https://minecraft.wiki/images/Camel_Idle.gif"
+    },
+    {
+      "displayName": "Camel Husk",
+      "fileName": "Camel_Husk_Idle_JE1.gif",
+      "localId": "camel_husk",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/camel_husk.gif",
+      "pageTitle": "Camel_Husk",
+      "sourceUrl": "https://minecraft.wiki/images/Camel_Husk_Idle_JE1.gif"
+    },
+    {
+      "displayName": "Cod",
+      "fileName": "Cod.gif",
+      "localId": "cod",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/cod.gif",
+      "pageTitle": "Cod",
+      "sourceUrl": "https://minecraft.wiki/images/Cod.gif"
+    },
+    {
+      "displayName": "Dolphin",
+      "fileName": "Dolphin.gif",
+      "localId": "dolphin",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/dolphin.gif",
+      "pageTitle": "Dolphin",
+      "sourceUrl": "https://minecraft.wiki/images/Dolphin.gif"
+    },
+    {
+      "displayName": "Elder Guardian",
+      "fileName": "Elder_Guardian_JE2_BE2.gif",
+      "localId": "elder_guardian",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/elder_guardian.gif",
+      "pageTitle": "Elder_Guardian",
+      "sourceUrl": "https://minecraft.wiki/images/Elder_Guardian_JE2_BE2.gif"
+    },
+    {
+      "displayName": "Ender Dragon",
+      "fileName": "Ender_Dragon.gif",
+      "localId": "ender_dragon",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/ender_dragon.gif",
+      "pageTitle": "Ender_Dragon",
+      "sourceUrl": "https://minecraft.wiki/images/Ender_Dragon.gif"
+    },
+    {
+      "displayName": "Endermite",
+      "fileName": "Endermite.gif",
+      "localId": "endermite",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/endermite.gif",
+      "pageTitle": "Endermite",
+      "sourceUrl": "https://minecraft.wiki/images/Endermite.gif"
+    },
+    {
+      "displayName": "Frog",
+      "fileName": "Temperate_Frog_JE1_BE1.gif",
+      "localId": "frog",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/frog.gif",
+      "pageTitle": "Frog",
+      "sourceUrl": "https://minecraft.wiki/images/Temperate_Frog_JE1_BE1.gif"
+    },
+    {
+      "displayName": "Ghast",
+      "fileName": "Ghast_JE3_BE3.gif",
+      "localId": "ghast",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/ghast.gif",
+      "pageTitle": "Ghast",
+      "sourceUrl": "https://minecraft.wiki/images/Ghast_JE3_BE3.gif"
+    },
+    {
+      "displayName": "Glow Squid",
+      "fileName": "Glow_Squid_JE1.gif",
+      "localId": "glow_squid",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/glow_squid.gif",
+      "pageTitle": "Glow_Squid",
+      "sourceUrl": "https://minecraft.wiki/images/Glow_Squid_JE1.gif"
+    },
+    {
+      "displayName": "Guardian",
+      "fileName": "Guardian_JE2_BE2.gif",
+      "localId": "guardian",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/guardian.gif",
+      "pageTitle": "Guardian",
+      "sourceUrl": "https://minecraft.wiki/images/Guardian_JE2_BE2.gif"
+    },
+    {
+      "displayName": "Happy Ghast",
+      "fileName": "Happy_Ghast_JE1_BE1.gif",
+      "localId": "happy_ghast",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/happy_ghast.gif",
+      "pageTitle": "Happy_Ghast",
+      "sourceUrl": "https://minecraft.wiki/images/Happy_Ghast_JE1_BE1.gif"
+    },
+    {
+      "displayName": "Nautilus",
+      "fileName": "Nautilus_Breathe_JE1_BE2.gif",
+      "localId": "nautilus",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/nautilus.gif",
+      "pageTitle": "Nautilus",
+      "sourceUrl": "https://minecraft.wiki/images/Nautilus_Breathe_JE1_BE2.gif"
+    },
+    {
+      "displayName": "Phantom",
+      "fileName": "Phantom_JE2.gif",
+      "localId": "phantom",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/phantom.gif",
+      "pageTitle": "Phantom",
+      "sourceUrl": "https://minecraft.wiki/images/Phantom_JE2.gif"
+    },
+    {
+      "displayName": "Pufferfish",
+      "fileName": "Pufferfish_small.gif",
+      "localId": "pufferfish",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/pufferfish.gif",
+      "pageTitle": "Pufferfish",
+      "sourceUrl": "https://minecraft.wiki/images/Pufferfish_small.gif"
+    },
+    {
+      "displayName": "Salmon",
+      "fileName": "Salmon.gif",
+      "localId": "salmon",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/salmon.gif",
+      "pageTitle": "Salmon",
+      "sourceUrl": "https://minecraft.wiki/images/Salmon.gif"
+    },
+    {
+      "displayName": "Silverfish",
+      "fileName": "Silverfish_JE1_BE1.gif",
+      "localId": "silverfish",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/silverfish.gif",
+      "pageTitle": "Silverfish",
+      "sourceUrl": "https://minecraft.wiki/images/Silverfish_JE1_BE1.gif"
+    },
+    {
+      "displayName": "Sniffer",
+      "fileName": "Sniffer_sniffsniff.gif",
+      "localId": "sniffer",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/sniffer.gif",
+      "pageTitle": "Sniffer",
+      "sourceUrl": "https://minecraft.wiki/images/Sniffer_sniffsniff.gif"
+    },
+    {
+      "displayName": "Squid",
+      "fileName": "Squid_JE2_BE2.gif",
+      "localId": "squid",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/squid.gif",
+      "pageTitle": "Squid",
+      "sourceUrl": "https://minecraft.wiki/images/Squid_JE2_BE2.gif"
+    },
+    {
+      "displayName": "Strider",
+      "fileName": "Strider_JE2_BE2.gif",
+      "localId": "strider",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/strider.gif",
+      "pageTitle": "Strider",
+      "sourceUrl": "https://minecraft.wiki/images/Strider_JE2_BE2.gif"
+    },
+    {
+      "displayName": "Vex",
+      "fileName": "Vex_JE4.gif",
+      "localId": "vex",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/vex.gif",
+      "pageTitle": "Vex",
+      "sourceUrl": "https://minecraft.wiki/images/Vex_JE4.gif"
+    },
+    {
+      "displayName": "Warden",
+      "fileName": "Warden.gif",
+      "localId": "warden",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/warden.gif",
+      "pageTitle": "Warden",
+      "sourceUrl": "https://minecraft.wiki/images/Warden.gif"
+    },
+    {
+      "displayName": "Zombie Nautilus",
+      "fileName": "Zombie_Nautilus_Breathe_JE1_BE2.gif",
+      "localId": "zombie_nautilus",
+      "outputPath": "/home/actualpug/dev/mob-dub/public/images/mobs/zombie_nautilus.gif",
+      "pageTitle": "Zombie_Nautilus",
+      "sourceUrl": "https://minecraft.wiki/images/Zombie_Nautilus_Breathe_JE1_BE2.gif"
+    }
+  ],
+  "misses": [
+    {
+      "localId": "armadillo",
+      "pageTitle": "Armadillo",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "bogged",
+      "pageTitle": "Bogged",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "breeze",
+      "pageTitle": "Breeze",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "cat",
+      "pageTitle": "Cat",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "cave_spider",
+      "pageTitle": "Cave_Spider",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "chicken",
+      "pageTitle": "Chicken",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "cow",
+      "pageTitle": "Cow",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "creaking",
+      "pageTitle": "Creaking",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "creeper",
+      "pageTitle": "Creeper",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "donkey",
+      "pageTitle": "Donkey",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "drowned",
+      "pageTitle": "Drowned",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "enderman",
+      "pageTitle": "Enderman",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "evoker",
+      "pageTitle": "Evoker",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "fox",
+      "pageTitle": "Fox",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "goat",
+      "pageTitle": "Goat",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "hoglin",
+      "pageTitle": "Hoglin",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "horse",
+      "pageTitle": "Horse",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "husk",
+      "pageTitle": "Husk",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "illusioner",
+      "pageTitle": "Illusioner",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "iron_golem",
+      "pageTitle": "Iron_Golem",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "llama",
+      "pageTitle": "Llama",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "magma_cube",
+      "pageTitle": "Magma_Cube",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "mooshroom",
+      "pageTitle": "Mooshroom",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "mule",
+      "pageTitle": "Mule",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "ocelot",
+      "pageTitle": "Ocelot",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "panda",
+      "pageTitle": "Panda",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "parched",
+      "pageTitle": "Parched",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "parrot",
+      "pageTitle": "Parrot",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "pig",
+      "pageTitle": "Pig",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "piglin",
+      "pageTitle": "Piglin",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "piglin_brute",
+      "pageTitle": "Piglin_Brute",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "pillager",
+      "pageTitle": "Pillager",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "polar_bear",
+      "pageTitle": "Polar_Bear",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "rabbit",
+      "pageTitle": "Rabbit",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "ravager",
+      "pageTitle": "Ravager",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "sheep",
+      "pageTitle": "Sheep",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "shulker",
+      "pageTitle": "Shulker",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "skeleton",
+      "pageTitle": "Skeleton",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "skeleton_horse",
+      "pageTitle": "Skeleton_Horse",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "slime",
+      "pageTitle": "Slime",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "snow_golem",
+      "pageTitle": "Snow_Golem",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "spider",
+      "pageTitle": "Spider",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "stray",
+      "pageTitle": "Stray",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "tadpole",
+      "pageTitle": "Tadpole",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "trader_llama",
+      "pageTitle": "Trader_Llama",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "tropical_fish",
+      "pageTitle": "Tropical_Fish",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "turtle",
+      "pageTitle": "Turtle",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "villager",
+      "pageTitle": "Villager",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "vindicator",
+      "pageTitle": "Vindicator",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "wandering_trader",
+      "pageTitle": "Wandering_Trader",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "witch",
+      "pageTitle": "Witch",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "wither",
+      "pageTitle": "Wither",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "wither_skeleton",
+      "pageTitle": "Wither_Skeleton",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "wolf",
+      "pageTitle": "Wolf",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "zoglin",
+      "pageTitle": "Zoglin",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "zombie",
+      "pageTitle": "Zombie",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "zombie_horse",
+      "pageTitle": "Zombie_Horse",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "zombie_villager",
+      "pageTitle": "Zombie_Villager",
+      "reason": "no-infobox-gif"
+    },
+    {
+      "localId": "zombified_piglin",
+      "pageTitle": "Zombified_Piglin",
+      "reason": "no-infobox-gif"
+    }
+  ],
+  "version": "26.1.1"
+}

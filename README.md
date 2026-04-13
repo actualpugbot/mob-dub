@@ -27,14 +27,21 @@ The app syncs its mob sound data from:
 ```
 
 By default `npm run sync:data` copies the most recently processed version from `mc-datahub/workspace/state.json` into `public/data/mob-sounds.json`.
-Mob thumbnails are referenced from the public `mob-voice-over` asset repository so the app does not depend on vendored local textures at build time.
-`npm run sync:data` resolves each mob image name and points the dataset at the matching raw GitHub asset URL.
+Mob thumbnails are loaded from local files in `public/images/mobs`.
+Most of those images are maintained in the public `mob-voice-over` asset repository:
 
 ```text
 ../mob-voice-over/public/assets/mobs
 ```
 
-If you refresh the source assets, update the image names in that repository and then rerun `npm run sync:data`.
+Mob GIFs are synced from the current mob pages on `minecraft.wiki` when an infobox GIF exists. Refresh those with:
+
+```bash
+npm run sync:wiki-images
+```
+
+That script records what it found in `public/data/wiki-mob-gifs.json`.
+After updating local mob images, rerun `npm run sync:data` so mobs with local `<mobId>.gif` files prefer the GIF over the PNG.
 
 To sync a specific version:
 

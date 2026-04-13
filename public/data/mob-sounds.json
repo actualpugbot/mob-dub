@@ -3402,7 +3402,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/allay.png"
+      "imagePath": "/images/mobs/allay.gif"
     },
     {
       "category": "Creature",
@@ -4609,7 +4609,7 @@
       "introducedVersion": "1.17",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/axolotl.png"
+      "imagePath": "/images/mobs/axolotl.gif"
     },
     {
       "category": "Ambient",
@@ -4798,7 +4798,7 @@
       "introducedVersion": "1.4.2",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/bat.png"
+      "imagePath": "/images/mobs/bat.gif"
     },
     {
       "category": "Creature",
@@ -5163,7 +5163,7 @@
       "introducedVersion": "1.15",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/bee.png"
+      "imagePath": "/images/mobs/bee.gif"
     },
     {
       "category": "Monster",
@@ -5353,7 +5353,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/blaze.png"
+      "imagePath": "/images/mobs/blaze.gif"
     },
     {
       "category": "Monster",
@@ -6878,7 +6878,7 @@
       "introducedVersion": "1.20",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/camel.png"
+      "imagePath": "/images/mobs/camel.gif"
     },
     {
       "category": "Monster",
@@ -7585,7 +7585,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/camel_husk.png"
+      "imagePath": "/images/mobs/camel_husk.gif"
     },
     {
       "category": "Creature",
@@ -8682,7 +8682,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/cod.png"
+      "imagePath": "/images/mobs/cod.gif"
     },
     {
       "category": "Creature",
@@ -10198,7 +10198,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/dolphin.png"
+      "imagePath": "/images/mobs/dolphin.gif"
     },
     {
       "category": "Creature",
@@ -11303,7 +11303,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/elder_guardian.png"
+      "imagePath": "/images/mobs/elder_guardian.gif"
     },
     {
       "category": "Monster",
@@ -11616,7 +11616,7 @@
       "introducedVersion": "1.0",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/ender_dragon.png"
+      "imagePath": "/images/mobs/ender_dragon.gif"
     },
     {
       "category": "Monster",
@@ -12087,7 +12087,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/endermite.png"
+      "imagePath": "/images/mobs/endermite.gif"
     },
     {
       "category": "Monster",
@@ -13629,7 +13629,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/frog.png"
+      "imagePath": "/images/mobs/frog.gif"
     },
     {
       "category": "Monster",
@@ -13889,7 +13889,7 @@
       "introducedVersion": "Classic",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/ghast.png"
+      "imagePath": "/images/mobs/ghast.gif"
     },
     {
       "category": "Underground Water Creature",
@@ -14125,7 +14125,7 @@
       "introducedVersion": "1.17",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/glow_squid.png"
+      "imagePath": "/images/mobs/glow_squid.gif"
     },
     {
       "category": "Creature",
@@ -15745,7 +15745,7 @@
       "introducedVersion": "1.8",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/guardian.png"
+      "imagePath": "/images/mobs/guardian.gif"
     },
     {
       "category": "Creature",
@@ -16147,7 +16147,7 @@
       "introducedVersion": "1.21.6",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/happy_ghast.png"
+      "imagePath": "/images/mobs/happy_ghast.gif"
     },
     {
       "category": "Monster",
@@ -20635,7 +20635,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/nautilus.png"
+      "imagePath": "/images/mobs/nautilus.gif"
     },
     {
       "category": "Creature",
@@ -25312,7 +25312,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/phantom.png"
+      "imagePath": "/images/mobs/phantom.gif"
     },
     {
       "category": "Creature",
@@ -27384,7 +27384,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/pufferfish.png"
+      "imagePath": "/images/mobs/pufferfish.gif"
     },
     {
       "category": "Creature",
@@ -28425,7 +28425,7 @@
       "introducedVersion": "1.13",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/salmon.png"
+      "imagePath": "/images/mobs/salmon.gif"
     },
     {
       "category": "Creature",
@@ -29397,7 +29397,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/silverfish.png"
+      "imagePath": "/images/mobs/silverfish.gif"
     },
     {
       "category": "Monster",
@@ -31508,7 +31508,7 @@
       "introducedVersion": "1.20",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/sniffer.png"
+      "imagePath": "/images/mobs/sniffer.gif"
     },
     {
       "category": "Misc",
@@ -32103,7 +32103,7 @@
       "introducedVersion": "Beta",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/squid.png"
+      "imagePath": "/images/mobs/squid.gif"
     },
     {
       "category": "Monster",
@@ -32903,7 +32903,7 @@
       "introducedVersion": "1.16",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/strider.png"
+      "imagePath": "/images/mobs/strider.gif"
     },
     {
       "category": "Creature",
@@ -34642,7 +34642,7 @@
       "introducedVersion": "1.11",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/vex.png"
+      "imagePath": "/images/mobs/vex.gif"
     },
     {
       "category": "Misc",
@@ -37517,7 +37517,7 @@
       "introducedVersion": "1.19",
       "isRecent": false,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/warden.png"
+      "imagePath": "/images/mobs/warden.gif"
     },
     {
       "category": "Monster",
@@ -40309,7 +40309,7 @@
       "introducedVersion": "1.21.11",
       "isRecent": true,
       "releaseStatus": "released",
-      "imagePath": "/images/mobs/zombie_nautilus.png"
+      "imagePath": "/images/mobs/zombie_nautilus.gif"
     },
     {
       "category": "Monster",

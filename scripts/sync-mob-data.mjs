@@ -6,6 +6,9 @@ import { projectRoot, resolveMobDatasetSource } from "./datahub-source.mjs";
 const outputPath = join(projectRoot, "public", "data", "mob-sounds.json");
 const localImageBasePath = "/images/mobs";
 const OMITTED_MOB_IDS = new Set(["giant"]);
+const IMAGE_FILE_ALIASES_BY_LOCAL_ID = {
+  pufferfish: ["pufferfish_small.gif"],
+};
 
 const requestedVersion = process.argv[2];
 
@@ -156,7 +159,7 @@ function withUpdatedSoundEventCounts(mob, soundEvents) {
 }
 
 async function resolveImageFileName(mobId) {
-  const candidates = [`${mobId}.png`, `${mobId}.gif`].filter(
+  const candidates = [`${mobId}.gif`, `${mobId}.png`, ...(IMAGE_FILE_ALIASES_BY_LOCAL_ID[mobId] ?? [])].filter(
     (fileName, index, fileNames) => Boolean(fileName) && fileNames.indexOf(fileName) === index,
   );
 

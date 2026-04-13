@@ -11,16 +11,7 @@ import type { CustomVariantSound, MobDefinition, MobModelDefinition, MobSoundEve
 const DATASET_URL = publicUrl("data/mob-sounds.json");
 const MODEL_DATASET_URL = publicUrl("data/mob-models.json");
 const CLASSIC_FILTER_EXCLUDED_MOB_IDS = new Set(["skeleton"]);
-const STATIC_MODEL_PREVIEW_MOB_IDS = new Set([
-  "camel_husk",
-  "cod",
-  "happy_ghast",
-  "illusioner",
-  "nautilus",
-  "pufferfish",
-  "salmon",
-  "zombie_nautilus",
-]);
+const STATIC_MODEL_PREVIEW_MOB_IDS = new Set<string>();
 
 const BROWSER_LIST_GAP = 16;
 const ESTIMATED_BROWSER_CONTROLS_HEIGHT = 68;
