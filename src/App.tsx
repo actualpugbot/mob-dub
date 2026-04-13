@@ -33,9 +33,9 @@ type MobModelsResponse = { mobs?: Record<string, MobModelDefinition> };
 type FileInputRefMap = MutableRefObject<Record<string, HTMLInputElement | null>>;
 type CardRefMap = MutableRefObject<Record<string, HTMLElement | null>>;
 type VariantEditorHandlers = {
-  onFileSelected: (variants: MobSoundVariant[], file?: File) => void;
+  onFileSelected: (mob: MobDefinition, variants: MobSoundVariant[], file?: File) => void;
   onPickFile: (groupId: string) => void;
-  onResetGroupedSound: (variants: MobSoundVariant[]) => void;
+  onResetGroupedSound: (mob: MobDefinition, variants: MobSoundVariant[]) => void;
   onTogglePreview: (groupId: string, source: PreviewSource, url?: string) => Promise<void>;
   onToggleRecording: (groupId: string, variants: MobSoundVariant[], mob: MobDefinition, label: string) => Promise<void>;
 };
@@ -141,6 +141,7 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [expandedMobIds, setExpandedMobIds] = useState<Record<string, boolean>>({});
   const [mobPendingRemoval, setMobPendingRemoval] = useState<MobDefinition | null>(null);
+  const [exportedPackFileName, setExportedPackFileName] = useState<string | null>(null);
 
   const deferredSearch = useDeferredValue(search);
   const customizationsRef = useSyncedRef(customizations);
@@ -351,15 +352,22 @@ export default function App() {
     fileInputRefs.current[groupId]?.click();
   }, []);
 
+  const handleResetGroupedSound = useCallback(
+    (_mob: MobDefinition, variants: MobSoundVariant[]) => {
+      resetGroupedSound(variants);
+    },
+    [resetGroupedSound],
+  );
+
   const handleFileSelected = useCallback(
-    (variants: MobSoundVariant[], file?: File) => {
+    (mob: MobDefinition, variants: MobSoundVariant[], file?: File) => {
       if (!file) {
         return;
       }
 
       setErrorMessage(null);
       const blob = file.slice(0, file.size, file.type || DEFAULT_FILE_MIME_TYPE);
-      void storeProcessedCustomizationGroup(variants, {
+      void storeProcessedCustomizationGroup(resolveSharedSoundPathVariantsForMob(mob, variants), {
         blob,
         fileName: file.name,
         kind: "upload",
@@ -375,6 +383,7 @@ export default function App() {
     }
 
     setErrorMessage(null);
+    setExportedPackFileName(null);
     setIsExporting(true);
     setStatusMessage("Building your resource pack...");
 
@@ -395,7 +404,9 @@ export default function App() {
       anchor.click();
       URL.revokeObjectURL(anchor.href);
       setStatusMessage(`Resource pack ready: ${fileName}`);
+      setExportedPackFileName(fileName);
     } catch (error) {
+      setExportedPackFileName(null);
       setErrorMessage(error instanceof Error ? error.message : "The resource pack could not be created.");
       setStatusMessage("Resource pack export failed.");
     } finally {
@@ -407,11 +418,11 @@ export default function App() {
     () => ({
       onFileSelected: handleFileSelected,
       onPickFile: handlePickFile,
-      onResetGroupedSound: resetGroupedSound,
+      onResetGroupedSound: handleResetGroupedSound,
       onTogglePreview: togglePreview,
       onToggleRecording: toggleRecording,
     }),
-    [handleFileSelected, handlePickFile, resetGroupedSound, togglePreview, toggleRecording],
+    [handleFileSelected, handlePickFile, handleResetGroupedSound, togglePreview, toggleRecording],
   );
   useWarnBeforeUnload(hasUnsavedCustomAudio);
   const showScrollToTop = useScrollToTopVisibility();
@@ -556,6 +567,7 @@ export default function App() {
       ) : null}
 
       <RemoveMobModal mob={mobPendingRemoval} onCancel={() => setMobPendingRemoval(null)} onConfirm={confirmRemoveMob} />
+      <ExportSuccessModal fileName={exportedPackFileName} onClose={() => setExportedPackFileName(null)} />
     </div>
   );
 }
@@ -987,6 +999,7 @@ function VariantGroupRow({
   recordingGroupId: string | null;
 }) {
   const customization = getRepresentativeCustomization(group.variants, customizations);
+  const linkedVariants = useMemo(() => resolveSharedSoundPathVariantsForMob(mob, group.variants), [group.variants, mob]);
   const isMuted = isGroupedSoundMuted(group.variants, mutedVariantIds);
   const sampleVariant = group.variants[0];
   const isRecording = recordingGroupId === group.id;
@@ -1083,7 +1096,7 @@ function VariantGroupRow({
           <button
             className={cx("variant-option-button", "variant-option-button--record", isRecording && "is-recording")}
             onClick={() => {
-              void handlers.onToggleRecording(group.id, group.variants, mob, group.label);
+              void handlers.onToggleRecording(group.id, linkedVariants, mob, group.label);
             }}
             type="button"
           >
@@ -1108,7 +1121,7 @@ function VariantGroupRow({
         {customization ? (
           <button
             className="variant-reset-button"
-            onClick={() => handlers.onResetGroupedSound(group.variants)}
+            onClick={() => handlers.onResetGroupedSound(mob, linkedVariants)}
             type="button"
           >
             <span aria-hidden="true" className="variant-reset-button__icon">
@@ -1123,7 +1136,7 @@ function VariantGroupRow({
         accept="audio/*"
         hidden
         onChange={(event) => {
-          handlers.onFileSelected(group.variants, event.target.files?.[0]);
+          handlers.onFileSelected(mob, linkedVariants, event.target.files?.[0]);
           event.currentTarget.value = "";
         }}
         ref={(element) => {
@@ -1168,6 +1181,58 @@ function RemoveMobModal({
           </button>
           <button className="ghost-button danger-button" onClick={onConfirm} type="button">
             Remove Mob
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExportSuccessModal({
+  fileName,
+  onClose,
+}: {
+  fileName: string | null;
+  onClose: () => void;
+}) {
+  if (!fileName) {
+    return null;
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <div
+        aria-describedby="export-success-description"
+        aria-labelledby="export-success-title"
+        aria-modal="true"
+        className="confirm-modal confirm-modal--success"
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <div className="confirm-modal-copy">
+          <div className="success-modal-header">
+            <div className="success-modal-topline">
+              <div aria-hidden="true" className="success-modal-badge">
+                <ActionIcon kind="apply" />
+              </div>
+              <div className="success-modal-title-group">
+                <h2 id="export-success-title">Pack Downloaded!</h2>
+                <p id="export-success-description">Your pack is ready for Minecraft Java.</p>
+              </div>
+            </div>
+          </div>
+          <section aria-label="Install instructions" className="success-modal-instructions">
+            <p className="success-modal-instructions__title">Use it in game</p>
+            <ol className="success-modal-steps">
+              <li>Open <strong>Options &gt; Resource Packs</strong>.</li>
+              <li>Click <strong>Open Pack Folder</strong>.</li>
+              <li>Drop in <strong>{fileName}</strong>, enable it, then click <strong>Done</strong>.</li>
+            </ol>
+          </section>
+        </div>
+        <div className="confirm-modal-actions">
+          <button className="export-button" onClick={onClose} type="button">
+            Got it
           </button>
         </div>
       </div>
@@ -1804,6 +1869,17 @@ function getVariantIds(variants: MobSoundVariant[]) {
 
 function getMobVariantIds(mob: MobDefinition) {
   return mob.soundEvents.flatMap((eventDefinition) => getVariantIds(eventDefinition.variants));
+}
+
+function resolveSharedSoundPathVariantsForMob(mob: MobDefinition, variants: MobSoundVariant[]) {
+  const sharedSoundPaths = new Set(variants.map((variant) => variant.soundPath));
+  if (sharedSoundPaths.size === 0) {
+    return variants;
+  }
+
+  return mob.soundEvents.flatMap((eventDefinition) =>
+    eventDefinition.variants.filter((variant) => sharedSoundPaths.has(variant.soundPath)),
+  );
 }
 
 function hasMobEdits(

@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App, { usesStaticModelPreview } from "./App";
+import * as exportModule from "./export";
 import type { MobSoundsDataset } from "./types";
 
 class AudioMock {
@@ -185,7 +186,7 @@ const TEST_DATASET: MobSoundsDataset = {
       localId: "pig",
       mobCategory: "creature",
       releaseStatus: "released",
-      soundEventCount: 1,
+      soundEventCount: 2,
       soundEvents: [
         {
           id: "entity.pig.ambient",
@@ -207,9 +208,29 @@ const TEST_DATASET: MobSoundsDataset = {
             },
           ],
         },
+        {
+          id: "entity.pig.hurt",
+          subtitle: "Pig hurts",
+          subtitleKey: "subtitles.entity.pig.hurt",
+          variants: [
+            {
+              assetPath: "minecraft/sounds/mob/pig/say1.ogg",
+              hash: "f",
+              id: "entity.pig.hurt#1",
+              pitch: 1,
+              preload: false,
+              size: 1,
+              soundPath: "mob/pig/say1",
+              stream: false,
+              url: "https://example.com/pig-say1-hurt.ogg",
+              volume: 1,
+              weight: 1,
+            },
+          ],
+        },
       ],
       soundId: "pig",
-      soundVariantCount: 1,
+      soundVariantCount: 2,
       translationKey: "entity.minecraft.pig",
     },
   ],
@@ -364,6 +385,37 @@ describe("App", () => {
     expect(await screen.findByText("Build a pack in three quick steps")).toBeTruthy();
   });
 
+  it("applies one replacement across matching sound paths on the same mob", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /^pig$/i }));
+
+    const ambientSay1Row = getVariantRow(/say1/i);
+    const fileInput = ambientSay1Row.querySelector("input[type='file']") as HTMLInputElement | null;
+    expect(fileInput).not.toBeNull();
+
+    fireEvent.change(fileInput!, {
+      target: {
+        files: [new File(["oink"], "custom-pig.ogg", { type: "audio/ogg" })],
+      },
+    });
+
+    expect(await within(ambientSay1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
+    expect(screen.getByText(/^hurt$/i)).toBeTruthy();
+
+    const hurtEvent = screen.getByText(/^hurt$/i).closest(".event-card") as HTMLElement | null;
+    expect(hurtEvent).not.toBeNull();
+    expect(within(hurtEvent!).getByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
+
+    await user.click(within(ambientSay1Row).getByRole("button", { name: "Reset Changes" }));
+
+    await waitFor(() => {
+      expect(within(ambientSay1Row).queryByRole("button", { name: /play custom preview for say1/i })).toBeNull();
+    });
+    expect(screen.queryByText(/^hurt$/i)).toBeNull();
+  });
+
   it("asks for confirmation before removing a mob with uploaded custom audio", async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -465,6 +517,50 @@ describe("App", () => {
 
     await user.click(within(say1Row).getByRole("button", { name: "Stop" }));
     expect(await within(say1Row).findByRole("button", { name: "Re-record" })).toBeTruthy();
+  });
+
+  it("shows a success modal with install steps after exporting a resource pack", async () => {
+    const user = userEvent.setup();
+    const anchorClickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const buildResourcePackBlobSpy = vi.spyOn(exportModule, "buildResourcePackBlob").mockResolvedValue(
+      new Blob(["zip-bytes"], { type: "application/zip" }),
+    );
+    const fileName = exportModule.getResourcePackFileName();
+
+    try {
+      render(<App />);
+
+      await user.click(await screen.findByRole("button", { name: /^cow$/i }));
+
+      const say1Row = getVariantRow(/say1/i);
+      const fileInput = say1Row.querySelector("input[type='file']") as HTMLInputElement | null;
+      expect(fileInput).not.toBeNull();
+
+      fireEvent.change(fileInput!, {
+        target: {
+          files: [new File(["moo"], "custom-cow.ogg", { type: "audio/ogg" })],
+        },
+      });
+
+      expect(await within(say1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
+
+      await user.click(screen.getByRole("button", { name: "Create Resource Pack" }));
+
+      expect(await screen.findByRole("heading", { name: "Pack Downloaded!" })).toBeTruthy();
+      expect(screen.getByText("Your pack is ready for Minecraft Java.")).toBeTruthy();
+      expect(screen.getByText("Use it in game")).toBeTruthy();
+      expect(screen.getByText((_, element) => element?.textContent === "Open Options > Resource Packs.")).toBeTruthy();
+      expect(screen.getByText((_, element) => element?.textContent === "Click Open Pack Folder.")).toBeTruthy();
+      expect(screen.getByText((_, element) => element?.textContent === `Drop in ${fileName}, enable it, then click Done.`)).toBeTruthy();
+      expect(buildResourcePackBlobSpy).toHaveBeenCalledTimes(1);
+      expect(anchorClickSpy).toHaveBeenCalledTimes(1);
+
+      await user.click(screen.getByRole("button", { name: "Got it" }));
+      expect(screen.queryByRole("dialog")).toBeNull();
+    } finally {
+      buildResourcePackBlobSpy.mockRestore();
+      anchorClickSpy.mockRestore();
+    }
   });
 
   it("does not force static model previews for wiki-sourced mob renders", () => {

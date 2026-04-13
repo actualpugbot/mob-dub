@@ -1387,6 +1387,14 @@ h3 {
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.5);
 }
 
+.confirm-modal--success {
+  width: min(100%, 540px);
+  border-color: rgba(84, 224, 179, 0.26);
+  background:
+    linear-gradient(180deg, rgba(10, 36, 32, 0.96), rgba(12, 18, 29, 0.96)),
+    var(--panel-strong);
+}
+
 .confirm-modal-copy {
   display: grid;
   gap: 10px;
@@ -1409,9 +1417,93 @@ h3 {
   letter-spacing: -0.03em;
 }
 
+.confirm-modal p {
+  margin: 0;
+}
+
 .confirm-modal p:last-child {
   margin: 0;
   color: var(--muted);
+}
+
+.success-modal-header {
+  display: grid;
+  gap: 14px;
+}
+
+.success-modal-topline {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.success-modal-title-group {
+  display: grid;
+  gap: 4px;
+}
+
+.success-modal-title-group p {
+  color: rgba(225, 237, 245, 0.76);
+}
+
+.success-modal-badge {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border: 2px solid rgba(84, 224, 179, 0.52);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(140, 255, 215, 0.26), rgba(84, 224, 179, 0.1)),
+    rgba(11, 35, 32, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 14px 30px rgba(11, 35, 32, 0.34);
+  color: #d8fff3;
+}
+
+.success-modal-badge svg {
+  width: 34px;
+  height: 34px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.success-modal-instructions {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid rgba(153, 190, 214, 0.12);
+  border-radius: 20px;
+  background: rgba(9, 18, 30, 0.42);
+}
+
+.success-modal-instructions__title {
+  color: rgba(225, 237, 245, 0.82);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.success-modal-steps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #eef8fb;
+  line-height: 1.5;
+}
+
+.success-modal-steps li {
+  padding-left: 4px;
+}
+
+.success-modal-steps strong {
+  color: #ffffff;
 }
 
 .confirm-modal-actions {
