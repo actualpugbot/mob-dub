@@ -863,7 +863,20 @@ function EventCard({
 function ActionIcon({
   kind,
 }: {
-  kind: "play" | "stop" | "record" | "upload" | "apply" | "mute" | "unmute" | "reset" | "info" | "target" | "trash" | "plus";
+  kind:
+    | "play"
+    | "stop"
+    | "record"
+    | "upload"
+    | "apply"
+    | "check"
+    | "mute"
+    | "unmute"
+    | "reset"
+    | "info"
+    | "target"
+    | "trash"
+    | "plus";
 }) {
   switch (kind) {
     case "play":
@@ -904,6 +917,13 @@ function ActionIcon({
         <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
           <path d="M6 10.5L8.5 13L14 7.5" />
           <path d="M10 3.5L11.2 6L14 6.3L12 8.2L12.5 11L10 9.7L7.5 11L8 8.2L6 6.3L8.8 6L10 3.5Z" />
+        </svg>
+      );
+
+    case "check":
+      return (
+        <svg aria-hidden="true" fill="none" viewBox="0 0 16 16">
+          <path d="M2.5 8.5L6.2 12.2L13.5 4.9" />
         </svg>
       );
 
@@ -1213,7 +1233,7 @@ function ExportSuccessModal({
           <div className="success-modal-header">
             <div className="success-modal-topline">
               <div aria-hidden="true" className="success-modal-badge">
-                <ActionIcon kind="apply" />
+                <ActionIcon kind="check" />
               </div>
               <div className="success-modal-title-group">
                 <h2 id="export-success-title">Pack Downloaded!</h2>

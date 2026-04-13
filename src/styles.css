@@ -1464,10 +1464,10 @@ h3 {
 }
 
 .success-modal-badge svg {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
