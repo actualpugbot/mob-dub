@@ -1003,6 +1003,7 @@ function VariantGroupRow({
   const isPlayingCustom = playingPreview?.groupId === group.id && playingPreview.source === "custom";
   const isPlayingAny = isPlayingOriginal || isPlayingCustom;
   const replacementSourceFile = customization ? customization.fileName : getSoundFileLabel(sampleVariant.assetPath);
+  const recordButtonLabel = isRecording ? "Stop" : customization?.kind === "recording" ? "Re-record" : "Record";
 
   return (
     <div className={cx("variant-card", "variant-row", isMuted && "is-muted", isPlayingAny && "is-playing")}>
@@ -1098,7 +1099,7 @@ function VariantGroupRow({
             <span aria-hidden="true" className="variant-option-button__icon">
               <ActionIcon kind={isRecording ? "stop" : "record"} />
             </span>
-            <span className="variant-option-button__body">{isRecording ? "Stop" : "Record"}</span>
+            <span className="variant-option-button__body">{recordButtonLabel}</span>
           </button>
 
           <button

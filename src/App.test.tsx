@@ -51,6 +51,38 @@ class AudioContextMock {
   }));
 }
 
+class MediaRecorderMock {
+  static instances: MediaRecorderMock[] = [];
+  static isTypeSupported = vi.fn((mimeType: string) => mimeType.startsWith("audio/ogg"));
+
+  mimeType: string;
+  ondataavailable: ((event: BlobEvent) => void) | null = null;
+  onerror: (() => void) | null = null;
+  onstop: (() => void | Promise<void>) | null = null;
+  state: "inactive" | "paused" | "recording" = "inactive";
+
+  start = vi.fn(() => {
+    this.state = "recording";
+  });
+
+  stop = vi.fn(() => {
+    if (this.state === "inactive") {
+      return;
+    }
+
+    this.state = "inactive";
+    this.ondataavailable?.({
+      data: new Blob(["recording-bytes"], { type: this.mimeType }),
+    } as BlobEvent);
+    void this.onstop?.();
+  });
+
+  constructor(_stream: MediaStream, options?: MediaRecorderOptions) {
+    this.mimeType = options?.mimeType ?? "audio/webm";
+    MediaRecorderMock.instances.push(this);
+  }
+}
+
 class ResizeObserverMock {
   observe = vi.fn();
   unobserve = vi.fn();
@@ -218,10 +250,21 @@ function rect(top: number, height = 420) {
 describe("App", () => {
   beforeEach(() => {
     AudioMock.instances = [];
+    MediaRecorderMock.instances = [];
 
     vi.stubGlobal("Audio", AudioMock as unknown as typeof Audio);
     vi.stubGlobal("AudioContext", AudioContextMock as unknown as typeof AudioContext);
+    vi.stubGlobal("MediaRecorder", MediaRecorderMock as unknown as typeof MediaRecorder);
     vi.stubGlobal("ResizeObserver", ResizeObserverMock as unknown as typeof ResizeObserver);
+    Object.defineProperty(window.navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia: vi.fn(async () => ({
+          getTracks: () => [],
+        })),
+      },
+      writable: true,
+    });
     Object.defineProperty(window, "innerHeight", {
       configurable: true,
       value: 800,
@@ -406,6 +449,22 @@ describe("App", () => {
     window.dispatchEvent(resetEvent);
     expect(resetEvent.defaultPrevented).toBe(false);
     expect(resetEvent.returnValue).toBe("");
+  });
+
+  it("changes the record button to re-record after saving a microphone take", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /^cow$/i }));
+
+    const say1Row = getVariantRow(/say1/i);
+    expect(within(say1Row).getByRole("button", { name: "Record" })).toBeTruthy();
+
+    await user.click(within(say1Row).getByRole("button", { name: "Record" }));
+    expect(await within(say1Row).findByRole("button", { name: "Stop" })).toBeTruthy();
+
+    await user.click(within(say1Row).getByRole("button", { name: "Stop" }));
+    expect(await within(say1Row).findByRole("button", { name: "Re-record" })).toBeTruthy();
   });
 
   it("uses static model previews for mobs whose local assets are texture atlases", () => {
