@@ -16,3 +16,11 @@ export function getMobImagePath(mob: MobImageReference) {
 
   return `/images/mobs/${fileName}`;
 }
+
+export function isGifMobImagePath(imagePath?: string) {
+  if (!imagePath) {
+    return false;
+  }
+
+  return imagePath.split(/[?#]/, 1)[0].toLowerCase().endsWith(".gif");
+}

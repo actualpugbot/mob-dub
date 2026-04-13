@@ -570,6 +570,11 @@ h3 {
   padding: 0;
 }
 
+.mob-preview-image--flipped {
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
 .mob-preview--card.mob-preview-image {
   margin-bottom: 0;
 }

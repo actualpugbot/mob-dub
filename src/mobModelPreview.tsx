@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getMobImagePath } from "./mobImagePath";
+import { getMobImagePath, isGifMobImagePath } from "./mobImagePath";
 import { publicUrl } from "./publicUrl";
 import type { MobDefinition, MobModelCube, MobModelDefinition, MobModelPart } from "./types";
 
@@ -92,7 +92,16 @@ export function MobModelPreview({
 
 function FallbackPreview({ imagePath, mob, size }: { imagePath?: string; mob: MobDefinition; size: PreviewSize }) {
   if (imagePath) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(imagePath)} />;
+    const className = [
+      "mob-preview",
+      `mob-preview--${size}`,
+      "mob-preview-image",
+      isGifMobImagePath(imagePath) ? "mob-preview-image--flipped" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    return <img alt="" className={className} decoding="async" loading="lazy" src={publicUrl(imagePath)} />;
   }
 
   return (

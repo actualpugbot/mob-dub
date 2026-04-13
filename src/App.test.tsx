@@ -479,6 +479,45 @@ describe("App", () => {
     expect(usesStaticModelPreview("cow")).toBe(false);
   });
 
+  it("flips gif mob previews so animated mob art faces right", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("mob-sounds.json")) {
+        return new Response(
+          JSON.stringify({
+            ...TEST_DATASET,
+            mobs: TEST_DATASET.mobs.map((mob) =>
+              mob.localId === "cow" ? { ...mob, imagePath: "/images/mobs/cow.gif" } : mob,
+            ),
+          }),
+          { status: 200 },
+        );
+      }
+
+      if (url.endsWith(".ogg")) {
+        return new Response(new Uint8Array([1, 3, 5, 7]).buffer, {
+          status: 200,
+          headers: { "Content-Type": "audio/ogg" },
+        });
+      }
+
+      return new Response(JSON.stringify({ mobs: {} }), { status: 200 });
+    }));
+
+    const { container } = render(<App />);
+
+    await screen.findByRole("button", { name: /^cow$/i });
+
+    const gifPreview = container.querySelector<HTMLImageElement>('img.mob-preview-image[src$="/images/mobs/cow.gif"]');
+    const pngPreview = container.querySelector<HTMLImageElement>('img.mob-preview-image[src$="/images/mobs/pig.png"]');
+
+    expect(gifPreview).toBeTruthy();
+    expect(gifPreview?.className).toContain("mob-preview-image--flipped");
+    expect(pngPreview).toBeTruthy();
+    expect(pngPreview?.className).not.toContain("mob-preview-image--flipped");
+  });
+
   it("shows a floating scroll-to-top control only after scrolling far down", async () => {
     const user = userEvent.setup();
     render(<App />);

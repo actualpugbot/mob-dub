@@ -2,7 +2,7 @@ import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEff
 import type { CSSProperties, MutableRefObject } from "react";
 import { enhanceCustomAudioBlob, getCachedWaveformBars, getPreferredRecordingMimeType, getWaveformBars } from "./audio";
 import { buildResourcePackBlob, getResourcePackFileName } from "./export";
-import { getMobImagePath } from "./mobImagePath";
+import { getMobImagePath, isGifMobImagePath } from "./mobImagePath";
 import { MobModelPreview } from "./mobModelPreview";
 import { publicUrl } from "./publicUrl";
 import { getRepresentativeCustomization, groupVariantsBySoundPath, isGroupedSoundMuted } from "./soundGroups";
@@ -1276,7 +1276,20 @@ function MobArtwork({
   const imagePath = getMobImagePath(mob);
 
   if (imagePath && !usesStaticModelPreview(mob.localId)) {
-    return <img alt="" className={`mob-preview mob-preview--${size} mob-preview-image`} decoding="async" loading="lazy" src={publicUrl(imagePath)} />;
+    return (
+      <img
+        alt=""
+        className={cx(
+          "mob-preview",
+          `mob-preview--${size}`,
+          "mob-preview-image",
+          isGifMobImagePath(imagePath) && "mob-preview-image--flipped",
+        )}
+        decoding="async"
+        loading="lazy"
+        src={publicUrl(imagePath)}
+      />
+    );
   }
 
   return <MobModelPreview mob={mob} model={model} size={size} />;
