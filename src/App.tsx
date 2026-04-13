@@ -31,6 +31,7 @@ const DEFAULT_FILE_MIME_TYPE = "application/octet-stream";
 const SCROLL_TO_TOP_REVEAL_OFFSET_PX = 900;
 const MOB_CARD_NAVIGATION_ANCHOR_RATIO = 0.25;
 const MOB_CARD_NAVIGATION_ANCHOR_MAX_PX = 160;
+const UNSAVED_CUSTOM_AUDIO_WARNING = "Your recorded and uploaded sounds will be wiped if you leave this page.";
 
 type MobFilter = "all" | "classic" | "recent";
 type MobCardNavigationDirection = "previous" | "next";
@@ -291,6 +292,7 @@ export default function App() {
   );
 
   const customizedVariantCount = Object.keys(customizations).length;
+  const hasUnsavedCustomAudio = customizedVariantCount > 0;
   const modifiedMobCount = useMemo(
     () => selectedMobs.filter((mob) => hasMobEdits(mob, customizations, mutedVariantIds)).length,
     [customizations, mutedVariantIds, selectedMobs],
@@ -420,6 +422,7 @@ export default function App() {
     }),
     [handleFileSelected, handlePickFile, resetGroupedSound, togglePreview, toggleRecording],
   );
+  useWarnBeforeUnload(hasUnsavedCustomAudio);
   const showScrollToTop = useScrollToTopVisibility();
   const showMobCardNavigation = selectedMobs.length > 1;
   const showScrollNavigation = showScrollToTop || showMobCardNavigation;
@@ -1314,6 +1317,25 @@ function useEscapeToDismiss(enabled: boolean, onDismiss: () => void) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [enabled, onDismiss]);
+}
+
+function useWarnBeforeUnload(enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = UNSAVED_CUSTOM_AUDIO_WARNING;
+      return UNSAVED_CUSTOM_AUDIO_WARNING;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [enabled]);
 }
 
 function useBrowserControlsHeight() {

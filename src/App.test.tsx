@@ -300,10 +300,10 @@ describe("App", () => {
     expect(await within(say1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
     expect(say1Row.querySelectorAll(".variant-waveform-row")).toHaveLength(2);
 
-    expect(screen.queryByText("entity.cow.ambient")).toBeNull();
+    expect(screen.queryByText(/^ambient$/i)).toBeNull();
     await user.click(screen.getByRole("button", { name: /more\.\.\. \(1 more\)/i }));
-    expect(screen.getByText("entity.cow.ambient")).toBeTruthy();
-    expect(screen.getByText("entity.cow.hurt")).toBeTruthy();
+    expect(screen.getByText(/^ambient$/i)).toBeTruthy();
+    expect(screen.getByText(/^hurt$/i)).toBeTruthy();
 
     await waitFor(() => {
       expect(container.querySelectorAll(".waveform-bar").length).toBeGreaterThan(0);
@@ -352,6 +352,60 @@ describe("App", () => {
 
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(await screen.findByText("Build a pack in three quick steps")).toBeTruthy();
+  });
+
+  it("warns before unloading when recorded or uploaded custom audio would be lost", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(await screen.findByRole("button", { name: /^cow$/i }));
+
+    const initialEvent = new Event("beforeunload", { cancelable: true });
+    Object.defineProperty(initialEvent, "returnValue", {
+      configurable: true,
+      value: "",
+      writable: true,
+    });
+
+    window.dispatchEvent(initialEvent);
+    expect(initialEvent.defaultPrevented).toBe(false);
+    expect(initialEvent.returnValue).toBe("");
+
+    const say1Row = getVariantRow(/say1/i);
+    const fileInput = say1Row.querySelector("input[type='file']") as HTMLInputElement | null;
+    expect(fileInput).not.toBeNull();
+
+    fireEvent.change(fileInput!, {
+      target: {
+        files: [new File(["moo"], "custom-cow.ogg", { type: "audio/ogg" })],
+      },
+    });
+
+    expect(await within(say1Row).findByRole("button", { name: /play custom preview for say1/i })).toBeTruthy();
+
+    const dirtyEvent = new Event("beforeunload", { cancelable: true });
+    Object.defineProperty(dirtyEvent, "returnValue", {
+      configurable: true,
+      value: "",
+      writable: true,
+    });
+
+    window.dispatchEvent(dirtyEvent);
+    expect(dirtyEvent.defaultPrevented).toBe(true);
+    expect(dirtyEvent.returnValue).toBe("Your recorded and uploaded sounds will be wiped if you leave this page.");
+
+    await user.click(within(say1Row).getByRole("button", { name: "Reset Changes" }));
+
+    const resetEvent = new Event("beforeunload", { cancelable: true });
+    Object.defineProperty(resetEvent, "returnValue", {
+      configurable: true,
+      value: "",
+      writable: true,
+    });
+
+    window.dispatchEvent(resetEvent);
+    expect(resetEvent.defaultPrevented).toBe(false);
+    expect(resetEvent.returnValue).toBe("");
   });
 
   it("uses static model previews for mobs whose local assets are texture atlases", () => {
