@@ -1,4 +1,5 @@
 import { strToU8, zipSync } from "fflate";
+import resourcePackImageDataUrl from "./assets/resource-pack.png?inline";
 import { ensureOggBlob } from "./audio";
 import type { CompatibilityMode, CustomVariantSound, MobDefinition, MobSoundsDataset, MobSoundEvent, MobSoundVariant } from "./types";
 
@@ -31,7 +32,7 @@ export async function buildResourcePackBlob({
   const packFormat = dataset.resourcePack?.packFormat ?? 84;
   const zipEntries: Record<string, Uint8Array> = {
     "pack.mcmeta": strToU8(JSON.stringify({ pack: buildPackMetadata(packFormat, compatibilityMode) }, null, 2)),
-    "pack.png": RESOURCE_PACK_IMAGE_BYTES.slice(),
+    "pack.png": decodeDataUrl(resourcePackImageDataUrl),
   };
   const soundsJson: Record<string, { replace: true; sounds: Array<Record<string, unknown>>; subtitle?: string }> = {};
 
@@ -175,6 +176,17 @@ function decodeBase64(value: string) {
   }
 
   throw new Error("This environment cannot decode the bundled resource pack image.");
+}
+
+function decodeDataUrl(value: string) {
+  const base64Marker = ";base64,";
+  const base64Index = value.indexOf(base64Marker);
+  if (base64Index === -1) {
+    return RESOURCE_PACK_IMAGE_BYTES.slice();
+  }
+
+  const base64 = value.slice(base64Index + base64Marker.length);
+  return Uint8Array.from(decodeBase64(base64), (char) => char.charCodeAt(0));
 }
 
 function sanitizePackName(value: string) {
