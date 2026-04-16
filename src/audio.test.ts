@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { __setFfmpegRuntimeLoaderForTests, enhanceCustomAudioBlob, ensureOggBlob } from "./audio";
+import { __setFfmpegRuntimeLoaderForTests, enhanceCustomAudioBlob, ensureOggBlob, getCachedWaveformBars, getWaveformBars } from "./audio";
 
 describe("ensureOggBlob", () => {
   afterEach(() => {
@@ -111,6 +111,40 @@ describe("enhanceCustomAudioBlob", () => {
     expect(result.durationSec).toBeCloseTo(0.15, 3);
     expect(result.matchedReferenceLevel).toBe(true);
     expect(result.appliedGain).toBeCloseTo(6, 4);
+  });
+});
+
+describe("getWaveformBars", () => {
+  afterEach(() => {
+    __setFfmpegRuntimeLoaderForTests(null);
+  });
+
+  it("caches waveform bars by both URL and requested bar count", async () => {
+    class AudioContextMock {
+      decodeAudioData = vi.fn(async () =>
+        createAudioBufferMock(
+          Array.from({ length: 160 }, (_, index) => ((index % 9) + 1) / 10),
+        ),
+      );
+    }
+
+    const fetchMock = vi.fn(async () => ({
+      blob: async () => new Blob([new Uint8Array([1, 2, 3])], { type: "audio/ogg" }),
+      ok: true,
+    }));
+
+    vi.stubGlobal("AudioContext", AudioContextMock as unknown as typeof AudioContext);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const url = "https://example.com/cow-say1.ogg";
+    const compactBars = await getWaveformBars(url, 16);
+    const detailedBars = await getWaveformBars(url, 32);
+
+    expect(compactBars).toHaveLength(16);
+    expect(detailedBars).toHaveLength(32);
+    expect(getCachedWaveformBars(url, 16)).toEqual(compactBars);
+    expect(getCachedWaveformBars(url, 32)).toEqual(detailedBars);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
 

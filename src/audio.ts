@@ -120,8 +120,8 @@ export function getPreferredRecordingMimeType(): string {
   return OGG_CANDIDATES.find((candidate) => MediaRecorder.isTypeSupported(candidate)) ?? "";
 }
 
-export function getCachedWaveformBars(url: string): number[] | null {
-  return waveformCache.get(url) ?? null;
+export function getCachedWaveformBars(url: string, barCount = DEFAULT_WAVEFORM_BAR_COUNT): number[] | null {
+  return waveformCache.get(getWaveformCacheKey(url, barCount)) ?? null;
 }
 
 export async function getWaveformBars(url: string, barCount = DEFAULT_WAVEFORM_BAR_COUNT): Promise<number[]> {
@@ -129,12 +129,13 @@ export async function getWaveformBars(url: string, barCount = DEFAULT_WAVEFORM_B
     return [];
   }
 
-  const cached = waveformCache.get(url);
+  const cacheKey = getWaveformCacheKey(url, barCount);
+  const cached = waveformCache.get(cacheKey);
   if (cached) {
     return cached;
   }
 
-  const existingRequest = waveformRequestCache.get(url);
+  const existingRequest = waveformRequestCache.get(cacheKey);
   if (existingRequest) {
     return existingRequest;
   }
@@ -152,16 +153,16 @@ export async function getWaveformBars(url: string, barCount = DEFAULT_WAVEFORM_B
 
     const audioBuffer = await decodeBlob(audioContext, await response.blob());
     const bars = buildWaveformBars(audioBuffer, barCount);
-    waveformCache.set(url, bars);
+    waveformCache.set(cacheKey, bars);
     return bars;
   })();
 
-  waveformRequestCache.set(url, request);
+  waveformRequestCache.set(cacheKey, request);
 
   try {
     return await request;
   } finally {
-    waveformRequestCache.delete(url);
+    waveformRequestCache.delete(cacheKey);
   }
 }
 
@@ -702,6 +703,10 @@ function isOggLike(blob: Blob, mimeTypeHint?: string, sourceName?: string) {
 
 function sanitizeFfmpegId(value: string) {
   return value.replace(/[^a-z0-9_-]/gi, "_").replace(/^_+|_+$/g, "") || "clip";
+}
+
+function getWaveformCacheKey(url: string, barCount: number) {
+  return `${barCount}:${url}`;
 }
 
 export function __setFfmpegRuntimeLoaderForTests(loader: ((progress?: ProgressCallback) => Promise<FfmpegRuntime>) | null) {

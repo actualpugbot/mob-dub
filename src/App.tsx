@@ -278,6 +278,7 @@ export default function App() {
     [activeMobFilter, deferredSearch, mobs],
   );
 
+  const selectedMobIdSet = useMemo(() => new Set(selectedMobIds), [selectedMobIds]);
   const selectedMobs = useMemo(
     () => selectedMobIds.map((id) => mobById.get(id)).filter(isDefined),
     [mobById, selectedMobIds],
@@ -298,16 +299,16 @@ export default function App() {
     (mob: MobDefinition) => {
       setErrorMessage(null);
 
-      if (selectedMobIds.includes(mob.id)) {
+      if (selectedMobIdSet.has(mob.id)) {
         cardRefs.current[mob.id]?.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
 
       startTransition(() => {
-        setSelectedMobIds((current) => [...current, mob.id]);
+        setSelectedMobIds((current) => (current.includes(mob.id) ? current : [...current, mob.id]));
       });
     },
-    [selectedMobIds],
+    [selectedMobIdSet],
   );
 
   const removeMob = useCallback(
@@ -488,7 +489,7 @@ export default function App() {
           mobModels={mobModels}
           onSelectMob={handleSelectMob}
           search={search}
-          selectedMobIds={selectedMobIds}
+          selectedMobIdSet={selectedMobIdSet}
           setSearch={setSearch}
         />
 
@@ -603,7 +604,7 @@ function MobBrowser({
   mobModels,
   onSelectMob,
   search,
-  selectedMobIds,
+  selectedMobIdSet,
   setSearch,
 }: {
   browserControlsRef: MutableRefObject<HTMLDivElement | null>;
@@ -611,7 +612,7 @@ function MobBrowser({
   mobModels: Record<string, MobModelDefinition>;
   onSelectMob: (mob: MobDefinition) => void;
   search: string;
-  selectedMobIds: string[];
+  selectedMobIdSet: ReadonlySet<string>;
   setSearch: (value: string) => void;
 }) {
   return (
@@ -628,7 +629,7 @@ function MobBrowser({
           <div className="mob-list-empty">No mobs match this search and filter combo yet.</div>
         ) : (
           filteredMobs.map((mob) => {
-            const isSelected = selectedMobIds.includes(mob.id);
+            const isSelected = selectedMobIdSet.has(mob.id);
 
             return (
               <div className={cx("mob-list-item", isSelected && "is-selected")} key={mob.id}>
@@ -1272,7 +1273,7 @@ function VariantWaveform({
   progress: number;
   url?: string;
 }) {
-  const cachedBars = url ? getCachedWaveformBars(url) : null;
+  const cachedBars = url ? getCachedWaveformBars(url, VARIANT_WAVEFORM_BAR_COUNT) : null;
   const [bars, setBars] = useState<number[]>(cachedBars ?? []);
   const [status, setStatus] = useState<"fallback" | "loading" | "ready">(url ? (cachedBars?.length ? "ready" : "loading") : "fallback");
 
@@ -1285,7 +1286,7 @@ function VariantWaveform({
       return;
     }
 
-    const cachedWaveform = getCachedWaveformBars(url);
+    const cachedWaveform = getCachedWaveformBars(url, VARIANT_WAVEFORM_BAR_COUNT);
     if (cachedWaveform) {
       setBars(cachedWaveform);
       setStatus(cachedWaveform.length > 0 ? "ready" : "fallback");
